@@ -3,3 +3,4 @@ ccxt>=4.3
 polars>=1.0
 pyarrow>=16.0
 pydantic>=2.7
+tzdata>=2024.1
