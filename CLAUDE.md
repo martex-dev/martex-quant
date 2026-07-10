@@ -104,6 +104,18 @@
 - Futures-vs-crypto RESOLVED for this path: firm is CFD-crypto
   (1:30/1:100), crypto system maps directly; futures build deferred
   until a futures firm is actually on the table
+- REVISED PLAN (2026-07-11, user is a student, summer availability):
+  paper gate COMPRESSED to a 2-3 week operational shakedown (honest
+  basis: the statistical gate was the 4.7y OOS; 60 more days adds
+  little; the eval fee $51.80 is the only capital at risk). Then buy
+  the 1-step 5k eval; budget 2 attempts. Expectations set honestly:
+  even success means ~$50-80/mo from a funded 5k initially
+- EXECUTION: firm offers MT5 (chosen — official Python API, no
+  surcharge), TradingView, cTrader (+$10). MT5 adapter built:
+  live/mt5_broker.py + live/trade.py (dry-run DEFAULT, --live flag);
+  decision core shared with paper trader (live/decision.py); user
+  must install MT5 terminal + log in; verify firm's symbol names vs
+  DEFAULT_SYMBOL_MAP before --live; RISK_SCALE=1.5
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee
