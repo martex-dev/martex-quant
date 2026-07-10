@@ -5,9 +5,24 @@ Inputs: the user's actual firm menu. Both 5k accounts, no time limits.
 - **Option 2 (2-step)**: +10% then +5%, max loss $500 (10%) per stage,
   daily loss 5%, 1:100. Cheaper fee.
 
-Fees ASSUMED ($65 / $45) — breakevens reported below make the conclusion
-robust to the real numbers. "Max loss" static-vs-trailing is UNKNOWN —
-both simulated. Reproducible: scripts/phase5_realfirm.py (20k paths/cell).
+Reproducible: scripts/phase5_realfirm.py (20k paths/cell).
+
+## FIRM ANSWERS CONFIRMED (2026-07-11)
+
+- Max loss: **STATIC** -> Option 1 is the play (see recommendation).
+- Automation: **allowed**. Weekend holding: **no restrictions**.
+- Real fees: 1-step $51.80 (5k) / $98 (10k); 2-step $19 (2.5k) /
+  $35 (5k) / $69 (10k).
+
+With real fees (pass rates unchanged — fees only shift EV):
+- **1-step 5k @ 1.5x: 50.0% pass, breakeven funded value $104,
+  EV +$198 per attempt at $500 assumed value, median 80 days.**
+- 2-step 5k @ 1.5x: 47.8% pass, breakeven $73, EV +$204 — but median
+  178 days: less than half Option 1's EV per day.
+- 1-step 10k @ $98: IF its rules are proportional (target 10%, max
+  loss 6% = $600, daily 3%), pass rates carry over: breakeven $196,
+  EV +$402 at $1,000 assumed value — the best absolute EV per attempt.
+  VERIFY the 10k rules are actually proportional before assuming this.
 
 ## Headline finding: the daily-loss rule flips the engine choice
 

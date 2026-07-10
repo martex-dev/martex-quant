@@ -44,8 +44,8 @@ CONFIG = BacktestConfig(initial_cash=10_000.0)
 SCALES = [0.25, 0.5, 0.75, 1.0, 1.5, 2.0]
 FUNDED_VALUES = [250.0, 500.0, 1000.0]  # a 5k funded account is worth far less than a 50k one
 
-FEE_1STEP = 65.0  # ASSUMED — verify with the firm
-FEE_2STEP = 45.0  # ASSUMED — user says 2-step is cheaper
+FEE_1STEP = 51.80  # CONFIRMED by firm (5k 1-step; 10k is $98)
+FEE_2STEP = 35.0  # CONFIRMED by firm (5k 2-step; 2.5k is $19, 10k is $69)
 
 
 def build_returns(
