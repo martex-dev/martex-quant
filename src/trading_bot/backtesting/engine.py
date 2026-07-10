@@ -100,7 +100,7 @@ def run_backtest(
         if i < warmup_bars:
             continue  # priming history only; the strategy is not consulted
         target = strategy.on_bar(history)
-        allowed = risk.adjust(target, portfolio.equity(bar.close), cfg.initial_cash)
+        allowed = risk.adjust(target, portfolio.equity(bar.close), cfg.initial_cash, bar.timestamp)
         order = portfolio.target_order(allowed, bar)
         if order is not None:
             broker.submit(order)
