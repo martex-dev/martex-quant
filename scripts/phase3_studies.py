@@ -29,9 +29,11 @@ from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
 from trading_bot.strategies.base import Strategy
 from trading_bot.strategies.benchmark import BuyAndHold
+from trading_bot.strategies.breakout import DonchianBreakout
 from trading_bot.strategies.meanrev import BollingerReversion
 from trading_bot.strategies.momentum import TimeSeriesMomentum
 from trading_bot.strategies.vol_filter import VolFilteredMomentum
+from trading_bot.strategies.vol_target import VolTargetMomentum
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 CONFIG = BacktestConfig(initial_cash=10_000.0)
@@ -145,6 +147,30 @@ def study_meanrev() -> None:
     )
 
 
+def study_vol_target() -> None:
+    print("Study 6 — vol-targeted daily TSMOM  target 30% ann. vol, window 30d (FIXED)\n")
+    run_wf_study(
+        Interval.D1,
+        grid=[7, 14, 30, 60, 90, 180],
+        factory=lambda p: VolTargetMomentum(int(p)),
+        warmup_of=lambda p: max(int(p), 30) + 1,
+        train=365,
+        test=90,
+    )
+
+
+def study_donchian() -> None:
+    print("Study 7 — Donchian breakout  grid N=[10,20,40,55,80,120]d\n")
+    run_wf_study(
+        Interval.D1,
+        grid=[10, 20, 40, 55, 80, 120],
+        factory=lambda p: DonchianBreakout(int(p)),
+        warmup_of=lambda p: int(p) + 1,
+        train=365,
+        test=90,
+    )
+
+
 def study_carry() -> None:
     """Data-only feasibility: measure the gross funding premium on Binance
     USDT-margined perps. No backtest — see hypothesis 05 for why."""
@@ -192,6 +218,8 @@ STUDIES = {
     "daily-tsmom": study_daily_tsmom,
     "vol-filter": study_vol_filter,
     "meanrev": study_meanrev,
+    "vol-target": study_vol_target,
+    "donchian": study_donchian,
     "carry": study_carry,
 }
 
