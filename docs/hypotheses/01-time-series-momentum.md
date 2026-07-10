@@ -1,7 +1,6 @@
 # Hypothesis 01 — Time-Series Momentum (TSMOM)
 
-Status: UNDER TEST. Nothing here is a validated edge until the walk-forward
-results section at the bottom says so.
+Status: **REJECTED as specified** (2026-07-11). See Results.
 
 ## Market hypothesis
 
@@ -56,6 +55,37 @@ Phase 4; research runs use fixed full exposure so results are interpretable.
    Sharpe probability exceeds 0.95 AND the result is not driven by a single
    window or single lookback. Anything less: REJECTED or INCONCLUSIVE.
 
-## Results
+## Results (2026-07-11, scripts/tsmom_study.py, data through 2026-07-10)
 
-(to be filled by scripts/tsmom_study.py — see bottom of file)
+~3 years of stitched OOS per symbol (12 windows x 90d), costs included:
+
+| symbol | OOS ret | OOS Sharpe | OOS MDD | B&H ret | B&H Sharpe | DSR |
+|---|---|---|---|---|---|---|
+| BTCUSDT | +63.4% | 0.67 | -31.0% | +109.6% | 0.76 | 0.612 |
+| ETHUSDT | +26.1% | 0.40 | -50.5% | -4.7% | 0.29 | 0.354 |
+| BNBUSDT | +19.0% | 0.36 | -52.7% | +133.4% | 0.79 | 0.364 |
+| SOLUSDT | +5.5% | 0.34 | -84.6% | +258.2% | 0.92 | 0.577 |
+| XRPUSDT | -24.1% | 0.15 | -73.2% | +132.0% | 0.75 | 0.475 |
+| ADAUSDT | +7.3% | 0.35 | -69.7% | -42.7% | 0.24 | 0.422 |
+| DOGEUSDT | -44.3% | 0.07 | -82.1% | +13.5% | 0.50 | 0.304 |
+| LTCUSDT | -65.5% | -0.38 | -74.8% | -54.1% | 0.03 | 0.082 |
+
+Verdict against the pre-registered standard:
+- Beat B&H on Sharpe: 2/8 (ETH, ADA) — fails "broad" requirement.
+- Median deflated Sharpe probability: 0.393; best 0.612 — nowhere near
+  the 0.95 bar. The two B&H "wins" are indistinguishable from picking
+  the luckiest of 6 lookbacks.
+- Parameter instability: chosen L jumps across the grid between windows
+  on every symbol — the signature of noise, not signal.
+
+**Conclusion: long/flat TSMOM on 1h bars with lookbacks 1w-90d, as
+specified here, is NOT an edge in 2022-2026 crypto majors after costs.**
+
+What this does and does not kill:
+- Killed: this exact specification. Do not resurrect it with tweaks and
+  re-test on the same data without counting the extra trials.
+- Not yet tested (each would be a NEW numbered hypothesis, and every
+  additional test raises the multiple-testing bar): daily-bar momentum
+  (the academic result is daily/weekly, not hourly), volatility-regime
+  filtering (hypothesis family 2), vol-targeted sizing instead of
+  binary long/flat, cross-sectional momentum across symbols, and carry.

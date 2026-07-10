@@ -1,6 +1,6 @@
 ## CURRENT STATE
-- Phase: 2 (Backtesting Engine) — core COMPLETE, review below
-- Current milestone: Phase 2 exit criteria met
+- Phase: 3 (Strategy Research) — in progress
+- Current milestone: hypothesis family 1 (TSMOM) tested and REJECTED
 - Completed: Phase 0 research (see below); MILESTONE 1 COMPLETE —
   data subsystem implemented and verified live: canonical OHLCV schema,
   8-check validator, hive-partitioned Parquet store + JSON catalog,
@@ -37,9 +37,22 @@
   instrument per run; market orders only; no intrabar stop modeling;
   no borrow costs for shorts (allow_short off by default); orders only
   on exposure change (no continuous rebalancing)
-- Next: Phase 3 — strategy research (hypothesis docs first: momentum,
-  vol-regime filter, mean reversion, carry); optional: vectorbt
-  screening layer; deferred: outlier cross-check vs second source
+- Phase 3 infrastructure: engine warmup_bars, walk-forward research
+  harness (train-only selection, tested leak-proof: poisoning test
+  region cannot change selection), reproducible study scripts in
+  scripts/; hypothesis docs in docs/hypotheses/ with pre-registered
+  verdict standards BEFORE results
+- Hypothesis 01 (TSMOM, long/flat, 1h bars, L=1w-90d): REJECTED
+  2026-07-11 — 2/8 symbols beat B&H Sharpe, median DSR 0.393 vs 0.95
+  bar, chosen lookback unstable across windows (noise signature).
+  Full results in docs/hypotheses/01-time-series-momentum.md. Trial
+  count to date (for multiple-testing accounting): 6 lookbacks x 8
+  symbols, 1 spec
+- Next (Phase 3 continues): hypothesis 02 volatility-regime filter;
+  hypothesis 03 daily-bar momentum (the documented anomaly's actual
+  horizon); then mean reversion, carry. Every new spec gets its own
+  numbered doc and raises the DSR bar; optional: vectorbt screening
+  layer; deferred: outlier cross-check vs second source
 
 
 # Project instructions
