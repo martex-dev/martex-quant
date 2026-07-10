@@ -1,8 +1,8 @@
 ## CURRENT STATE
-- Phase: 3/4 extended-data pass COMPLETE (2026-07-11); final selection
-  in docs/research/final-selection.md
-- Current milestone: two-stage system selected; Phase 5 (paper trading)
-  + real prop-firm rule verification are next
+- Phase: 5 (Paper Trading) — LIVE since 2026-07-11; real-firm analysis
+  in docs/research/phase5-realfirm.md
+- Current milestone: paper record accumulating; eval fee gated on 2-3
+  months of paper-vs-backtest consistency
 - Completed: Phase 0 research (see below); MILESTONE 1 COMPLETE —
   data subsystem implemented and verified live: canonical OHLCV schema,
   8-check validator, hive-partitioned Parquet store + JSON catalog,
@@ -89,10 +89,26 @@
   funded value); funded stage vol-target momentum (30% target vol,
   MDD -20%). Nothing passed absolute DSR>0.95 (best 0.821); more
   aggression tested and REDUCES EV (2x sizing lowers pass rates)
-- Next: Phase 5 paper trading; verify a real prop firm's rules +
-  automation policy (BLOCKING any eval fee); carry infra (funding
-  dataset + two-leg engine); do NOT add strategy families without
-  strong priors — each raises the 38-trial noise ceiling
+- PHASE 5 (2026-07-11): user's REAL firm simulated (both options,
+  static+trailing variants, scripts/phase5_realfirm.py). KEY FINDING:
+  the 3% daily-loss rule flips the engine — vol-target (9.4% vol)
+  dominates Donchian (16.4% vol) under these rules. Best: Option 1
+  static @ 1.5x -> 50.0% pass, median 80d, breakeven funded value
+  $130; if max loss is TRAILING -> Option 2 @ 1.25-1.5x. >1.5x sizing
+  always lowers pass rate. MUST ASK FIRM: static or trailing max
+  loss; automation policy; weekend holding. Fees assumed $65/$45
+- Paper trader LIVE: python -m trading_bot.live.paper --strategy
+  vol-target, run daily after 00:00 UTC; state in data/paper/;
+  shares selection code path with research (select_param). First run
+  2026-07-11: all-flat (negative momentum regime) — correct behavior
+- Futures-vs-crypto RESOLVED for this path: firm is CFD-crypto
+  (1:30/1:100), crypto system maps directly; futures build deferred
+  until a futures firm is actually on the table
+- Next: accumulate 2-3 months paper record (Phase 5 exit gate:
+  paper-vs-backtest consistency, fill drift within cost model);
+  verify firm's 3 open questions; then eval attempt decision. NO fee
+  before the paper gate. Later: carry infra, live drift monitoring
+  dashboards
 
 
 # Project instructions
