@@ -1,12 +1,15 @@
 ## CURRENT STATE
 - Phase: 1 (Data Foundation)
 - Current milestone: Milestone 1 — Validated Data Foundation
-- Completed: Phase 0 research (see below); data subsystem implemented
-  and verified live — canonical OHLCV schema, 8-check validator,
-  hive-partitioned Parquet store + JSON catalog, Binance collector
-  (ccxt), pull CLI; 43 tests, ruff + strict mypy green, CI workflow
-  in place; 4y of BTCUSDT 1h pulled and validated (35,063 bars,
-  0 errors — the 2023-03-24 Binance outage shows up as the single gap)
+- Completed: Phase 0 research (see below); MILESTONE 1 COMPLETE —
+  data subsystem implemented and verified live: canonical OHLCV schema,
+  8-check validator, hive-partitioned Parquet store + JSON catalog,
+  Binance collector (ccxt), pull CLI, lake-wide report CLI; 48 tests,
+  ruff + strict mypy green, CI workflow in place; 4y of 1h OHLCV pulled
+  and validated for 8 instruments (BTC, ETH, BNB, SOL, XRP, ADA, DOGE,
+  LTC vs USDT) — 35,063 bars each, 100% grid completeness, 0 errors;
+  the 2023-03-24 Binance outage appears as the same single gap in all
+  8 datasets (cross-instrument confirmation the gap check works)
 - Design decisions (data subsystem): UTC ms timestamps = bar OPEN time;
   validator reports and never repairs; ERROR findings block lake writes
   (exit 1); lake partitioned symbol/interval/year with atomic year-file
@@ -17,9 +20,9 @@
   risk policy (Mode 1 primary)
 - Open questions: futures data vendor choice deferred; prop firm
   automation rules unverified
-- Next: extend pulls to 5-10 instruments (Milestone 1 exit criteria),
-  review return-outlier threshold against a second source, then
-  Phase 2 backtesting engine
+- Next: Phase 2 — event-driven backtesting engine (Step 1 research +
+  Step 2 design first, per development process); optional hardening
+  deferred: cross-check return outliers against a second data source
 
 
 # Project instructions

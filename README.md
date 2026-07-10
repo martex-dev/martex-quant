@@ -20,7 +20,14 @@ Target deliverable:
 python -m trading_bot.data.pull --symbol BTCUSDT --interval 1h --years 4
 ```
 
-produces validated, gap-audited Parquet plus a quality report.
+produces validated, gap-audited Parquet plus a quality report, and
+
+```
+python -m trading_bot.data.report
+```
+
+summarizes every dataset in the lake: coverage, grid completeness,
+validation outcome.
 
 ## Setup
 
