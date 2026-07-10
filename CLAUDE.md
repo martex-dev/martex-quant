@@ -1,6 +1,6 @@
 ## CURRENT STATE
-- Phase: 1 (Data Foundation)
-- Current milestone: Milestone 1 — Validated Data Foundation
+- Phase: 2 (Backtesting Engine) — core COMPLETE, review below
+- Current milestone: Phase 2 exit criteria met
 - Completed: Phase 0 research (see below); MILESTONE 1 COMPLETE —
   data subsystem implemented and verified live: canonical OHLCV schema,
   8-check validator, hive-partitioned Parquet store + JSON catalog,
@@ -20,9 +20,26 @@
   risk policy (Mode 1 primary)
 - Open questions: futures data vendor choice deferred; prop firm
   automation rules unverified
-- Next: Phase 2 — event-driven backtesting engine (Step 1 research +
-  Step 2 design first, per development process); optional hardening
-  deferred: cross-check return outliers against a second data source
+- Phase 2 (backtesting) built and verified: core/events (Bar/Order/
+  Fill), History view (look-ahead structurally impossible — clairvoyant
+  strategy raises IndexError, tested), Strategy ABC + benchmarks,
+  Portfolio (orders only on exposure change), RiskPolicy gate
+  (passthrough until Phase 4), SimulatedBroker (next-bar-open fills,
+  half-spread + linear volume-impact + taker fees, all bps-config),
+  engine loop (signal at close, fill at next open, one-bar latency),
+  metrics (Sharpe, PSR/expected-max-Sharpe for deflated Sharpe, MDD,
+  round-trip stats), walk-forward splitter; 102 tests green
+- Phase 2 exit criteria: known-answer reproduced exactly; look-ahead
+  unexpressable via API; buy-and-hold on real 4y BTCUSDT matches raw
+  price change within cost model (+204.45% vs +204.56% raw); 35k-bar
+  run in ~0.1-0.3s
+- Known limitations (accepted for MVP, revisit when needed): single
+  instrument per run; market orders only; no intrabar stop modeling;
+  no borrow costs for shorts (allow_short off by default); orders only
+  on exposure change (no continuous rebalancing)
+- Next: Phase 3 — strategy research (hypothesis docs first: momentum,
+  vol-regime filter, mean reversion, carry); optional: vectorbt
+  screening layer; deferred: outlier cross-check vs second source
 
 
 # Project instructions
