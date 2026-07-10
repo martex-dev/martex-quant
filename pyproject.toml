@@ -16,6 +16,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+mt5 = [
+    "MetaTrader5>=5.0.45; sys_platform == 'win32'",  # official MT5 Python API
+]
 dev = [
     "pytest>=8.2",
     "pytest-cov>=5.0",
@@ -48,6 +51,10 @@ mypy_path = "src"
 
 [[tool.mypy.overrides]]
 module = "ccxt.*"
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "MetaTrader5.*"
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]

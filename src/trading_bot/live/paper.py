@@ -25,44 +25,26 @@ import argparse
 import json
 import logging
 import sys
-from collections.abc import Callable
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
 import polars as pl
 
-from trading_bot.backtesting.history import History
-from trading_bot.backtesting.research import select_param
-from trading_bot.core.events import bars_from_frame
 from trading_bot.data.collectors.binance import BinanceCollector
-from trading_bot.data.models import Interval
 from trading_bot.execution.simulated import ExecutionConfig
-from trading_bot.strategies.base import Strategy
-from trading_bot.strategies.breakout import DonchianBreakout
-from trading_bot.strategies.vol_target import VolTargetMomentum
+from trading_bot.live.decision import (
+    STRATEGIES,
+    SYMBOLS,
+    current_exposure,
+    fetch_frames,
+    needs_reselect,
+    reselect_params,
+)
 
 logger = logging.getLogger(__name__)
 
-SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 _BPS = 1e-4
-
-STRATEGIES: dict[str, tuple[list[float], Callable[[float], Strategy], Callable[[float], int]]] = {
-    "vol-target": (
-        [7, 14, 30, 60, 90, 180],
-        lambda p: VolTargetMomentum(int(p)),
-        lambda p: max(int(p), 30) + 1,
-    ),
-    "donchian": (
-        [10, 20, 40, 55, 80, 120],
-        lambda p: DonchianBreakout(int(p)),
-        lambda p: int(p) + 1,
-    ),
-}
-
-RESELECT_DAYS = 90
-TRAIN_DAYS = 365
-FETCH_DAYS = 560  # train + max warmup + slack
 
 
 class PaperTrader:
@@ -114,20 +96,19 @@ class PaperTrader:
 
     def run_once(self, now: datetime | None = None) -> dict[str, Any]:
         now = now if now is not None else datetime.now(tz=UTC)
-        end = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        start = end - timedelta(days=FETCH_DAYS)
+        frames = fetch_frames(self.collector, now)
 
-        frames: dict[str, pl.DataFrame] = {}
-        for symbol in SYMBOLS:
-            frames[symbol] = self.collector.fetch_ohlcv(symbol, Interval.D1, start, end)
-
-        if self._needs_reselect(now):
-            self._reselect(frames, now)
+        if needs_reselect(self.state.get("last_reselect"), self.state["params"], now):
+            self.state["params"] = reselect_params(frames, self.strategy_name)
+            self.state["last_reselect"] = now.isoformat()
+            logger.info("reselected params: %s", self.state["params"])
 
         prices: dict[str, float] = {}
         exposures: dict[str, float] = {}
         for symbol, df in frames.items():
-            exposures[symbol] = self._current_exposure(symbol, df)
+            exposures[symbol] = current_exposure(
+                self.strategy_name, self.state["params"][symbol], df
+            )
             close = df["close"][-1]
             assert isinstance(close, float)
             prices[symbol] = close
@@ -157,34 +138,6 @@ class PaperTrader:
         return mark
 
     # -- internals -------------------------------------------------------------
-
-    def _needs_reselect(self, now: datetime) -> bool:
-        last = self.state.get("last_reselect")
-        if last is None or not self.state["params"]:
-            return True
-        return (now - datetime.fromisoformat(last)).days >= RESELECT_DAYS
-
-    def _reselect(self, frames: dict[str, pl.DataFrame], now: datetime) -> None:
-        for symbol, df in frames.items():
-            train = df.tail(TRAIN_DAYS)
-            param, sharpe = select_param(
-                train, symbol, Interval.D1, self.grid, self.factory, self.warmup_of
-            )
-            self.state["params"][symbol] = param
-            logger.info("reselected %s: param=%s (train sharpe %.2f)", symbol, param, sharpe)
-        self.state["last_reselect"] = now.isoformat()
-
-    def _current_exposure(self, symbol: str, df: pl.DataFrame) -> float:
-        """Replay the strategy over history so stateful strategies (Donchian
-        hysteresis) reconstruct their position correctly."""
-        strategy = self.factory(self.state["params"][symbol])
-        bars = bars_from_frame(df)
-        history = History(bars)
-        exposure = 0.0
-        for _ in bars:
-            history.advance()
-            exposure = strategy.on_bar(history)
-        return exposure
 
     def _fill(
         self, symbol: str, delta: float, price: float, df: pl.DataFrame, now: datetime
