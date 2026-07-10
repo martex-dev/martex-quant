@@ -1,6 +1,7 @@
 # Hypothesis 02 — Time-Series Momentum, Daily Bars
 
-Status: UNDER TEST (pre-registered before results).
+Status: **INCONCLUSIVE-POSITIVE** (2026-07-11) — strongest family tested;
+fails the 0.95 DSR bar; promoted as Phase 4 candidate with that caveat.
 
 ## Hypothesis and rationale
 
@@ -30,6 +31,24 @@ symbols AND deflated Sharpe probability > 0.95 (n_trials=6) AND stable
 parameter selection. Cumulative trial accounting: this is spec #2 tested
 on this dataset.
 
-## Results
+## Results (2026-07-11, ~3y stitched OOS per symbol, costs included)
 
-(filled by scripts/phase3_studies.py --study daily-tsmom)
+- **6/8 symbols beat buy-and-hold on Sharpe** (all but BTC, BNB — the two
+  strongest B&H performers). Standouts: XRP (Sharpe 1.04 vs 0.71, DSR
+  0.908), SOL (0.99 vs 0.93, DSR 0.875).
+- Median DSR 0.624 — below the 0.95 bar. Lookback selection still
+  unstable window to window.
+- Fixed-lookback robustness (scripts/phase3_verdict.py): median OOS
+  Sharpe positive at EVERY L in the grid (0.35-0.74, peak L=14) — broad
+  positivity, unlike the hourly spec's noise. Drawdowns roughly halved
+  vs B&H on most symbols.
+- **Equal-weight 8-symbol portfolio** of the walk-forward OOS curves
+  (+1 declared trial): Sharpe 0.87, +108% over ~3y, MDD -44%,
+  DSR 0.872 (grid trials) / **0.828 counting all 23 Phase 3 trials**.
+
+Verdict: fails the pre-registered validation bar (DSR < 0.95), so NOT a
+confirmed edge — but it is broadly positive across symbols and lookbacks,
+diversifies well, and is the only family worth carrying forward. Promoted
+to Phase 4 as THE candidate, explicitly labeled unvalidated. The main
+statistical limitation is ~3 years of OOS; extending history (Binance 1d
+data reaches 2017) is the cheapest way to sharpen the verdict.

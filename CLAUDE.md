@@ -1,6 +1,7 @@
 ## CURRENT STATE
-- Phase: 3 (Strategy Research) — in progress
-- Current milestone: hypothesis family 1 (TSMOM) tested and REJECTED
+- Phase: 3 (Strategy Research) — COMPLETE; verdict in
+  docs/research/phase3-verdict.md
+- Current milestone: candidate selected, Phase 4 (risk engine) is next
 - Completed: Phase 0 research (see below); MILESTONE 1 COMPLETE —
   data subsystem implemented and verified live: canonical OHLCV schema,
   8-check validator, hive-partitioned Parquet store + JSON catalog,
@@ -48,11 +49,22 @@
   Full results in docs/hypotheses/01-time-series-momentum.md. Trial
   count to date (for multiple-testing accounting): 6 lookbacks x 8
   symbols, 1 spec
-- Next (Phase 3 continues): hypothesis 02 volatility-regime filter;
-  hypothesis 03 daily-bar momentum (the documented anomaly's actual
-  horizon); then mean reversion, carry. Every new spec gets its own
-  numbered doc and raises the DSR bar; optional: vectorbt screening
-  layer; deferred: outlier cross-check vs second source
+- Phase 3 COMPLETE (2026-07-11), 23 trials total, all pre-registered:
+  01 hourly TSMOM REJECTED (median DSR 0.393); 02 daily TSMOM
+  INCONCLUSIVE-POSITIVE -> THE candidate (6/8 beat B&H, portfolio
+  Sharpe 0.87, DSR 0.828 vs all-23-trials benchmark); 03 vol-gated
+  momentum REJECTED (cut returns more than drawdown); 04 mean reversion
+  REJECTED decisively (0/8, falling-knife confirmed); 05 carry
+  feasibility CONFIRMED (4y gross funding 5.8-7.9%/yr on 4/5 majors,
+  SOL negative) — infra build deferred post-Phase 4
+- CHOSEN CANDIDATE: daily TSMOM, long/flat, equal-weight 8 symbols,
+  lookback re-selected each 90d by 1y-train walk-forward (grid 7-180d).
+  NOT validated (DSR 0.828 < 0.95 bar) — promoted for Phase 4
+  engineering only; -44% OOS MDD must be addressed by risk layer
+- Next: Phase 4 — risk engine (sizing, drawdown caps, kill switch,
+  prop-firm ruleset Monte Carlo on the candidate). Cheapest verdict
+  sharpeners queued: extend 1d history to 2017+, widen universe,
+  hypothesis 06 vol-targeted sizing, carry infra
 
 
 # Project instructions

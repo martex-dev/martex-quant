@@ -1,6 +1,6 @@
 # Hypothesis 03 — Volatility-Regime-Filtered Momentum (Daily)
 
-Status: UNDER TEST (pre-registered before results).
+Status: **REJECTED** (2026-07-11).
 
 ## Hypothesis and rationale
 
@@ -29,6 +29,15 @@ SURVIVES only if, versus hypothesis 02 on the same OOS spans: higher
 median Sharpe AND materially lower median max drawdown, plus DSR > 0.95
 (n_trials=6) against B&H. Spec #3 on this dataset.
 
-## Results
+## Results (2026-07-11)
 
-(filled by scripts/phase3_studies.py --study vol-filter)
+The gate did cut drawdowns (e.g. ETH -36% vs -50%, BNB -41% vs -64%) but
+cut returns harder: median OOS Sharpe ~0.41 vs hypothesis 02's ~0.55,
+1/8 beat B&H (vs 6/8 unfiltered), median DSR 0.495. Time in market fell
+to ~20-35%, and the amputated days were disproportionately the profitable
+high-vol rallies — the pre-registered failure mode, confirmed.
+
+Verdict vs the pre-registered standard (must beat hyp 02 on Sharpe AND
+drawdown): fails on Sharpe decisively. REJECTED. The filter idea may
+return later as position SIZING (vol targeting) rather than a binary
+gate — that would be a new numbered hypothesis.

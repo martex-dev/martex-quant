@@ -151,14 +151,17 @@ def study_carry() -> None:
     import ccxt
 
     print("Study 5 — carry feasibility: Binance perp funding history\n")
+    from datetime import UTC, datetime, timedelta
+
     exchange = ccxt.binanceusdm({"enableRateLimit": True})
     print(f"{'symbol':<16} {'records':>8} {'span':>22} {'mean 8h rate':>13} {'annualized':>11}")
+    four_years_ago = int((datetime.now(tz=UTC) - timedelta(days=4 * 365)).timestamp() * 1000)
     for base in ["BTC", "ETH", "SOL", "XRP", "DOGE"]:
         symbol = f"{base}/USDT:USDT"
         rates: list[float] = []
         first_ts = None
         last_ts = None
-        since: int | None = None
+        since: int | None = four_years_ago  # paginate forward from 4y ago
         for _ in range(20):  # pages of 1000, oldest-first
             batch = exchange.fetch_funding_rate_history(symbol, since=since, limit=1000)
             if not batch:
@@ -168,7 +171,7 @@ def study_carry() -> None:
                 first_ts = batch[0]["datetime"][:10]
             last_ts = batch[-1]["datetime"][:10]
             new_since = int(batch[-1]["timestamp"]) + 1
-            if since is not None and new_since <= since:
+            if new_since <= since:
                 break
             since = new_since
             if len(batch) < 1000:

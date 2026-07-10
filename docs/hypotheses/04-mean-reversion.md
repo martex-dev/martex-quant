@@ -1,6 +1,6 @@
 # Hypothesis 04 — Short-Horizon Mean Reversion (1h)
 
-Status: UNDER TEST (pre-registered before results).
+Status: **REJECTED — decisively** (2026-07-11).
 
 ## Hypothesis and rationale
 
@@ -29,6 +29,13 @@ Window FIXED at 168h (1 week); grid is band width k ∈ {1.0, 1.5, 2.0,
 Same structure: broad risk-adjusted B&H outperformance AND DSR > 0.95
 (n_trials=4) AND parameter stability. Spec #4 on this dataset.
 
-## Results
+## Results (2026-07-11)
 
-(filled by scripts/phase3_studies.py --study meanrev)
+Worst outcome of all studies, as pre-registered: 0/8 beat B&H, every
+symbol negative (OOS -21% to -69%), all Sharpes negative, median DSR
+0.092. The falling-knife mechanism did the damage — the strategy is
+long precisely during crashes and holds until "recovery" that arrives
+lower or much later. REJECTED. Do not revisit as a long-while-stretched
+spec; any future reversion idea needs a hard time-stop/stop-loss design
+(which requires intrabar stop modeling — engine limitation noted in
+Phase 2 review) and would be a new numbered hypothesis.
