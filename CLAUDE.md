@@ -1,7 +1,8 @@
 ## CURRENT STATE
-- Phase: 3 (Strategy Research) — COMPLETE; verdict in
-  docs/research/phase3-verdict.md
-- Current milestone: candidate selected, Phase 4 (risk engine) is next
+- Phase: 4 (Risk Engine) — core COMPLETE; results in
+  docs/research/phase4-propsim.md
+- Current milestone: Phase 4 exit criteria met; Phase 5 (paper trading)
+  or research sharpeners next
 - Completed: Phase 0 research (see below); MILESTONE 1 COMPLETE —
   data subsystem implemented and verified live: canonical OHLCV schema,
   8-check validator, hive-partitioned Parquet store + JSON catalog,
@@ -61,10 +62,24 @@
   lookback re-selected each 90d by 1y-train walk-forward (grid 7-180d).
   NOT validated (DSR 0.828 < 0.95 bar) — promoted for Phase 4
   engineering only; -44% OOS MDD must be addressed by risk layer
-- Next: Phase 4 — risk engine (sizing, drawdown caps, kill switch,
-  prop-firm ruleset Monte Carlo on the candidate). Cheapest verdict
-  sharpeners queued: extend 1d history to 2017+, widen universe,
-  hypothesis 06 vol-targeted sizing, carry infra
+- Phase 4 core (2026-07-11): RiskPolicy gains timestamp; policies —
+  MaxExposure, DrawdownGuard (linear soft->hard, LATCHED kill switch),
+  DailyLoss (UTC-day re-arm), Composite, mode1/mode2 presets;
+  prop_sim — block-bootstrap Monte Carlo vs GENERIC rulesets, Wilson
+  CI, EV-vs-assumed-funded-value; candidate return stream reusable via
+  backtesting/candidate.py; 137 tests green
+- Prop-sim headline (candidate, 1080d OOS returns, 36% ann vol):
+  GENERIC-A (6%/4%tr/2%d, $170) best at 0.25x sizing -> 37.3% pass
+  (CI 36.7-38.0), EV +$576..+$3,563 for funded value $2k..$10k;
+  GENERIC-B strict -> 23.6% at 1.0x. Optimal sizing dictated by the
+  trailing-DD geometry, NOT the return stream. All numbers upper
+  bounds (EOD trailing) and conditional on the edge being real
+  (candidate DSR 0.828 — unvalidated)
+- Next options (in rough value order): extend 1d history to 2017+ and
+  re-run hypothesis 02 (sharpens DSR verdict — cheapest); hypothesis 06
+  vol-targeted sizing; verify real prop-firm rules + automation policy
+  (blocking any eval fee); Phase 5 paper-trading adapter; carry infra
+  (funding dataset + two-leg engine)
 
 
 # Project instructions
