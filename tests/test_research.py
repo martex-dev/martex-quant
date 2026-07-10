@@ -81,8 +81,8 @@ def test_walk_forward_shapes_and_stitching() -> None:
         "T",
         Interval.H1,
         param_grid=[5, 20],
-        strategy_factory=TimeSeriesMomentum,
-        warmup_of=lambda p: p,
+        strategy_factory=lambda p: TimeSeriesMomentum(int(p)),
+        warmup_of=lambda p: int(p),
         train_size=100,
         test_size=50,
         config=ZERO_COST,
@@ -110,8 +110,8 @@ def test_selection_ignores_test_data() -> None:
         symbol="T",
         interval=Interval.H1,
         param_grid=[5, 20],
-        strategy_factory=TimeSeriesMomentum,
-        warmup_of=lambda p: p,
+        strategy_factory=lambda p: TimeSeriesMomentum(int(p)),
+        warmup_of=lambda p: int(p),
         train_size=100,
         test_size=50,
         config=ZERO_COST,
@@ -124,6 +124,24 @@ def test_selection_ignores_test_data() -> None:
 def test_walk_forward_input_validation() -> None:
     df = make_frame(zigzag_up(200))
     with pytest.raises(ValueError, match="param_grid"):
-        walk_forward_backtest(df, "T", Interval.H1, [], TimeSeriesMomentum, lambda p: p, 100, 50)
+        walk_forward_backtest(
+            df,
+            "T",
+            Interval.H1,
+            [],
+            lambda p: TimeSeriesMomentum(int(p)),
+            lambda p: int(p),
+            100,
+            50,
+        )
     with pytest.raises(ValueError, match="warmup"):
-        walk_forward_backtest(df, "T", Interval.H1, [150], TimeSeriesMomentum, lambda p: p, 100, 50)
+        walk_forward_backtest(
+            df,
+            "T",
+            Interval.H1,
+            [150],
+            lambda p: TimeSeriesMomentum(int(p)),
+            lambda p: int(p),
+            100,
+            50,
+        )

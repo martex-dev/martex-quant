@@ -26,7 +26,7 @@ from trading_bot.strategies.base import Strategy
 @dataclass(frozen=True)
 class WindowOutcome:
     window: WalkForwardWindow
-    chosen_param: int
+    chosen_param: float
     train_sharpe: float
     test_growth: float  # test final equity / test initial equity
     n_test_fills: int
@@ -50,9 +50,9 @@ def walk_forward_backtest(
     df: pl.DataFrame,
     symbol: str,
     interval: Interval,
-    param_grid: Sequence[int],
-    strategy_factory: Callable[[int], Strategy],
-    warmup_of: Callable[[int], int],
+    param_grid: Sequence[float],
+    strategy_factory: Callable[[float], Strategy],
+    warmup_of: Callable[[float], int],
     train_size: int,
     test_size: int,
     config: BacktestConfig | None = None,
@@ -108,18 +108,18 @@ def _select_param(
     train_df: pl.DataFrame,
     symbol: str,
     interval: Interval,
-    param_grid: Sequence[int],
-    strategy_factory: Callable[[int], Strategy],
-    warmup_of: Callable[[int], int],
+    param_grid: Sequence[float],
+    strategy_factory: Callable[[float], Strategy],
+    warmup_of: Callable[[float], int],
     cfg: BacktestConfig,
-) -> tuple[int, float]:
+) -> tuple[float, float]:
     """Best parameter on the train slice by annualized Sharpe.
 
     Every parameter is evaluated over the identical post-max-warmup span so
     the comparison is apples to apples. Deterministic tie-break: grid order.
     """
     shared_warmup = max(warmup_of(p) for p in param_grid)
-    best_param: int | None = None
+    best_param: float | None = None
     best_sharpe = float("-inf")
     for param in param_grid:
         result = run_backtest(
