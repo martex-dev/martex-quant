@@ -65,10 +65,19 @@ def run_backtest(
     strategy: Strategy,
     config: BacktestConfig | None = None,
     risk_policy: RiskPolicy | None = None,
+    warmup_bars: int = 0,
 ) -> BacktestResult:
-    """Run one strategy over one instrument's canonical OHLCV frame."""
+    """Run one strategy over one instrument's canonical OHLCV frame.
+
+    ``warmup_bars``: the first N bars feed history only — no signals, no
+    orders, no equity recording. Lets a strategy start a window with its
+    indicators already primed on PAST data (walk-forward test windows would
+    otherwise sit forcibly flat for the first lookback's worth of bars).
+    """
     if df.height == 0:
         raise ValueError("cannot backtest an empty frame")
+    if not 0 <= warmup_bars < df.height:
+        raise ValueError(f"warmup_bars must be in [0, {df.height}), got {warmup_bars}")
     cfg = config if config is not None else BacktestConfig()
     risk = risk_policy if risk_policy is not None else PassthroughPolicy()
 
@@ -82,12 +91,14 @@ def run_backtest(
     exposures = []
     all_fills: list[Fill] = []
 
-    for bar in bars:
+    for i, bar in enumerate(bars):
         for fill in broker.execute_pending(bar):
             portfolio.apply_fill(fill)
             all_fills.append(fill)
 
         history.advance()
+        if i < warmup_bars:
+            continue  # priming history only; the strategy is not consulted
         target = strategy.on_bar(history)
         allowed = risk.adjust(target, portfolio.equity(bar.close), cfg.initial_cash)
         order = portfolio.target_order(allowed, bar)
