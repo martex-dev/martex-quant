@@ -24,10 +24,15 @@ class PropFirmRules:
     name: str
     account_size: float
     profit_target_pct: float  # pass when equity >= account * (1 + this)
-    trailing_dd_pct: float  # fail when equity <= peak * (1 - this), EOD
+    trailing_dd_pct: float | None  # fail when equity <= peak * (1 - this), EOD
     daily_loss_pct: float | None  # fail on a single-day loss beyond this
     max_days: int | None  # None = no time limit (horizon still applies)
     evaluation_fee: float
+    static_max_loss_pct: float | None = None  # fail when equity <= account * (1 - this)
+
+    def __post_init__(self) -> None:
+        if self.trailing_dd_pct is None and self.static_max_loss_pct is None:
+            raise ValueError("need at least one of trailing_dd_pct / static_max_loss_pct")
 
 
 @dataclass(frozen=True)
@@ -92,41 +97,13 @@ def simulate_evaluation(
     if risk_scale <= 0:
         raise ValueError("risk_scale must be positive")
     rng = random.Random(seed)
-    n_days = min(horizon_days, rules.max_days) if rules.max_days else horizon_days
-    target = rules.account_size * (1.0 + rules.profit_target_pct)
-    max_block_start = len(daily_returns) - block_size
 
     passes = 0
     busts = 0
     days_to_pass: list[int] = []
 
     for _ in range(n_paths):
-        equity = rules.account_size
-        peak = equity
-        day = 0
-        outcome = "timeout"
-        while day < n_days:
-            start = rng.randint(0, max_block_start)
-            for r in daily_returns[start : start + block_size]:
-                day += 1
-                prev = equity
-                equity *= 1.0 + r * risk_scale
-                peak = max(peak, equity)
-                if rules.daily_loss_pct is not None and equity <= prev * (
-                    1.0 - rules.daily_loss_pct
-                ):
-                    outcome = "bust"
-                    break
-                if equity <= peak * (1.0 - rules.trailing_dd_pct):
-                    outcome = "bust"
-                    break
-                if equity >= target:
-                    outcome = "pass"
-                    break
-                if day >= n_days:
-                    break
-            if outcome != "timeout":
-                break
+        outcome, day = _run_path(rng, daily_returns, rules, risk_scale, horizon_days, block_size)
         if outcome == "pass":
             passes += 1
             days_to_pass.append(day)
@@ -146,3 +123,93 @@ def simulate_evaluation(
         timeout_rate=(n_paths - passes - busts) / n_paths,
         median_days_to_pass=days_to_pass[len(days_to_pass) // 2] if days_to_pass else None,
     )
+
+
+def simulate_two_step(
+    daily_returns: list[float],
+    stage1: PropFirmRules,
+    stage2: PropFirmRules,
+    risk_scale: float = 1.0,
+    n_paths: int = 10_000,
+    block_size: int = 10,
+    horizon_days: int = 365,
+    seed: int = 7,
+) -> EvalResult:
+    """Two-step evaluation: a path must pass stage 1, then stage 2 (fresh
+    account and limits per stage, as firms reset them). Reported days are
+    the SUM across both stages; the fee is stage1's (paid once)."""
+    rng = random.Random(seed)
+    passes = 0
+    busts = 0
+    days_to_pass: list[int] = []
+
+    for _ in range(n_paths):
+        outcome1, days1 = _run_path(
+            rng, daily_returns, stage1, risk_scale, horizon_days, block_size
+        )
+        if outcome1 != "pass":
+            busts += outcome1 == "bust"
+            continue
+        outcome2, days2 = _run_path(
+            rng, daily_returns, stage2, risk_scale, horizon_days, block_size
+        )
+        if outcome2 == "pass":
+            passes += 1
+            days_to_pass.append(days1 + days2)
+        elif outcome2 == "bust":
+            busts += 1
+
+    ci_low, ci_high = wilson_interval(passes, n_paths)
+    days_to_pass.sort()
+    return EvalResult(
+        rules=stage1,
+        risk_scale=risk_scale,
+        n_paths=n_paths,
+        pass_rate=passes / n_paths,
+        pass_ci_low=ci_low,
+        pass_ci_high=ci_high,
+        fail_rate=busts / n_paths,
+        timeout_rate=(n_paths - passes - busts) / n_paths,
+        median_days_to_pass=days_to_pass[len(days_to_pass) // 2] if days_to_pass else None,
+    )
+
+
+def _run_path(
+    rng: random.Random,
+    daily_returns: list[float],
+    rules: PropFirmRules,
+    risk_scale: float,
+    horizon_days: int,
+    block_size: int,
+) -> tuple[str, int]:
+    """One bootstrapped path against one stage's rules: (outcome, days)."""
+    n_days = min(horizon_days, rules.max_days) if rules.max_days else horizon_days
+    target = rules.account_size * (1.0 + rules.profit_target_pct)
+    static_floor = (
+        rules.account_size * (1.0 - rules.static_max_loss_pct)
+        if rules.static_max_loss_pct is not None
+        else None
+    )
+    max_block_start = len(daily_returns) - block_size
+
+    equity = rules.account_size
+    peak = equity
+    day = 0
+    while day < n_days:
+        start = rng.randint(0, max_block_start)
+        for r in daily_returns[start : start + block_size]:
+            day += 1
+            prev = equity
+            equity *= 1.0 + r * risk_scale
+            peak = max(peak, equity)
+            if rules.daily_loss_pct is not None and equity <= prev * (1.0 - rules.daily_loss_pct):
+                return ("bust", day)
+            if rules.trailing_dd_pct is not None and equity <= peak * (1.0 - rules.trailing_dd_pct):
+                return ("bust", day)
+            if static_floor is not None and equity <= static_floor:
+                return ("bust", day)
+            if equity >= target:
+                return ("pass", day)
+            if day >= n_days:
+                break
+    return ("timeout", day)

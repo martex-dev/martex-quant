@@ -1,0 +1,90 @@
+"""Paper trader tests with a fake collector — no network, deterministic."""
+
+import json
+from datetime import UTC, datetime, timedelta
+from pathlib import Path
+
+import polars as pl
+
+from trading_bot.data.models import Interval, ohlcv_frame_from_rows
+from trading_bot.live.paper import SYMBOLS, PaperTrader
+
+DAY_MS = 86_400_000
+T0 = datetime(2024, 1, 1, tzinfo=UTC)
+
+
+class FakeDailyCollector:
+    """Serves a deterministic uptrend so momentum strategies go long."""
+
+    def __init__(self, n_days: int = 560) -> None:
+        start_ms = int(T0.timestamp() * 1000)
+        self.n_days = n_days
+        rows = []
+        price = 100.0
+        for i in range(n_days):
+            close = price * 1.002  # steady +0.2%/day, low vol
+            rows.append([start_ms + i * DAY_MS, price, close * 1.001, price * 0.999, close, 1e6])
+            price = close
+        self.df = ohlcv_frame_from_rows(rows)
+
+    def fetch_ohlcv(
+        self, symbol: str, interval: Interval, start: datetime, end: datetime
+    ) -> pl.DataFrame:
+        return self.df.filter((pl.col("timestamp") >= start) & (pl.col("timestamp") < end))
+
+
+def make_trader(tmp_path: Path) -> tuple[PaperTrader, datetime]:
+    now = T0 + timedelta(days=555)
+    trader = PaperTrader(
+        "vol-target", tmp_path / "paper", collector=FakeDailyCollector(), initial_cash=5_000.0
+    )
+    return trader, now
+
+
+def test_first_run_selects_params_and_goes_long(tmp_path: Path) -> None:
+    trader, now = make_trader(tmp_path)
+    mark = trader.run_once(now=now)
+
+    assert set(trader.state["params"]) == set(SYMBOLS)
+    assert mark["n_fills"] == len(SYMBOLS)  # entered every symbol
+    # Steady uptrend, low vol -> full exposure everywhere
+    assert all(e > 0.9 for e in mark["exposures"].values())
+    assert mark["equity"] < 5_000.0  # entry costs paid
+    assert mark["equity"] > 4_990.0  # ...but only costs
+
+
+def test_state_persists_and_second_run_is_stable(tmp_path: Path) -> None:
+    trader, now = make_trader(tmp_path)
+    trader.run_once(now=now)
+
+    # Fresh instance from the same directory: state must reload.
+    reloaded = PaperTrader(
+        "vol-target", tmp_path / "paper", collector=FakeDailyCollector(), initial_cash=5_000.0
+    )
+    assert reloaded.state["positions"]
+    mark2 = reloaded.run_once(now=now + timedelta(days=1))
+    # Same signal, position already on: no churn.
+    assert mark2["n_fills"] == 0
+    # No reselection within 90 days:
+    assert reloaded.state["last_reselect"] == trader.state["last_reselect"]
+
+
+def test_journal_and_equity_files_written(tmp_path: Path) -> None:
+    trader, now = make_trader(tmp_path)
+    trader.run_once(now=now)
+
+    journal = (tmp_path / "paper" / "journal.jsonl").read_text(encoding="utf-8").strip()
+    fills = [json.loads(line) for line in journal.splitlines()]
+    assert len(fills) == len(SYMBOLS)
+    assert all(f["side"] == "buy" and f["fee"] > 0 for f in fills)
+
+    equity_lines = (tmp_path / "paper" / "equity.jsonl").read_text(encoding="utf-8").strip()
+    assert len(equity_lines.splitlines()) == 1
+
+
+def test_reselect_after_90_days(tmp_path: Path) -> None:
+    trader, now = make_trader(tmp_path)
+    trader.run_once(now=now)
+    first = trader.state["last_reselect"]
+    trader.run_once(now=now + timedelta(days=91))
+    assert trader.state["last_reselect"] != first

@@ -52,6 +52,6 @@ class VolTargetMomentum(Strategy):
         returns = [closes[i + 1] / closes[i] - 1.0 for i in range(len(closes) - 1)]
         realized = stdev(returns) * math.sqrt(self.periods_per_year)
         if realized <= 0.0:
-            return 0.0
+            return 1.0  # limit of min(1, target/vol) as vol -> 0 is the cap
         raw = min(1.0, self.target_vol_annual / realized)
         return round(raw * 20.0) / 20.0  # quantize to 0.05 steps

@@ -104,6 +104,22 @@ def walk_forward_backtest(
     return WalkForwardOutcome(symbol=symbol, windows=outcomes, oos_equity=pl.concat(stitched))
 
 
+def select_param(
+    train_df: pl.DataFrame,
+    symbol: str,
+    interval: Interval,
+    param_grid: Sequence[float],
+    strategy_factory: Callable[[float], Strategy],
+    warmup_of: Callable[[float], int],
+    config: BacktestConfig | None = None,
+) -> tuple[float, float]:
+    """Public wrapper: best parameter on a training frame by annualized
+    Sharpe. Used by the walk-forward harness and the live/paper selector,
+    so research and production share one selection code path."""
+    cfg = config if config is not None else BacktestConfig()
+    return _select_param(train_df, symbol, interval, param_grid, strategy_factory, warmup_of, cfg)
+
+
 def _select_param(
     train_df: pl.DataFrame,
     symbol: str,
