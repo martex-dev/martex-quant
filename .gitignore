@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+
+# Tooling caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# The data lake — market data is regenerable from exchanges, never committed
+# (anchored to repo root so src/trading_bot/data/ is NOT ignored)
+/data/
+
+# IDE / OS noise
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+.DS_Store
+
+# Local environment files (API keys must never enter git)
+.env

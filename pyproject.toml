@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trading-bot"
+version = "0.1.0"
+description = "Quantitative trading research platform: data pipeline, backtesting, strategy evaluation."
+requires-python = ">=3.12"
+dependencies = [
+    "ccxt>=4.3",
+    "polars>=1.0",
+    "pyarrow>=16.0",
+    "pydantic>=2.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+    "mypy>=1.10",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # import sorting
+    "UP",  # modernize syntax
+    "B",   # common bug patterns (flake8-bugbear)
+    "SIM", # simplifications
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+packages = ["trading_bot"]
+mypy_path = "src"
+
+[[tool.mypy.overrides]]
+module = "ccxt.*"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
