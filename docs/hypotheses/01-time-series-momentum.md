@@ -1,6 +1,9 @@
 # Hypothesis 01 — Time-Series Momentum (TSMOM)
 
 Status: **REJECTED as specified** (2026-07-11). See Results.
+EXTENDED-DATA RE-RUN (9y, same day): median DSR rose to 0.952 but only
+3/8 beat B&H and max drawdowns are catastrophic (-90%+) - verdict
+unchanged (fails the broad-outperformance requirement).
 
 ## Market hypothesis
 

@@ -1,7 +1,13 @@
 # Hypothesis 02 — Time-Series Momentum, Daily Bars
 
-Status: **INCONCLUSIVE-POSITIVE** (2026-07-11) — strongest family tested;
-fails the 0.95 DSR bar; promoted as Phase 4 candidate with that caveat.
+Status: **INCONCLUSIVE-POSITIVE** (2026-07-11) — fails the 0.95 DSR bar.
+EXTENDED-DATA UPDATE (same day, data back to each listing/2017+):
+per-symbol median DSR rose 0.624 -> 0.911 (BTC 0.968, BNB 0.962,
+DOGE 0.999), 5/8 beat B&H over ~7y OOS — the signal strengthened with
+3x the sample, which is what a real (if modest) edge looks like. On the
+common 4.7y portfolio window vs the all-38-trials benchmark: Sharpe
+0.67, MDD -39%, DSR 0.592. Superseded as lead candidate by hypotheses
+06/07 (see docs/research/final-selection.md).
 
 ## Hypothesis and rationale
 

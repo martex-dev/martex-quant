@@ -1,6 +1,7 @@
 # Hypothesis 04 — Short-Horizon Mean Reversion (1h)
 
-Status: **REJECTED — decisively** (2026-07-11).
+Status: **REJECTED — decisively** (2026-07-11). Extended-data re-run
+(9y): 0/8 beat B&H, median DSR 0.036 - rejection reinforced.
 
 ## Hypothesis and rationale
 

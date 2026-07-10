@@ -1,8 +1,8 @@
 ## CURRENT STATE
-- Phase: 4 (Risk Engine) — core COMPLETE; results in
-  docs/research/phase4-propsim.md
-- Current milestone: Phase 4 exit criteria met; Phase 5 (paper trading)
-  or research sharpeners next
+- Phase: 3/4 extended-data pass COMPLETE (2026-07-11); final selection
+  in docs/research/final-selection.md
+- Current milestone: two-stage system selected; Phase 5 (paper trading)
+  + real prop-firm rule verification are next
 - Completed: Phase 0 research (see below); MILESTONE 1 COMPLETE —
   data subsystem implemented and verified live: canonical OHLCV schema,
   8-check validator, hive-partitioned Parquet store + JSON catalog,
@@ -75,11 +75,24 @@
   trailing-DD geometry, NOT the return stream. All numbers upper
   bounds (EOD trailing) and conditional on the edge being real
   (candidate DSR 0.828 — unvalidated)
-- Next options (in rough value order): extend 1d history to 2017+ and
-  re-run hypothesis 02 (sharpens DSR verdict — cheapest); hypothesis 06
-  vol-targeted sizing; verify real prop-firm rules + automation policy
-  (blocking any eval fee); Phase 5 paper-trading adapter; carry infra
-  (funding dataset + two-leg engine)
+- EXTENDED-DATA PASS (2026-07-11): lake extended to each listing
+  (2017+, 1d + 1h, 100% complete, 0 errors); every hypothesis re-run;
+  new hypotheses 06 (vol-target momentum) + 07 (Donchian breakout);
+  trial accounting now 38 specs. Verdicts: 01 still REJECTED (DSR up
+  to 0.952 but 3/8 vs B&H, -90% MDDs); 02 strengthened (median DSR
+  0.911) but superseded; 03/04 still REJECTED (04: 0/8, DSR 0.036);
+  06 survives its relative bar (MDD -20%, prop pass 38.4%); 07
+  strongest evidence (per-symbol median DSR 0.947, portfolio 0.821)
+- FINAL SELECTION (docs/research/final-selection.md): two-stage —
+  evaluation stage Donchian breakout (EW 8 symbols, N walk-forward
+  10-120d, 1.0x; pass 29.1%, median 23d, EV +$1,285/attempt at $5k
+  funded value); funded stage vol-target momentum (30% target vol,
+  MDD -20%). Nothing passed absolute DSR>0.95 (best 0.821); more
+  aggression tested and REDUCES EV (2x sizing lowers pass rates)
+- Next: Phase 5 paper trading; verify a real prop firm's rules +
+  automation policy (BLOCKING any eval fee); carry infra (funding
+  dataset + two-leg engine); do NOT add strategy families without
+  strong priors — each raises the 38-trial noise ceiling
 
 
 # Project instructions
