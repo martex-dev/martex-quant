@@ -1,12 +1,25 @@
 ## CURRENT STATE
 - Phase: 1 (Data Foundation)
 - Current milestone: Milestone 1 — Validated Data Foundation
-- Completed: Phase 0 research (see below)
+- Completed: Phase 0 research (see below); data subsystem implemented
+  and verified live — canonical OHLCV schema, 8-check validator,
+  hive-partitioned Parquet store + JSON catalog, Binance collector
+  (ccxt), pull CLI; 43 tests, ruff + strict mypy green, CI workflow
+  in place; 4y of BTCUSDT 1h pulled and validated (35,063 bars,
+  0 errors — the 2023-03-24 Binance outage shows up as the single gap)
+- Design decisions (data subsystem): UTC ms timestamps = bar OPEN time;
+  validator reports and never repairs; ERROR findings block lake writes
+  (exit 1); lake partitioned symbol/interval/year with atomic year-file
+  upserts (new rows win on overlap); symbol ids are slashless (BTCUSDT),
+  mapped to ccxt form inside the collector only
 - Decisions locked: Python 3.12, Polars, Parquet lake, ccxt/Binance
   first collector, custom event-driven engine (Phase 2), pluggable
   risk policy (Mode 1 primary)
 - Open questions: futures data vendor choice deferred; prop firm
   automation rules unverified
+- Next: extend pulls to 5-10 instruments (Milestone 1 exit criteria),
+  review return-outlier threshold against a second source, then
+  Phase 2 backtesting engine
 
 
 # Project instructions
