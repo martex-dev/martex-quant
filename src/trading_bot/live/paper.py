@@ -60,6 +60,7 @@ class PaperTrader:
         collector: Any | None = None,
         initial_cash: float = 5_000.0,
         execution: ExecutionConfig | None = None,
+        symbols: list[str] | None = None,
     ) -> None:
         known = set(STRATEGIES) | CROSS_SECTIONAL | {COMBINED}
         if strategy_name not in known:
@@ -67,6 +68,14 @@ class PaperTrader:
         self.strategy_name = strategy_name
         self.is_cross_sectional = strategy_name in CROSS_SECTIONAL
         self.is_combined = strategy_name == COMBINED
+        if symbols is not None:
+            self.symbols = symbols
+        elif self.is_cross_sectional:
+            from trading_bot.live.decision import universe_symbols
+
+            self.symbols = universe_symbols()  # rotation papers on the WIDE universe
+        else:
+            self.symbols = list(SYMBOLS)
         self.root = root
         self.root.mkdir(parents=True, exist_ok=True)
         self.collector = collector if collector is not None else BinanceCollector()
@@ -103,7 +112,7 @@ class PaperTrader:
 
     def run_once(self, now: datetime | None = None) -> dict[str, Any]:
         now = now if now is not None else datetime.now(tz=UTC)
-        frames = fetch_frames(self.collector, now)
+        frames = fetch_frames(self.collector, now, symbols=self.symbols)
 
         if needs_reselect(self.state.get("last_reselect"), self.state["params"], now):
             if self.is_combined:
@@ -137,8 +146,8 @@ class PaperTrader:
             exposures = dict(fractions)
         elif self.is_cross_sectional:
             weights = rotation_weights(frames, int(self.state["params"]["lookback"]))
-            fractions = {s: weights.get(s, 0.0) for s in SYMBOLS}
-            exposures = dict(fractions)
+            fractions = {s: weights.get(s, 0.0) for s in self.symbols}
+            exposures = {s: f for s, f in fractions.items() if f > 0}
         else:
             exposures = {
                 s: current_exposure(self.strategy_name, self.state["params"][s], frames[s])
@@ -148,7 +157,7 @@ class PaperTrader:
 
         equity = self._equity(prices)
         fills = []
-        for symbol in SYMBOLS:
+        for symbol in self.symbols:
             target_units = fractions[symbol] * equity / prices[symbol]
             delta = target_units - self.state["positions"].get(symbol, 0.0)
             notional = abs(delta) * prices[symbol]

@@ -92,6 +92,12 @@ basket's weights scaled by min(1, 0.30 / realized 30d basket vol)
 (target and window FIXED — the exact cure hyp 06 applied to hyp 02/07).
 Same two bars. If it passes both -> paper eligible.
 
+## WIDE-UNIVERSE VALIDATION (2026-07-12) — DSR 0.990, ABSOLUTE BAR CLEARED
+
+On the 40-coin universe (docs/research/wide-universe.md): Sharpe 1.10,
+prop 62.9% @ 0.5x, DSR 0.990 > 0.95 — the program's first absolute
+validation. Paper spec switched to the wide universe same day.
+
 ## SIZED variant results (2026-07-11) — ELIGIBLE, ENTERS PAPER TRADING
 
 Walk-forward OOS 2,880d: **Sharpe 0.90** (V1 on same overlap: 0.74),

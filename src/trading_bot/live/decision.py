@@ -47,10 +47,27 @@ ROTATION_GRID = [30, 90]
 ROTATION_TOP_K = 2
 
 
-def fetch_frames(collector: Any, now: datetime) -> dict[str, pl.DataFrame]:
+def universe_symbols() -> list[str]:
+    """The wide rotation universe (config/universe.json), falling back to
+    the legacy 8. Rotation validated STRONGER on the wide universe
+    (docs/research/wide-universe.md) and papers on it since 2026-07-12."""
+    import json
+    from pathlib import Path
+
+    path = Path("config/universe.json")
+    if path.exists():
+        symbols: list[str] = json.loads(path.read_text(encoding="utf-8"))["symbols"]
+        return symbols
+    return list(SYMBOLS)
+
+
+def fetch_frames(
+    collector: Any, now: datetime, symbols: list[str] | None = None
+) -> dict[str, pl.DataFrame]:
     end = now.replace(hour=0, minute=0, second=0, microsecond=0)
     start = end - timedelta(days=FETCH_DAYS)
-    return {sym: collector.fetch_ohlcv(sym, Interval.D1, start, end) for sym in SYMBOLS}
+    todo = symbols if symbols is not None else SYMBOLS
+    return {sym: collector.fetch_ohlcv(sym, Interval.D1, start, end) for sym in todo}
 
 
 def needs_reselect(last_reselect: str | None, params: dict[str, Any], now: datetime) -> bool:

@@ -179,6 +179,15 @@
   signals mean CONTINUATION, never reversal. External idea list
   triaged into backlog (breadth parked on wide-universe project;
   regime/ML gated behind it)
+- WIDE-UNIVERSE PROJECT (2026-07-12, ledger 65): top-40-by-volume
+  universe (config/universe.json, objective rule), 32 new symbols
+  pulled full-depth, 48 datasets 0 errors. Rotation re-test: K=2
+  Sharpe 1.10, prop 62.9% @ 0.5x, **DSR 0.990 — FIRST ABSOLUTE
+  VALIDATION (>0.95 bar)**; K=5 also passes. Survivorship caveat
+  DOWNGRADED (residual: fully-delisted coins absent). Rotation paper
+  spec switched to wide universe (8-coin record archived); first wide
+  decision: DEXE+SYN at 13% combined (vol budget throttling extreme
+  movers). PaperTrader supports per-strategy symbol lists
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee

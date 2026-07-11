@@ -96,7 +96,11 @@ def test_rotation_paper_trader_end_to_end(tmp_path: Path) -> None:
     TOTAL equity, journals fills."""
     now = T0 + timedelta(days=555)
     trader = PaperTrader(
-        "rotation", tmp_path / "paper", collector=FakeDailyCollector(), initial_cash=5_000.0
+        "rotation",
+        tmp_path / "paper",
+        collector=FakeDailyCollector(),
+        initial_cash=5_000.0,
+        symbols=list(SYMBOLS),
     )
     mark = trader.run_once(now=now)
 
@@ -122,7 +126,11 @@ def test_daily_story_written_and_honest(tmp_path: Path) -> None:
     assert "Trades today: bought" in story
 
     rot = PaperTrader(
-        "rotation", tmp_path / "p2", collector=FakeDailyCollector(), initial_cash=5_000.0
+        "rotation",
+        tmp_path / "p2",
+        collector=FakeDailyCollector(),
+        initial_cash=5_000.0,
+        symbols=list(SYMBOLS),
     )
     mark2 = rot.run_once(now=now)
     assert "ranked all" in mark2["story"]
@@ -132,7 +140,11 @@ def test_daily_story_written_and_honest(tmp_path: Path) -> None:
 def test_combined_paper_trader_blends_both_sleeves(tmp_path: Path) -> None:
     now = T0 + timedelta(days=555)
     trader = PaperTrader(
-        "combined", tmp_path / "paper", collector=FakeDailyCollector(), initial_cash=5_000.0
+        "combined",
+        tmp_path / "paper",
+        collector=FakeDailyCollector(),
+        initial_cash=5_000.0,
+        symbols=list(SYMBOLS),
     )
     mark = trader.run_once(now=now)
 
