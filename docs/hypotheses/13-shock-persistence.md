@@ -1,6 +1,7 @@
 # Hypothesis 13 — Single-Day Shock Persistence
 
-Status: UNDER TEST (pre-registered before results).
+Status: **1/4 buckets carries signal (2026-07-12)** — extreme UP shocks
+continue; graduated to the feature queue.
 
 ## Claim
 
@@ -21,6 +22,17 @@ excludes zero. 1d/3d horizons descriptive only.
 
 Trial ledger: +4 (four buckets at the primary horizon) -> 61.
 
-## Verdict
+## Verdict (2026-07-12, 23,209 symbol-days)
 
-(after the run)
+- **Extreme up (z>=2, n=924): +3.54% extra over the next 7d, CI
+  [+1.25%, +5.99%] — clear CONTINUATION signal.** No exhaustion.
+- Moderate up/down and extreme down: noise (all CIs straddle zero;
+  extreme down leans continuation but does not qualify).
+
+Fourth independent test where continuation beats reversal in crypto
+(funding, basis, dominance quadrants, now shocks). Disposition:
+graduated as a CANDIDATE FEATURE, not a strategy — an extreme-up-day
+overlay must beat the deployed price-momentum baseline (which already
+captures much of this: a +2-sigma day often flips short-lookback
+momentum positive) in a pre-registered incremental test before any
+deployment. Queued on the backlog next to positioning-as-confirmation.

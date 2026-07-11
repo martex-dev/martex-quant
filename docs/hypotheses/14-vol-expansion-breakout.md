@@ -1,6 +1,6 @@
 # Hypothesis 14 — Volatility-Expansion Breakout
 
-Status: UNDER TEST (pre-registered before results).
+Status: **FAILED (2026-07-12)** — compression adds nothing.
 
 ## Claim
 
@@ -26,6 +26,10 @@ Pooled 8-symbol daily panel, 2017+.
 
 Trial ledger: +2 -> 63.
 
-## Verdict
+## Verdict (2026-07-12)
 
-(after the run)
+FAIL on both bars: signal days' directional fwd7 +1.10% with CI
+[-0.14%, +1.97%] (misses), and the increment over expansion-WITHOUT-
+compression is -0.76% (CI [-3.49%, +1.60%]) — if anything, compression
+made breakouts slightly WORSE, not better. The 'coiled spring' story is
+folklore in this data. Closed.

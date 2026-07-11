@@ -170,6 +170,15 @@
   "combined") for a future genuinely-uncorrelated engine; carry
   (market-neutral, post-eval) is the natural candidate. Plain-English
   diary shipped (live/narrate.py, dashboard diary card)
+- KILL ROUND 2026-07-12 (ledger 63): hyp 13 shock persistence —
+  extreme UP days (z>=2) continue (+3.54% fwd7, CI [+1.25,+5.99]);
+  other buckets noise; graduated as candidate FEATURE (must beat
+  price-momentum baseline incrementally). Hyp 14 vol-expansion
+  breakout — FAILED both bars (compression adds nothing, increment
+  negative). Meta-finding now 4x confirmed: crypto crowding/shock
+  signals mean CONTINUATION, never reversal. External idea list
+  triaged into backlog (breadth parked on wide-universe project;
+  regime/ML gated behind it)
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee
