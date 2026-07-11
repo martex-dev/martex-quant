@@ -1,7 +1,7 @@
 # Hypothesis 08 — Funding-Rate Extremes as a Contrarian Signal
 
-Status: UNDER TEST (pre-registered before results; this file is committed
-before scripts/h08_funding_killtest.py runs).
+Status: **FAILED the kill test (2026-07-11)** — and the point estimates
+lean AGAINST the contrarian story. See Verdict.
 
 ## Hypothesis and rationale
 
@@ -42,8 +42,23 @@ vehicle.
 - Only ~5-7 years of funding history exists at all; extreme buckets are
   ~10% of days — effective sample is small and crash-clustered.
 
-## Verdict
+## Verdict (2026-07-11, 17,910 symbol-days, 2019-12 .. 2026-07)
 
-(filled after the run; FAIL -> the idea is dropped, ledger keeps the
-trials; PASS -> proceed to a strategy-grade hypothesis with costs and
-walk-forward before anything else)
+FAIL on both pre-registered criteria: 7d LOW-minus-HIGH = -0.95%
+(CI [-3.20%, +1.39%] — straddles zero, wrong sign), sign consistency
+4/8 (needed 5).
+
+The interesting part: every point estimate leans the WRONG way for the
+contrarian narrative. Days with HIGH funding (crowded longs) were
+followed by HIGHER returns — +3.30% vs +2.35% at 7d, and +12.61% vs
++4.83% at 30d. "Everyone is overleveraged long, the market must
+correct" is, on average, backwards: extreme positive funding is a
+feature of bull trends that keep going. This is consistent with our
+core momentum findings — crowdedness accompanies trends; fading it
+fights the one effect we know is real.
+
+A momentum-flavored funding signal (HIGH funding as confirmation)
+would be a NEW hypothesis — noting for the ledger that its 30d point
+estimate (+7.78%) also failed to clear zero (CI [-0.77%, +17.58%]),
+so it is NOT promoted either. Idea closed. Funding data (7y, cached
+in data/funding/) remains for the carry project (hypothesis 05).

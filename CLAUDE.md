@@ -124,6 +124,12 @@
   at M1, no strategy code written. Trial ledger now 41. Kept: 6h/12h
   resampler, EW investable indices, dominance proxy (data/indices.py,
   data/resample.py). docs/research/v2-dominance-rotation-phase0.md
+- Hypothesis 08 (funding extremes, contrarian): pre-registered then
+  FAILED kill test 2026-07-11 (7d diff -0.95%, CI straddles 0, 4/8;
+  point estimates lean momentum-confirming, not contrarian — crowded
+  funding accompanies trends that continue). Ledger now 44. 7y funding
+  history cached in data/funding/. Idea closed; momentum-flavored
+  variant also not significant at 30d, not promoted
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee
