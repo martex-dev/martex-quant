@@ -10,6 +10,7 @@ stream their output back to the page. Going live is intentionally absent.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from functools import partial
@@ -42,7 +43,9 @@ def run_action(name: str, base: Path) -> dict[str, Any]:
             capture_output=True,
             text=True,
             timeout=ACTION_TIMEOUT_S,
-            env={"PYTHONIOENCODING": "utf-8", "PATH": __import__("os").environ.get("PATH", "")},
+            # Full environment: native-extension packages (polars) probe CPU
+            # features at import and misbehave in a stripped env.
+            env={**os.environ, "PYTHONIOENCODING": "utf-8"},
         )
         output = (proc.stdout + "\n" + proc.stderr).strip()
         return {"action": name, "exit_code": proc.returncode, "output": output[-8000:]}

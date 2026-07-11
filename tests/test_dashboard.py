@@ -100,3 +100,22 @@ def test_http_endpoints(tmp_path: Path) -> None:
             assert e.code == 400
     finally:
         server.shutdown()
+
+
+def test_run_action_inherits_full_environment(tmp_path: Path, monkeypatch) -> None:
+    """Regression: a stripped env broke polars CPU detection in subprocesses.
+    Actions must inherit the parent environment."""
+    import os
+
+    from trading_bot.dashboard import server
+
+    monkeypatch.setenv("DASHBOARD_ENV_CANARY", "present")
+    monkeypatch.setitem(
+        server.ACTIONS,
+        "env-canary",
+        ["{py}", "-c", "import os; print(os.environ.get('DASHBOARD_ENV_CANARY', 'MISSING'))"],
+    )
+    result = server.run_action("env-canary", tmp_path)
+    assert result["exit_code"] == 0
+    assert "present" in result["output"]
+    assert os.environ.get("DASHBOARD_ENV_CANARY") == "present"
