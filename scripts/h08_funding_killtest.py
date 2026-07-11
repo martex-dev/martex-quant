@@ -72,9 +72,11 @@ def daily_panel(store: ParquetStore) -> pl.DataFrame:
             .select(pl.col("timestamp").alias("day"), "close")
             .with_columns(pl.col("day").cast(pl.Datetime("us", "UTC")))
         )
-        df = funding.with_columns(pl.col("day").cast(pl.Datetime("us", "UTC"))).join(
-            spot, on="day", how="inner"
-        ).sort("day")
+        df = (
+            funding.with_columns(pl.col("day").cast(pl.Datetime("us", "UTC")))
+            .join(spot, on="day", how="inner")
+            .sort("day")
+        )
 
         # Trailing percentile rank of today's funding within the past 90d.
         values = df["funding"].to_list()
@@ -165,8 +167,10 @@ def main() -> None:
     mid = panel.filter((pl.col("pct") > LOW_PCT) & (pl.col("pct") < HIGH_PCT))
     print(f"bucket sizes: LOW {low.height}, MID {mid.height}, HIGH {high.height}\n")
 
-    print(f"{'horizon':>8} {'E[fwd|LOW]':>11} {'E[fwd|MID]':>11} {'E[fwd|HIGH]':>12} "
-          f"{'LOW-HIGH':>9} {'95% CI':>20}")
+    print(
+        f"{'horizon':>8} {'E[fwd|LOW]':>11} {'E[fwd|MID]':>11} {'E[fwd|HIGH]':>12} "
+        f"{'LOW-HIGH':>9} {'95% CI':>20}"
+    )
     primary_pass = False
     for h in HORIZONS:
         col = f"fwd{h}"

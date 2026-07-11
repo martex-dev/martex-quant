@@ -1,6 +1,6 @@
 """Hypothesis 09 kill test: calendar effects (pre-registered sub-claims only).
 
-    .venv/Scripts/python scripts/h09_calendar_killtest.py
+.venv/Scripts/python scripts/h09_calendar_killtest.py
 """
 
 from __future__ import annotations
@@ -107,8 +107,9 @@ def main() -> None:
 
     print(f"daily panel: {daily.height} rows; hourly panel: {hourly.height} rows\n")
     for name, point, lo, hi, ok in results:
-        print(f"{name:<44} diff {point:+.4%}  CI [{lo:+.4%}, {hi:+.4%}]  "
-              f"{'PASS' if ok else 'fail'}")
+        print(
+            f"{name:<44} diff {point:+.4%}  CI [{lo:+.4%}, {hi:+.4%}]  {'PASS' if ok else 'fail'}"
+        )
     n_pass = sum(r[4] for r in results)
     print(f"\nVERDICT: {n_pass}/3 sub-claims pass their pre-registered bars")
 

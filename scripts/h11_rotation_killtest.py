@@ -1,6 +1,6 @@
 """Hypothesis 11 kill test: cross-sectional relative-strength spread.
 
-    .venv/Scripts/python scripts/h11_rotation_killtest.py
+.venv/Scripts/python scripts/h11_rotation_killtest.py
 """
 
 from __future__ import annotations
@@ -52,9 +52,7 @@ def main() -> None:
     store = ParquetStore(Path("data/lake"))
     wide: pl.DataFrame | None = None
     for symbol in SYMBOLS:
-        part = store.read(symbol, Interval.D1).select(
-            "timestamp", pl.col("close").alias(symbol)
-        )
+        part = store.read(symbol, Interval.D1).select("timestamp", pl.col("close").alias(symbol))
         wide = part if wide is None else wide.join(part, on="timestamp", how="full", coalesce=True)
     assert wide is not None
     wide = wide.sort("timestamp")
@@ -83,8 +81,10 @@ def main() -> None:
         ok = lo > 0.0
         passes += ok
         points.append(point)
-        print(f"{lookback:>4} {len(spreads):>6} {point:>20.3%} "
-              f"{'[' + f'{lo:+.3%}, {hi:+.3%}' + ']':>22} {'PASS' if ok else 'fail'}")
+        print(
+            f"{lookback:>4} {len(spreads):>6} {point:>20.3%} "
+            f"{'[' + f'{lo:+.3%}, {hi:+.3%}' + ']':>22} {'PASS' if ok else 'fail'}"
+        )
 
     both_positive = all(p > 0 for p in points)
     verdict = passes >= 1 and both_positive

@@ -88,9 +88,7 @@ def build_panel(store: ParquetStore) -> pl.DataFrame:
 def pooled_diff_ci(panel: pl.DataFrame, horizon: int) -> tuple[float, float, float]:
     col = f"fwd{horizon}"
     by_day = (
-        panel.with_columns(
-            low=(pl.col("pct") <= LOW_PCT), high=(pl.col("pct") >= HIGH_PCT)
-        )
+        panel.with_columns(low=(pl.col("pct") <= LOW_PCT), high=(pl.col("pct") >= HIGH_PCT))
         .group_by("day")
         .agg(
             low_sum=pl.col(col).filter(pl.col("low")).sum(),

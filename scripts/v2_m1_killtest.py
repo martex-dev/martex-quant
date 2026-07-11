@@ -87,13 +87,14 @@ def main() -> None:
     )
 
     passes = 0
-    print(f"{'Ld':>4} {'n':>6} {'E[rel|rising]':>14} {'E[rel|falling]':>15} "
-          f"{'diff':>8} {'95% CI':>20} verdict")
+    print(
+        f"{'Ld':>4} {'n':>6} {'E[rel|rising]':>14} {'E[rel|falling]':>15} "
+        f"{'diff':>8} {'95% CI':>20} verdict"
+    )
     for lookback in LOOKBACKS:
-        sub = (
-            df.with_columns(rising=pl.col("dominance") > pl.col("dominance").shift(lookback))
-            .drop_nulls(["fwd_rel", "rising"])
-        )
+        sub = df.with_columns(
+            rising=pl.col("dominance") > pl.col("dominance").shift(lookback)
+        ).drop_nulls(["fwd_rel", "rising"])
         values = sub["fwd_rel"].to_list()
         flags = sub["rising"].to_list()
         point, lo, hi = block_bootstrap_ci(values, flags)
@@ -109,14 +110,11 @@ def main() -> None:
 
     # Descriptive quadrant table (Ld=30), NOT part of the pass bar.
     print("\ndescriptive quadrant means of forward 30d returns (Ld=30, trend=90d):")
-    sub = (
-        df.with_columns(
-            rising=pl.col("dominance") > pl.col("dominance").shift(30),
-            btc_fwd=pl.col("btc").shift(-HORIZON) / pl.col("btc") - 1.0,
-            alt_fwd=pl.col("alt").shift(-HORIZON) / pl.col("alt") - 1.0,
-        )
-        .drop_nulls(["btc_fwd", "alt_fwd", "rising", "trend_up"])
-    )
+    sub = df.with_columns(
+        rising=pl.col("dominance") > pl.col("dominance").shift(30),
+        btc_fwd=pl.col("btc").shift(-HORIZON) / pl.col("btc") - 1.0,
+        alt_fwd=pl.col("alt").shift(-HORIZON) / pl.col("alt") - 1.0,
+    ).drop_nulls(["btc_fwd", "alt_fwd", "rising", "trend_up"])
     for trend_up in (True, False):
         for rising in (True, False):
             cell = sub.filter((pl.col("trend_up") == trend_up) & (pl.col("rising") == rising))
