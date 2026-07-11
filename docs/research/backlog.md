@@ -62,6 +62,21 @@ single venue, daily-ish cadence)?
   provenance is vendor-dependent (Glassnode paid tiers); revisit only
   with a budget decision. Prior unknowable until data is trustworthy.
 
+## New candidates added 2026-07-11 (post kill-test round)
+
+- **Cross-sectional short-term reversal**: do last week's top-ranked
+  coins underperform NEXT week within the ranking (momentum at 30-90d,
+  reversal at 3-7d is the equity pattern)? Data in hand; cheap. Prior
+  0.15-0.2.
+- **Dispersion / correlation regime**: when pairwise correlations
+  collapse, does rotation (hyp 11) earn more? Conditional test AFTER
+  the rotation strategy exists. Data in hand.
+- **Basis/funding as momentum CONFIRMATION**: hyp 08+10 both showed
+  significant wrong-direction (continuation) point estimates. A
+  pre-registered incremental test — does adding the positioning state
+  improve the DEPLOYED momentum system? — is legitimate; bar: must beat
+  price-only momentum, not zero. Prior 0.2.
+
 ## Tier C — near-permanent park, with reasons
 
 - **Fear & Greed Index**: mostly a price transform — circular with

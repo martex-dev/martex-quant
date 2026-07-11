@@ -1,6 +1,7 @@
 # Hypothesis 10 — Spot-vs-Perp Basis as a State Variable
 
-Status: UNDER TEST (pre-registered before results).
+Status: **FAILED (2026-07-11)** — significantly BACKWARDS, same
+pattern as hypothesis 08.
 
 ## Rationale
 
@@ -24,6 +25,16 @@ level and flow can carry different information and the test costs hours.
   positive. Descriptive: 1d, 30d.
 - Trial ledger: +3 -> 50.
 
-## Verdict
+## Verdict (2026-07-11, 17,899 symbol-days)
 
-(after the run)
+FAIL: 7d LOW-minus-HIGH = -2.61%, CI [-4.88%, -0.12%] — the interval
+excludes zero on the WRONG side, 2/8 symbols positive. High premium was
+followed by HIGHER returns (+4.20% vs +1.59% fwd 7d; +14.8% vs +6.1%
+at 30d). Third data point in the same lesson (with hyp 08 and the core
+momentum results): in crypto, crowded bullish positioning accompanies
+trends that continue; fading it is systematically wrong on average.
+
+Post-hoc observation, worth exactly nothing until pre-registered: the
+REVERSED (momentum-flavored) basis signal shows significance here, but
+it was not the registered claim, and its incremental value over plain
+price momentum (already deployed) is the real bar it would face. Closed.

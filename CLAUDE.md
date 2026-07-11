@@ -136,6 +136,21 @@
   (best prior, needs multi-asset engine), #3 spot-perp basis;
   carry infra post-eval; Tier B parked on data; Tier C parked with
   reasons. Rule: kill test before build; EV includes ledger cost
+- KILL-TEST ROUND 2026-07-11 (ledger now 52): hyp 09 calendar — 1/3
+  (turn-of-month PASSES marginally, CI grazes zero -> low-priority
+  strategy-grade candidate; weekend + funding-hours REJECTED); hyp 10
+  basis — FAILED significantly BACKWARDS (high premium -> higher fwd
+  returns; 3rd confirmation crowded positioning = continuation, not
+  reversal, in crypto); hyp 11 CROSS-SECTIONAL ROTATION — PASSED
+  cleanly (both lookbacks CI>0: 30d +0.82%/wk, 90d +1.02%/wk spread)
+  -> GRADUATES to strategy-grade: multi-asset engine build justified
+  (design first), long-only variant prioritized, survivorship caveat
+  open. Backlog gained 3 new candidates (short-term reversal,
+  dispersion-conditioned rotation, positioning-as-confirmation)
+- NEXT BUILD: multi-asset event-driven engine (Step 2 design doc
+  first) for hyp 11 strategy-grade; end-state vision: multi-strategy
+  book (V1 momentum + rotation + later carry) with portfolio-level
+  allocation once >=2 validated engines exist
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee

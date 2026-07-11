@@ -1,6 +1,7 @@
 # Hypothesis 09 — Calendar Effects
 
-Status: UNDER TEST (pre-registered before results).
+Status: **1/3 sub-claims passed (2026-07-11)** — turn-of-month PASSES
+(marginally); weekend and funding-hour effects REJECTED.
 
 ## Rationale
 
@@ -29,6 +30,14 @@ strategy-grade hypothesis (costs, walk-forward) — a timing overlay is
 only tradable if it survives fees, which for 09c is doubtful a priori
 (hourly costs killed hypothesis 01).
 
-## Verdict
+## Verdict (2026-07-11, 23,505 daily / 563,696 hourly obs)
 
-(after the run)
+- 09a turn-of-month: +0.385%/day vs other days, CI [+0.010%, +0.759%]
+  — PASSES, but the lower bound grazes zero. Family-wise honesty: with
+  three sub-claims at 95%, one boundary-level pass is only mild
+  evidence. Graduates to strategy-grade (costs, walk-forward) as a
+  LOW-PRIORITY candidate; a ToM overlay must beat the deployed system's
+  use of the same capital to matter.
+- 09b weekend: +0.089%, CI [-0.173%, +0.355%] — REJECTED.
+- 09c funding hours: -0.001%, CI straddles zero — REJECTED (and hourly
+  costs would have eaten far larger effects anyway).

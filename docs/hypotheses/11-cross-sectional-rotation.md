@@ -1,6 +1,6 @@
 # Hypothesis 11 — Cross-Sectional Momentum (Relative-Strength Rotation)
 
-Status: UNDER TEST — kill-test stage (pre-registered before results).
+Status: **PASSED the kill test (2026-07-11)** — graduates to strategy-grade.
 
 ## Rationale
 
@@ -37,6 +37,16 @@ Graduates to strategy-grade: multi-asset event-driven engine build,
 costs, walk-forward K/L selection, widened universe, DSR vs full ledger
 — the V2-M2 build finally earns its justification.
 
-## Verdict
+## Verdict (2026-07-11, ~2,950 daily rebalance dates)
 
-(after the run)
+PASS — cleanly, on both lookbacks:
+- L=30d: top2-minus-bottom2 fwd-7d spread +0.823%, CI [+0.082%, +1.548%]
+- L=90d: +1.021%, CI [+0.154%, +2.049%]
+
+Relative strength persists cross-sectionally in this universe. Next:
+strategy-grade phase — multi-asset event-driven engine (design first,
+per process), costs, walk-forward K/L selection, LONG-ONLY variant
+prioritized (short leg is both survivor-biased and funding-costly),
+widened listing-aware universe, DSR vs the full ledger. Survivorship
+caveat from the pre-registration REMAINS OPEN and must be addressed
+before any deployment claim.
