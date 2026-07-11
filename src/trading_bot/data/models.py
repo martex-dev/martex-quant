@@ -21,6 +21,8 @@ class Interval(StrEnum):
     M15 = "15m"
     H1 = "1h"
     H4 = "4h"
+    H6 = "6h"
+    H12 = "12h"
     D1 = "1d"
 
     @property
@@ -38,6 +40,8 @@ _DURATIONS: dict[Interval, timedelta] = {
     Interval.M15: timedelta(minutes=15),
     Interval.H1: timedelta(hours=1),
     Interval.H4: timedelta(hours=4),
+    Interval.H6: timedelta(hours=6),
+    Interval.H12: timedelta(hours=12),
     Interval.D1: timedelta(days=1),
 }
 
