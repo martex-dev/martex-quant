@@ -109,3 +109,21 @@ def test_rotation_paper_trader_end_to_end(tmp_path: Path) -> None:
     # Second run same day: no churn.
     mark2 = trader.run_once(now=now + timedelta(days=1))
     assert mark2["n_fills"] == 0
+
+
+def test_daily_story_written_and_honest(tmp_path: Path) -> None:
+    now = T0 + timedelta(days=555)
+    trader = PaperTrader(
+        "vol-target", tmp_path / "p1", collector=FakeDailyCollector(), initial_cash=5_000.0
+    )
+    mark = trader.run_once(now=now)
+    story = mark["story"]
+    assert "Rising and held" in story  # uptrend fake data -> in the market
+    assert "Trades today: bought" in story
+
+    rot = PaperTrader(
+        "rotation", tmp_path / "p2", collector=FakeDailyCollector(), initial_cash=5_000.0
+    )
+    mark2 = rot.run_once(now=now)
+    assert "ranked all" in mark2["story"]
+    assert "holds the strongest" in mark2["story"]

@@ -75,6 +75,11 @@
   </div>
 
   <div class="card wide">
+    <h2><span id="diary-title">Plain-English diary</span></h2>
+    <div id="diary" class="sub" style="margin:0"></div>
+  </div>
+
+  <div class="card wide">
     <h2><span id="fills-title">Recent fills (paper)</span></h2>
     <table id="fills"><thead><tr><th>time</th><th>symbol</th><th>side</th><th>quantity</th><th>price</th><th>fee</th></tr></thead><tbody></tbody></table>
   </div>
@@ -179,6 +184,12 @@ async function refresh() {
   }).join("");
 
   $("paper-title").textContent = `Paper — ${currentStrategy}`;
+  $("diary-title").textContent = `Plain-English diary — ${currentStrategy}`;
+  const stories = st.paper.stories || [];
+  $("diary").innerHTML = stories.length
+    ? stories.map(x => `<div style="padding:8px 0;border-bottom:1px dotted var(--line)">` +
+        `<b style="color:var(--text)">${x.ts.slice(0,10)}</b><br>${x.story}</div>`).join("")
+    : "The diary starts with the next nightly run — each entry explains that day's decisions in plain language.";
   $("fills-title").textContent = `Recent fills (paper — ${currentStrategy})`;
   $("paper-badge").textContent = st.paper.started ? "active" : "waiting for first run";
   drawChart("paper-chart", st.paper.equity_series);

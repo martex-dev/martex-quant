@@ -66,6 +66,9 @@ def _account_section(root: Path) -> dict[str, Any]:
         "days_running": days_running,
         "last_mark": marks[-1] if marks else None,
         "equity_series": [[m["ts"], m.get("equity")] for m in marks if "equity" in m],
+        "stories": [{"ts": m["ts"], "story": m["story"]} for m in marks[-7:] if m.get("story")][
+            ::-1
+        ],
         "recent_fills": list(reversed(fills)),
         "state": state,
     }

@@ -44,6 +44,7 @@ from trading_bot.live.decision import (
     rotation_weights,
     select_rotation_param,
 )
+from trading_bot.live.narrate import narrate_rotation, narrate_vol_target
 
 logger = logging.getLogger(__name__)
 
@@ -138,6 +139,12 @@ class PaperTrader:
             fills.append(self._fill(symbol, delta, prices[symbol], frames[symbol], now))
 
         equity = self._equity(prices)
+        if self.is_cross_sectional:
+            story = narrate_rotation(
+                frames, int(self.state["params"]["lookback"]), fractions, fills
+            )
+        else:
+            story = narrate_vol_target(frames, self.state["params"], exposures, fills)
         mark = {
             "ts": now.isoformat(),
             "equity": equity,
@@ -145,6 +152,7 @@ class PaperTrader:
             "exposures": exposures,
             "params": dict(self.state["params"]),
             "n_fills": len(fills),
+            "story": story,
         }
         self._append("equity.jsonl", mark)
         self._save_state()
