@@ -91,3 +91,20 @@ VolTargetRotation: identical signal and walk-forward protocol; selected
 basket's weights scaled by min(1, 0.30 / realized 30d basket vol)
 (target and window FIXED — the exact cure hyp 06 applied to hyp 02/07).
 Same two bars. If it passes both -> paper eligible.
+
+## SIZED variant results (2026-07-11) — ELIGIBLE, ENTERS PAPER TRADING
+
+Walk-forward OOS 2,880d: **Sharpe 0.90** (V1 on same overlap: 0.74),
+CAGR +23.3%, MDD -42.8% (from -76% raw), correlation with V1 **0.35**,
+**DSR 0.923 vs 56-trial ledger — the program's strongest evidence**.
+Real-firm prop-sim: **51.2% pass @ 0.5x** (CI 50.5-51.9%, median 98d);
+sizing curve peaks at LOW scale — rotation's concentration (2 symbols)
+needs gentler leverage than V1's 8-symbol book, exactly as risk theory
+predicts. Both pre-registered bars PASS.
+
+Disposition: paper trading starts 2026-07-11 alongside vol-target
+(data/paper/rotation/). NOT validated at the absolute 0.95 DSR bar
+(0.923 — closest yet); survivorship caveat still open (wide-universe
+re-run remains queued). The eval-account decision stays with V1
+vol-target per the existing plan; rotation must earn its own live
+deployment through its paper record + the caveat work.

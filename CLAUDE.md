@@ -151,6 +151,17 @@
   first) for hyp 11 strategy-grade; end-state vision: multi-strategy
   book (V1 momentum + rotation + later carry) with portfolio-level
   allocation once >=2 validated engines exist
+- HYP 11 STRATEGY-GRADE (2026-07-11, ledger 56): raw rotation strong
+  (Sharpe 0.98, DSR 0.888) but -76% MDD fails real-firm prop bar;
+  SIZED VolTargetRotation (30% vol budget on selected basket) PASSES
+  both bars: Sharpe 0.90, corr with V1 0.35, DSR 0.923 (program's
+  best), prop 51.2% @ 0.5x. ELIGIBLE -> paper trading started
+  2026-07-11 (data/paper/rotation/, nightly task runs both
+  strategies). Multi-asset engine + configurable rotation live in
+  backtesting/multi.py + strategies/rotation.py; dashboard now
+  multi-strategy (tabs auto-discovered). Eval decision remains with
+  V1 vol-target; rotation earns live status via its own record +
+  wide-universe survivorship re-run (queued)
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee
