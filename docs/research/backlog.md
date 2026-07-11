@@ -62,6 +62,35 @@ single venue, daily-ish cadence)?
   provenance is vendor-dependent (Glassnode paid tiers); revisit only
   with a budget decision. Prior unknowable until data is trustworthy.
 
+## Triage of external idea list (2026-07-12)
+
+Already settled by the ledger: cross-sectional rotation (DONE — paper
+account live, hyp 11); basis/premium (KILLED, hyp 10); dominance-as-
+feature (KILLED, V2 kill test was exactly this); weekend/calendar
+(settled, hyp 09); risk-mgmt alpha (half-deployed as vol targeting).
+
+Newly added:
+- **Shock persistence** (single-day extreme moves -> next-week returns):
+  hyp 13, kill test run 2026-07-12. Distinct horizon from validated
+  momentum.
+- **Vol-expansion breakout** (compression -> eruption carries direction):
+  hyp 14, kill test run 2026-07-12. Distinct from rejected hyp 03.
+- **Correlation-spike de-risking** (cut exposure when pairwise
+  correlations spike): the untested half of "risk management alpha";
+  cheap, conditional overlay on deployed strategies. Prior 0.2.
+- **Market breadth**: parked until a WIDE universe exists — with 8 coins
+  breadth collapses into the market index momentum we already validated.
+  A top-50 listing-aware universe pull unlocks it AND the survivorship
+  re-runs (one data project, two payoffs). Queued.
+- **Regime clustering / ML feature discovery**: Tier B with guardrails —
+  only after the feature set contains more validated inputs; ML as
+  researcher not signal, walk-forward-honest, every derived claim
+  pre-registered. Not before the wide-universe project.
+- **Crowded-trade composite / liquidations**: still blocked on paid OI/
+  liquidation data. Unchanged.
+- **Stat-arb pairs**: needs shorts + funding cost model in engine;
+  own research arc, after carry.
+
 ## New candidates added 2026-07-11 (post kill-test round)
 
 - **Cross-sectional short-term reversal**: do last week's top-ranked
