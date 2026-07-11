@@ -162,6 +162,14 @@
   multi-strategy (tabs auto-discovered). Eval decision remains with
   V1 vol-target; rotation earns live status via its own record +
   wide-universe survivorship re-run (queued)
+- HYP 12 combined book (2026-07-12, ledger 57): NOT eligible — true
+  sleeve correlation is 0.77 (the 0.35 in hyp 11 was a tail-alignment
+  bug, corrected in both docs); combined Sharpe 0.72 < rotation's 0.78,
+  MDD not better than both -> blend averages, doesn't insure. No third
+  paper account. Combined-book code kept (paper.py supports
+  "combined") for a future genuinely-uncorrelated engine; carry
+  (market-neutral, post-eval) is the natural candidate. Plain-English
+  diary shipped (live/narrate.py, dashboard diary card)
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee

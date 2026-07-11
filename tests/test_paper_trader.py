@@ -127,3 +127,23 @@ def test_daily_story_written_and_honest(tmp_path: Path) -> None:
     mark2 = rot.run_once(now=now)
     assert "ranked all" in mark2["story"]
     assert "holds the strongest" in mark2["story"]
+
+
+def test_combined_paper_trader_blends_both_sleeves(tmp_path: Path) -> None:
+    now = T0 + timedelta(days=555)
+    trader = PaperTrader(
+        "combined", tmp_path / "paper", collector=FakeDailyCollector(), initial_cash=5_000.0
+    )
+    mark = trader.run_once(now=now)
+
+    assert set(trader.state["params"]) == {"per_symbol", "lookback"}
+    fractions = mark["exposures"]
+    # Uptrend fake data: trend sleeve fully long (each 0.5/8) and rotation
+    # sleeve holds top-2 (0.25 each): two symbols at 0.3125, six at 0.0625.
+    values = sorted(fractions.values(), reverse=True)
+    assert values[0] == pytest.approx(0.3125, abs=0.02)
+    assert values[1] == pytest.approx(0.3125, abs=0.02)
+    assert values[2] == pytest.approx(0.0625, abs=0.02)
+    assert sum(fractions.values()) == pytest.approx(1.0, abs=0.05)
+    story = mark["story"]
+    assert "TREND HALF" in story and "ROTATION HALF" in story

@@ -95,7 +95,9 @@ Same two bars. If it passes both -> paper eligible.
 ## SIZED variant results (2026-07-11) — ELIGIBLE, ENTERS PAPER TRADING
 
 Walk-forward OOS 2,880d: **Sharpe 0.90** (V1 on same overlap: 0.74),
-CAGR +23.3%, MDD -42.8% (from -76% raw), correlation with V1 **0.35**,
+CAGR +23.3%, MDD -42.8% (from -76% raw), correlation with V1 ~~0.35~~
+**0.77 (corrected 2026-07-12 — original was a tail-alignment bug; see
+hyp 12)**,
 **DSR 0.923 vs 56-trial ledger — the program's strongest evidence**.
 Real-firm prop-sim: **51.2% pass @ 0.5x** (CI 50.5-51.9%, median 98d);
 sizing curve peaks at LOW scale — rotation's concentration (2 symbols)

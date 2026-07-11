@@ -34,6 +34,7 @@ import polars as pl
 from trading_bot.data.collectors.binance import BinanceCollector
 from trading_bot.execution.simulated import ExecutionConfig
 from trading_bot.live.decision import (
+    COMBINED,
     CROSS_SECTIONAL,
     STRATEGIES,
     SYMBOLS,
@@ -60,10 +61,12 @@ class PaperTrader:
         initial_cash: float = 5_000.0,
         execution: ExecutionConfig | None = None,
     ) -> None:
-        if strategy_name not in STRATEGIES and strategy_name not in CROSS_SECTIONAL:
+        known = set(STRATEGIES) | CROSS_SECTIONAL | {COMBINED}
+        if strategy_name not in known:
             raise ValueError(f"unknown strategy {strategy_name!r}")
         self.strategy_name = strategy_name
         self.is_cross_sectional = strategy_name in CROSS_SECTIONAL
+        self.is_combined = strategy_name == COMBINED
         self.root = root
         self.root.mkdir(parents=True, exist_ok=True)
         self.collector = collector if collector is not None else BinanceCollector()
@@ -103,7 +106,12 @@ class PaperTrader:
         frames = fetch_frames(self.collector, now)
 
         if needs_reselect(self.state.get("last_reselect"), self.state["params"], now):
-            if self.is_cross_sectional:
+            if self.is_combined:
+                self.state["params"] = {
+                    "per_symbol": reselect_params(frames, "vol-target"),
+                    "lookback": select_rotation_param(frames),
+                }
+            elif self.is_cross_sectional:
                 self.state["params"] = {"lookback": select_rotation_param(frames)}
             else:
                 self.state["params"] = reselect_params(frames, self.strategy_name)
@@ -116,8 +124,18 @@ class PaperTrader:
             assert isinstance(close, float)
             prices[symbol] = close
 
-        # ``fractions``: fraction of TOTAL equity per symbol, both paths.
-        if self.is_cross_sectional:
+        # ``fractions``: fraction of TOTAL equity per symbol, all paths.
+        if self.is_combined:
+            per_symbol = self.state["params"]["per_symbol"]
+            vt_exposures = {
+                s: current_exposure("vol-target", per_symbol[s], frames[s]) for s in SYMBOLS
+            }
+            rot = rotation_weights(frames, int(self.state["params"]["lookback"]))
+            fractions = {
+                s: 0.5 * (vt_exposures[s] / len(SYMBOLS)) + 0.5 * rot.get(s, 0.0) for s in SYMBOLS
+            }
+            exposures = dict(fractions)
+        elif self.is_cross_sectional:
             weights = rotation_weights(frames, int(self.state["params"]["lookback"]))
             fractions = {s: weights.get(s, 0.0) for s in SYMBOLS}
             exposures = dict(fractions)
@@ -139,7 +157,20 @@ class PaperTrader:
             fills.append(self._fill(symbol, delta, prices[symbol], frames[symbol], now))
 
         equity = self._equity(prices)
-        if self.is_cross_sectional:
+        if self.is_combined:
+            from trading_bot.live.narrate import _trades_sentence
+
+            trend_part = narrate_vol_target(
+                frames, self.state["params"]["per_symbol"], vt_exposures, []
+            ).removesuffix(" No trades were needed today.")
+            rot_part = narrate_rotation(
+                frames, int(self.state["params"]["lookback"]), rot, []
+            ).removesuffix(" No trades were needed today.")
+            story = (
+                "This account runs BOTH strategies, half the money each. "
+                f"TREND HALF: {trend_part} ROTATION HALF: {rot_part} " + _trades_sentence(fills)
+            )
+        elif self.is_cross_sectional:
             story = narrate_rotation(
                 frames, int(self.state["params"]["lookback"]), fractions, fills
             )
@@ -197,7 +228,9 @@ def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     parser = argparse.ArgumentParser(prog="python -m trading_bot.live.paper")
     parser.add_argument(
-        "--strategy", choices=[*STRATEGIES, *sorted(CROSS_SECTIONAL)], default="vol-target"
+        "--strategy",
+        choices=[*STRATEGIES, *sorted(CROSS_SECTIONAL), COMBINED],
+        default="vol-target",
     )
     parser.add_argument(
         "--root", type=Path, default=None, help="state dir (default data/paper/<strategy>)"
