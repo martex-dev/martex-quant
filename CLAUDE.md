@@ -130,6 +130,12 @@
   funding accompanies trends that continue). Ledger now 44. 7y funding
   history cached in data/funding/. Idea closed; momentum-flavored
   variant also not significant at 30d, not promoted
+- RESEARCH BACKLOG adopted (docs/research/backlog.md, living doc,
+  scored by prior/cost/ledger-impact/deployability): #1 calendar
+  effects (data in hand, cheapest), #2 cross-sectional rotation
+  (best prior, needs multi-asset engine), #3 spot-perp basis;
+  carry infra post-eval; Tier B parked on data; Tier C parked with
+  reasons. Rule: kill test before build; EV includes ledger cost
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee
