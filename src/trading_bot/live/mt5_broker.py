@@ -160,6 +160,44 @@ class Mt5Broker:
             logger.info("filled %s %.4f lots: %s", broker_symbol, lots, detail)
         return OrderOutcome(symbol, broker_symbol, delta_units, lots, False, ok, detail)
 
+    def flatten_all(self) -> list[OrderOutcome]:
+        """Close every position this system owns (magic-tagged), by ticket.
+
+        Used by the intraday guard. Respects dry_run like everything else.
+        """
+        outcomes = []
+        reverse = {v: k for k, v in self.symbol_map.items()}
+        for pos in self._mt5.positions_get() or []:
+            if pos.magic != MAGIC or pos.symbol not in reverse:
+                continue
+            if self.dry_run:
+                logger.info("[DRY RUN] would CLOSE %s %.4f lots", pos.symbol, pos.volume)
+                outcomes.append(
+                    OrderOutcome(
+                        reverse[pos.symbol], pos.symbol, 0.0, pos.volume, True, False, "dry run"
+                    )
+                )
+                continue
+            request = {
+                "action": self._mt5.TRADE_ACTION_DEAL,
+                "symbol": pos.symbol,
+                "volume": pos.volume,
+                "type": self._mt5.ORDER_TYPE_SELL if pos.type == 0 else self._mt5.ORDER_TYPE_BUY,
+                "position": pos.ticket,
+                "deviation": 50,
+                "magic": MAGIC,
+                "comment": "guard flatten",
+                "type_filling": self._mt5.ORDER_FILLING_IOC,
+            }
+            result = self._mt5.order_send(request)
+            ok = result is not None and result.retcode == self._mt5.TRADE_RETCODE_DONE
+            detail = f"retcode={getattr(result, 'retcode', 'none')}"
+            (logger.info if ok else logger.error)("close %s: %s", pos.symbol, detail)
+            outcomes.append(
+                OrderOutcome(reverse[pos.symbol], pos.symbol, 0.0, pos.volume, False, ok, detail)
+            )
+        return outcomes
+
     def _contract_size(self, broker_symbol: str) -> float:
         info = self._mt5.symbol_info(broker_symbol)
         return float(info.trade_contract_size) if info is not None else 1.0

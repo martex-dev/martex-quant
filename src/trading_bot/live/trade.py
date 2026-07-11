@@ -38,8 +38,15 @@ def run_once(
     strategy_name: str,
     root: Path,
     now: datetime | None = None,
+    guard_root: Path | None = None,
 ) -> dict[str, Any]:
     now = now if now is not None else decision.utcnow()
+    if guard_root is not None:
+        from trading_bot.live.guard import is_halted
+
+        if is_halted(guard_root, now):
+            logger.warning("guard halt active — refusing to trade")
+            return {"ts": now.isoformat(), "halted": True, "orders": 0}
     root.mkdir(parents=True, exist_ok=True)
     state_path = root / "state.json"
     state: dict[str, Any] = (
@@ -115,7 +122,13 @@ def main() -> int:
     broker = Mt5Broker(symbol_map=symbol_map, dry_run=not args.live)
     broker.connect()
     try:
-        mark = run_once(broker, BinanceCollector(), args.strategy, root)
+        mark = run_once(
+            broker,
+            BinanceCollector(),
+            args.strategy,
+            root,
+            guard_root=Path("data/live/guard"),
+        )
         print(json.dumps(mark, indent=2))
     finally:
         broker.shutdown()
