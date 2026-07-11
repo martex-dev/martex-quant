@@ -46,6 +46,8 @@ def run_action(name: str, base: Path) -> dict[str, Any]:
             # Full environment: native-extension packages (polars) probe CPU
             # features at import and misbehave in a stripped env.
             env={**os.environ, "PYTHONIOENCODING": "utf-8"},
+            # No console window when the server itself is windowless (pythonw).
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
         )
         output = (proc.stdout + "\n" + proc.stderr).strip()
         return {"action": name, "exit_code": proc.returncode, "output": output[-8000:]}

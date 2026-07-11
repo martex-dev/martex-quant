@@ -15,6 +15,11 @@ from typing import Any
 MAX_JOURNAL_ROWS = 30
 MAX_LOG_LINES = 40
 
+# Windows: a windowless (pythonw) parent spawning a console subprocess pops
+# a black console window without this flag. No-op elsewhere.
+NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+_GIT_REV_CACHE: dict[str, str] = {}
+
 
 def read_jsonl(path: Path, limit: int | None = None) -> list[dict[str, Any]]:
     if not path.exists():
@@ -76,17 +81,22 @@ def _guard_section(root: Path) -> dict[str, Any]:
 
 
 def _git_rev(base: Path) -> str:
-    try:
-        out = subprocess.run(
-            ["git", "rev-parse", "--short", "HEAD"],
-            cwd=base,
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-        return out.stdout.strip() or "unknown"
-    except Exception:
-        return "unknown"
+    """Revision of the running code; cached — one lookup per server start."""
+    key = str(base)
+    if key not in _GIT_REV_CACHE:
+        try:
+            out = subprocess.run(
+                ["git", "rev-parse", "--short", "HEAD"],
+                cwd=base,
+                capture_output=True,
+                text=True,
+                timeout=10,
+                creationflags=NO_WINDOW,
+            )
+            _GIT_REV_CACHE[key] = out.stdout.strip() or "unknown"
+        except Exception:
+            _GIT_REV_CACHE[key] = "unknown"
+    return _GIT_REV_CACHE[key]
 
 
 def gather_status(base: Path) -> dict[str, Any]:
