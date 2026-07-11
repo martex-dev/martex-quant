@@ -1,8 +1,7 @@
 # V2 Phase 0 — Bitcoin Dominance Rotation (Dual Momentum)
 
-Status: RESEARCH ONLY. No strategy code exists or may exist until the
-kill test (M1) passes. Source: a trader's video description, treated as
-hypothesis, not evidence. Trial accounting CONTINUES from V1's 38 specs.
+Status: **V2-H1 FAILED THE KILL TEST (2026-07-11) — PROJECT CONCLUDED
+AT M1.** See results at the bottom. Trial ledger after this study: 41.
 
 ## 1. Feasibility & what this actually is
 
@@ -137,3 +136,38 @@ V1 paper shakedown and eval schedule are UNTOUCHED by this project.
 V2 is a research workstream; nothing from it ships to live trading
 until it clears the same gates V1 cleared, plus multi-asset paper
 trading of its own.
+
+## M1 RESULTS (2026-07-11, scripts/v2_m1_killtest.py, 3,249 days 2017-2026)
+
+Pre-registered bar: dominance-direction predicts next-30d BTC-minus-alt
+relative return, 95% block-bootstrap CI > 0 on >= 2 of 3 lookbacks.
+
+| Ld | E[rel | dom rising] | E[rel | dom falling] | diff | 95% CI | verdict |
+|---|---|---|---|---|---|
+| 14d | -2.09% | -5.13% | +3.04% | [-2.97%, +10.82%] | fail |
+| 30d | -3.21% | -4.02% | +0.81% | [-5.22%, +6.06%] | fail |
+| 60d | -3.14% | -5.22% | +2.08% | [-5.45%, +10.81%] | fail |
+
+**0/3. V2-H1 FAILS.** Point estimates are mildly positive but drowned in
+noise — the dominance signal is statistically indistinguishable from zero.
+
+Worse for the strategy than the headline: the descriptive quadrant table
+CONTRADICTS its core logic. In uptrends with RISING dominance (the
+"long BTC, ignore alts" quadrant), alts still outperformed BTC forward
+(+18.3% vs +9.9%). In downtrends with rising dominance (the "short
+alts" quadrant), alts averaged +5.0% forward — the short loses on
+average. The survivor-alt basket outperformed BTC in ALL four quadrants,
+which is partly the pre-registered survivorship caveat showing up in the
+data, and partly the point: even leaning WITH that bias, the dominance
+variable adds nothing significant.
+
+What survives: the trend split itself (uptrend quadrants far outperform
+downtrend quadrants) — which is V1's already-validated momentum edge,
+nothing new.
+
+Disposition: per pre-registration, V2 ends here. No strategy code was
+written. Reopening dominance rotation requires a NEW pre-registered spec
+with a materially different construction (e.g. cap-weighted investable
+index, broader listing-aware universe) and a stated reason to believe it
+differs — and it inherits the 41-trial ledger. The M1 infrastructure
+(resampler, indices) is general-purpose and stays.

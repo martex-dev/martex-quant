@@ -118,6 +118,12 @@
   decision core shared with paper trader (live/decision.py); user
   must install MT5 terminal + log in; verify firm's symbol names vs
   DEFAULT_SYMBOL_MAP before --live; RISK_SCALE=1.5
+- V2 (dominance rotation, from a trader's video): Phase 0 doc written,
+  KILL TEST FAILED 2026-07-11 (0/3 lookbacks, CIs straddle zero;
+  quadrant table contradicts the strategy's own logic) -> V2 CONCLUDED
+  at M1, no strategy code written. Trial ledger now 41. Kept: 6h/12h
+  resampler, EW investable indices, dominance proxy (data/indices.py,
+  data/resample.py). docs/research/v2-dominance-rotation-phase0.md
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee
