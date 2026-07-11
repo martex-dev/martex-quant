@@ -39,6 +39,12 @@ RESELECT_DAYS = 90
 TRAIN_DAYS = 365
 FETCH_DAYS = 560  # train + max warmup + slack
 
+# Cross-sectional strategies decide over ALL symbols at once; their
+# exposures are fractions of TOTAL equity (not per-symbol slices).
+CROSS_SECTIONAL = {"rotation"}
+ROTATION_GRID = [30, 90]
+ROTATION_TOP_K = 2
+
 
 def fetch_frames(collector: Any, now: datetime) -> dict[str, pl.DataFrame]:
     end = now.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -80,3 +86,44 @@ def current_exposure(strategy_name: str, param: float, df: pl.DataFrame) -> floa
 
 def utcnow() -> datetime:
     return datetime.now(tz=UTC)
+
+
+def rotation_weights(
+    frames: dict[str, pl.DataFrame], lookback: int, top_k: int = ROTATION_TOP_K
+) -> dict[str, float]:
+    """Current dual-momentum rotation weights (stateless, from latest closes)."""
+    scores: dict[str, float] = {}
+    for symbol, df in frames.items():
+        closes = df["close"]
+        if closes.len() > lookback:
+            past = closes[-1 - lookback]
+            now_ = closes[-1]
+            assert isinstance(past, float) and isinstance(now_, float)
+            scores[symbol] = now_ / past - 1.0
+    ranked = sorted(scores, key=lambda s: scores[s], reverse=True)[:top_k]
+    return {s: 1.0 / top_k for s in ranked if scores[s] > 0.0}
+
+
+def select_rotation_param(frames: dict[str, pl.DataFrame]) -> float:
+    """Best rotation lookback on the trailing year — same selection idea as
+    the walk-forward validation (train-only, by annualized Sharpe)."""
+    from trading_bot.backtesting.metrics import compute_metrics
+    from trading_bot.backtesting.multi import MultiBacktestConfig, run_multi_backtest
+    from trading_bot.strategies.rotation import DualMomentumRotation
+
+    best_param: float = float(ROTATION_GRID[0])
+    best_sharpe = float("-inf")
+    for lookback in ROTATION_GRID:
+        sliced = {s: df.tail(TRAIN_DAYS) for s, df in frames.items()}
+        result = run_multi_backtest(
+            sliced,
+            DualMomentumRotation(int(lookback)),
+            config=MultiBacktestConfig(initial_cash=10_000.0),
+            warmup_bars=int(lookback) + 1,
+        )
+        if result.equity_curve.height < 30:
+            continue
+        sharpe = compute_metrics(result.equity_curve, [], Interval.D1).sharpe
+        if sharpe > best_sharpe:
+            best_param, best_sharpe = float(lookback), sharpe
+    return best_param

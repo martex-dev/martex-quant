@@ -75,3 +75,19 @@ before any deployment claim.
 - Trial ledger: +3 (2 lookbacks + gated spec) -> 55.
 - Survivorship caveat REMAINS OPEN (universe = survivors); recorded on
   every result until a listing-aware wide universe re-run exists.
+
+## Strategy-grade results, RAW variant (2026-07-11)
+
+Walk-forward OOS 2,880d (~7.9y): **Sharpe 0.98, CAGR +60%, DSR 0.888 vs
+55 trials — the strongest evidence in the program**; correlation with the
+deployed V1 stream only 0.34 (true diversifier); V1 Sharpe on the same
+overlap 0.74. BUT max drawdown -76% and high daily vol -> real-firm
+prop-sim pass 28-31% at ALL sizings (bar: 35%). Bar 1 PASS, bar 2 FAIL:
+**raw variant NOT eligible for paper.**
+
+## SIZED variant (pre-registered 2026-07-11 BEFORE its run; +1 trial -> 56)
+
+VolTargetRotation: identical signal and walk-forward protocol; selected
+basket's weights scaled by min(1, 0.30 / realized 30d basket vol)
+(target and window FIXED — the exact cure hyp 06 applied to hyp 02/07).
+Same two bars. If it passes both -> paper eligible.
