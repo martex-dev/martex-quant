@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Trading Bot — Operations</title>
+<style>
+  :root { --bg:#0f1419; --card:#1a2129; --line:#2a3441; --text:#d8dee6; --dim:#7d8a99;
+          --green:#4cc38a; --red:#e5484d; --amber:#f0b429; --accent:#6e9fff; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--text); font:14px/1.5 "Segoe UI",system-ui,sans-serif; padding:24px; }
+  h1 { font-size:19px; font-weight:600; margin-bottom:2px; }
+  h2 { font-size:13px; font-weight:600; color:var(--dim); text-transform:uppercase; letter-spacing:.08em; margin-bottom:10px; }
+  .sub { color:var(--dim); margin-bottom:20px; font-size:13px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); gap:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .wide { grid-column:1 / -1; }
+  .kv { display:flex; justify-content:space-between; padding:3px 0; border-bottom:1px dotted var(--line); }
+  .kv:last-child { border-bottom:none; }
+  .kv b { font-weight:600; }
+  .badge { display:inline-block; padding:2px 10px; border-radius:99px; font-size:12px; font-weight:600; }
+  .ok { background:#123527; color:var(--green); } .warn { background:#3a2c10; color:var(--amber); }
+  .bad { background:#3c1618; color:var(--red); } .off { background:#22293300; color:var(--dim); border:1px solid var(--line); }
+  table { width:100%; border-collapse:collapse; font-size:12.5px; }
+  th { text-align:left; color:var(--dim); font-weight:600; padding:4px 8px; border-bottom:1px solid var(--line); }
+  td { padding:4px 8px; border-bottom:1px solid var(--line); }
+  pre { background:#0b0f14; border:1px solid var(--line); border-radius:8px; padding:10px;
+        font:12px/1.45 Consolas,monospace; overflow:auto; max-height:260px; white-space:pre-wrap; }
+  button { background:var(--accent); color:#0b0f14; border:none; border-radius:7px; padding:8px 14px;
+           font-weight:600; font-size:13px; cursor:pointer; margin:0 8px 8px 0; }
+  button:disabled { opacity:.45; cursor:wait; }
+  button.secondary { background:var(--card); color:var(--text); border:1px solid var(--line); }
+  svg { width:100%; height:120px; }
+  .check { list-style:none; } .check li { padding:3px 0; }
+  .check li::before { content:"○ "; color:var(--dim); } .check li.done::before { content:"● "; color:var(--green); }
+  .exposure-bar { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+  .exposure-bar > div { height:100%; background:var(--accent); }
+</style>
+</head>
+<body>
+<h1>Trading Bot — Operations</h1>
+<div class="sub" id="meta">loading…</div>
+
+<div class="grid">
+  <div class="card">
+    <h2>System</h2>
+    <div id="system"></div>
+  </div>
+
+  <div class="card">
+    <h2>Guard</h2>
+    <div id="guard"></div>
+  </div>
+
+  <div class="card">
+    <h2>Eval checklist</h2>
+    <ul class="check" id="checklist"></ul>
+  </div>
+
+  <div class="card wide">
+    <h2>Paper account <span class="badge off" id="paper-badge"></span></h2>
+    <svg id="paper-chart" preserveAspectRatio="none"></svg>
+    <div id="paper-info"></div>
+  </div>
+
+  <div class="card wide" id="live-card" style="display:none">
+    <h2>Eval / live account <span class="badge off" id="live-badge"></span></h2>
+    <svg id="live-chart" preserveAspectRatio="none"></svg>
+    <div id="live-info"></div>
+  </div>
+
+  <div class="card wide">
+    <h2>Recent fills (paper)</h2>
+    <table id="fills"><thead><tr><th>time</th><th>symbol</th><th>side</th><th>quantity</th><th>price</th><th>fee</th></tr></thead><tbody></tbody></table>
+  </div>
+
+  <div class="card wide">
+    <h2>Actions</h2>
+    <div>
+      <button data-action="paper-run">Run paper now</button>
+      <button data-action="mt5-dryrun">MT5 dry-run</button>
+      <button data-action="guard-check">Guard check</button>
+      <button data-action="data-report" class="secondary">Data quality report</button>
+      <button data-action="tests" class="secondary">Run test suite</button>
+    </div>
+    <div class="sub" style="margin:6px 0">Going <b>live</b> is deliberately not a button — it is a manual, documented step (see eval runbook).</div>
+    <pre id="action-out">action output appears here</pre>
+  </div>
+
+  <div class="card wide">
+    <h2>Nightly run log</h2>
+    <pre id="runs-log"></pre>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = (x, d=2) => x == null ? "—" : Number(x).toLocaleString("en-US", {maximumFractionDigits:d});
+const kv = (k, v) => `<div class="kv"><span>${k}</span><b>${v}</b></div>`;
+
+function drawChart(svgId, series) {
+  const svg = $(svgId);
+  if (!series || series.length < 2) { svg.innerHTML = "<text x='8' y='20' fill='#7d8a99' font-size='12'>not enough data yet — the curve grows one point per night</text>"; return; }
+  const values = series.map(p => p[1]);
+  const min = Math.min(...values), max = Math.max(...values);
+  const pad = (max - min) < 1e-9 ? 1 : (max - min) * 0.1;
+  const lo = min - pad, hi = max + pad;
+  const W = 1000, H = 120;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const pts = values.map((v, i) =>
+    `${(i / (values.length - 1)) * W},${H - ((v - lo) / (hi - lo)) * H}`).join(" ");
+  const last = values[values.length - 1], first = values[0];
+  const color = last >= first ? "#4cc38a" : "#e5484d";
+  svg.innerHTML = `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2"/>` +
+    `<text x="${W-8}" y="14" fill="${color}" font-size="13" text-anchor="end">${fmt(last)}</text>`;
+}
+
+function accountInfo(section) {
+  const m = section.last_mark || {};
+  let html = kv("equity", "$" + fmt(m.equity)) +
+             kv("marks recorded", section.n_marks) +
+             kv("days running", section.days_running) +
+             kv("last update", m.ts ? m.ts.replace("T", " ").slice(0, 16) : "—");
+  const expo = m.exposures || {};
+  const rows = Object.entries(expo).map(([sym, e]) =>
+    `<tr><td>${sym}</td><td style="width:55%"><div class="exposure-bar"><div style="width:${Math.min(100, e*100)}%"></div></div></td><td>${fmt(e, 2)}</td></tr>`).join("");
+  if (rows) html += `<table style="margin-top:8px"><thead><tr><th>symbol</th><th>exposure</th><th></th></tr></thead><tbody>${rows}</tbody></table>`;
+  return html;
+}
+
+async function refresh() {
+  const s = await (await fetch("/api/status")).json();
+  $("meta").textContent = `${s.strategy} · ${s.plan} · rev ${s.git_rev} · refreshed ${s.generated_at.slice(11,19)}`;
+
+  const liveLabel = !s.live.started ? "not purchased yet"
+    : (s.live.last_mark && s.live.last_mark.dry_run) ? "dry-run testing" : "LIVE";
+  $("system").innerHTML =
+    kv("paper trading", s.paper.started ? "running nightly (03:10)" : "not started") +
+    kv("eval / live", liveLabel) +
+    kv("firm symbol map", s.symbol_map_present ? "written" : "pending (eval day 0)") +
+    kv("code revision", s.git_rev);
+
+  const g = s.guard;
+  const badge = g.killed ? "<span class='badge bad'>KILLED — latched</span>"
+    : (g.state && g.state.tripped) ? "<span class='badge warn'>daily trip active</span>"
+    : "<span class='badge ok'>armed, clear</span>";
+  $("guard").innerHTML = badge +
+    kv("day start equity", g.state ? "$" + fmt(g.state.day_start_equity) : "—") +
+    kv("recent events", g.log.length ? g.log[g.log.length-1].action : "none") +
+    (g.killed ? `<pre>${g.kill_note}</pre>` : "");
+
+  $("checklist").innerHTML = s.checklist.map(c => {
+    let done = !!c.done;
+    if (c.auto === "days") done = s.paper.days_running >= 14;
+    if (c.auto === "map") done = s.symbol_map_present;
+    return `<li class="${done ? "done" : ""}">${c.item}${c.auto === "days" ? ` (${s.paper.days_running}/14 days)` : ""}</li>`;
+  }).join("");
+
+  $("paper-badge").textContent = s.paper.started ? "active" : "waiting for first run";
+  drawChart("paper-chart", s.paper.equity_series);
+  $("paper-info").innerHTML = accountInfo(s.paper);
+
+  if (s.live.started) {
+    $("live-card").style.display = "";
+    const dry = s.live.last_mark && s.live.last_mark.dry_run;
+    $("live-badge").textContent = dry ? "DRY RUN" : "LIVE";
+    drawChart("live-chart", s.live.equity_series);
+    $("live-info").innerHTML = accountInfo(s.live);
+  }
+
+  $("fills").querySelector("tbody").innerHTML = (s.paper.recent_fills || []).map(f =>
+    `<tr><td>${(f.ts||"").replace("T"," ").slice(0,16)}</td><td>${f.symbol}</td><td>${f.side}</td>` +
+    `<td>${fmt(f.quantity,6)}</td><td>${fmt(f.price)}</td><td>${fmt(f.fee,4)}</td></tr>`).join("")
+    || "<tr><td colspan='6' style='color:#7d8a99'>no fills yet — the system is deliberately flat when momentum is negative</td></tr>";
+
+  $("runs-log").textContent = s.runs_log || "no runs logged yet";
+}
+
+document.querySelectorAll("button[data-action]").forEach(btn => {
+  btn.addEventListener("click", async () => {
+    const name = btn.dataset.action;
+    document.querySelectorAll("button").forEach(b => b.disabled = true);
+    $("action-out").textContent = `running ${name}… (this can take a minute)`;
+    try {
+      const r = await (await fetch("/api/action/" + name, {method: "POST"})).json();
+      $("action-out").textContent = `$ ${name}  (exit ${r.exit_code})\n\n${r.output}`;
+    } catch (e) {
+      $("action-out").textContent = "failed: " + e;
+    }
+    document.querySelectorAll("button").forEach(b => b.disabled = false);
+    refresh();
+  });
+});
+
+refresh();
+setInterval(refresh, 30_000);
+</script>
+</body>
+</html>
