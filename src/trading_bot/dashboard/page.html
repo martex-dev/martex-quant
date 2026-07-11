@@ -173,9 +173,9 @@ async function refresh() {
 
   $("checklist").innerHTML = s.checklist.map(c => {
     let done = !!c.done;
-    if (c.auto === "days") done = (s.strategies["vol-target"] || st).paper.days_running >= 14;
+    if (c.auto === "days") done = (((s.strategies || {})["vol-target"]) || st).paper.days_running >= 14;
     if (c.auto === "map") done = s.symbol_map_present;
-    return `<li class="${done ? "done" : ""}">${c.item}${c.auto === "days" ? ` (${(s.strategies["vol-target"] || st).paper.days_running}/14 days)` : ""}</li>`;
+    return `<li class="${done ? "done" : ""}">${c.item}${c.auto === "days" ? ` (${(((s.strategies || {})["vol-target"]) || st).paper.days_running}/14 days)` : ""}</li>`;
   }).join("");
 
   $("paper-title").textContent = `Paper — ${currentStrategy}`;
