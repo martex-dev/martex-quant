@@ -50,3 +50,28 @@ prioritized (short leg is both survivor-biased and funding-costly),
 widened listing-aware universe, DSR vs the full ledger. Survivorship
 caveat from the pre-registration REMAINS OPEN and must be addressed
 before any deployment claim.
+
+## Strategy-grade specification (pre-registered 2026-07-11, BEFORE the run)
+
+- **DualMomentumRotation**: each day rank the 8 symbols by trailing
+  L-day return; hold the TOP-2 equal-weight, but only slots whose
+  trailing return is POSITIVE (absolute-momentum gate — combines the
+  validated time-series result with the passed cross-sectional test);
+  gated-out slots sit in cash. Long-only. K=2 FIXED.
+- L selected by walk-forward: 365d train, 90d test, grid {30, 90} ONLY.
+- Multi-asset event-driven engine (one-bar latency, standard cost
+  model), daily bars, full lake depth.
+- Verdict bars (candidate grade):
+  1. OOS portfolio Sharpe >= the deployed vol-target candidate's on the
+     common window, OR Sharpe within 15% of it with return correlation
+     < 0.7 (diversification value justifies a second engine);
+  2. prop-sim (real firm 1-step static rules) pass rate >= 35% at some
+     sizing;
+  3. DSR vs full ledger reported honestly (0.95 remains the absolute
+     validation bar; candidate grade does not require it, deployment of
+     real money does).
+- Paper trading eligibility: meets bars 1 AND 2 -> joins the paper
+  stable alongside vol-target.
+- Trial ledger: +3 (2 lookbacks + gated spec) -> 55.
+- Survivorship caveat REMAINS OPEN (universe = survivors); recorded on
+  every result until a listing-aware wide universe re-run exists.
