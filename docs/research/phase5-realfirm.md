@@ -7,7 +7,19 @@ Inputs: the user's actual firm menu. Both 5k accounts, no time limits.
 
 Reproducible: scripts/phase5_realfirm.py (20k paths/cell).
 
-## FIRM ANSWERS CONFIRMED (2026-07-11)
+## SCOPE CLARIFICATION (2026-07-11, later same day)
+
+All rules/fees below are the firm's **CFD program** (crypto CFDs — our
+instruments). The firm ALSO has a separate FUTURES arm (1-step 25k:
+6% target, $1,000 = 4% TRAILING EOD max loss, consistency rule 40%,
+80% split; Day Trade $59 — no overnight, incompatible with our holding
+periods; Swing $120 — compatible). Futures path PARKED: blocked on
+whether their futures instrument list includes micro crypto contracts,
+and it would be a new 2-symbol spec needing its own simulation. The
+trailing DD + consistency rule geometry is expected to simulate worse
+than the CFD option. Revisit after a CFD funded account exists.
+
+## FIRM ANSWERS CONFIRMED (2026-07-11) — CFD program
 
 - Max loss: **STATIC** -> Option 1 is the play (see recommendation).
 - Automation: **allowed**. Weekend holding: **no restrictions**.

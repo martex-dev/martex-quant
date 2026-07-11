@@ -101,9 +101,11 @@
   vol-target, run daily after 00:00 UTC; state in data/paper/;
   shares selection code path with research (select_param). First run
   2026-07-11: all-flat (negative momentum regime) — correct behavior
-- Futures-vs-crypto RESOLVED for this path: firm is CFD-crypto
-  (1:30/1:100), crypto system maps directly; futures build deferred
-  until a futures firm is actually on the table
+- Futures-vs-crypto: firm has BOTH arms. All confirmed rules/fees =
+  CFD program (crypto CFDs, our instruments) -> primary path. Futures
+  arm (25k 1-step, 4% trailing EOD, 40% consistency rule, Swing $120)
+  PARKED: blocked on micro-crypto availability in their futures list;
+  would be a new 2-symbol spec; revisit after CFD funded account
 - REVISED PLAN (2026-07-11, user is a student, summer availability):
   paper gate COMPRESSED to a 2-3 week operational shakedown (honest
   basis: the statistical gate was the 4.7y OOS; 60 more days adds
