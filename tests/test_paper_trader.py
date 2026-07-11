@@ -5,6 +5,7 @@ from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import polars as pl
+import pytest
 
 from trading_bot.data.models import Interval, ohlcv_frame_from_rows
 from trading_bot.live.paper import SYMBOLS, PaperTrader
@@ -88,3 +89,23 @@ def test_reselect_after_90_days(tmp_path: Path) -> None:
     first = trader.state["last_reselect"]
     trader.run_once(now=now + timedelta(days=91))
     assert trader.state["last_reselect"] != first
+
+
+def test_rotation_paper_trader_end_to_end(tmp_path: Path) -> None:
+    """Cross-sectional path: selects a lookback, holds top-2 as fractions of
+    TOTAL equity, journals fills."""
+    now = T0 + timedelta(days=555)
+    trader = PaperTrader(
+        "rotation", tmp_path / "paper", collector=FakeDailyCollector(), initial_cash=5_000.0
+    )
+    mark = trader.run_once(now=now)
+
+    assert set(trader.state["params"]) == {"lookback"}
+    fractions = mark["exposures"]
+    invested = {s: f for s, f in fractions.items() if f > 0}
+    assert len(invested) == 2  # top-2 slots
+    assert sum(invested.values()) == pytest.approx(1.0, abs=0.05)  # low-vol -> full budget
+    assert mark["n_fills"] == 2
+    # Second run same day: no churn.
+    mark2 = trader.run_once(now=now + timedelta(days=1))
+    assert mark2["n_fills"] == 0

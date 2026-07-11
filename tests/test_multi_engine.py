@@ -150,3 +150,25 @@ def test_rotation_validation() -> None:
         DualMomentumRotation(lookback=0)
     with pytest.raises(ValueError):
         DualMomentumRotation(lookback=5, top_k=0)
+
+
+def test_vol_target_rotation_scales_down_in_high_vol() -> None:
+    from trading_bot.strategies.rotation import VolTargetRotation
+
+    calm = [100.0 * (1.002**i) for i in range(40)]
+    wild = [100.0 * (1.002**i) * (1 + (0.06 if i % 2 else -0.02)) for i in range(40)]
+    calm_h = make_histories({"A": calm, "B": [c * 0.5 for c in calm]})
+    wild_h = make_histories({"A": wild, "B": [c * 0.5 for c in wild]})
+
+    strategy = VolTargetRotation(lookback=10, vol_window=20)
+    calm_w = strategy.target_weights(calm_h)
+    wild_w = strategy.target_weights(wild_h)
+    assert sum(calm_w.values()) > 0.9  # low vol -> near-full allocation
+    assert 0 < sum(wild_w.values()) < 0.5  # high vol -> scaled down
+
+
+def test_vol_target_rotation_stays_out_without_history() -> None:
+    from trading_bot.strategies.rotation import VolTargetRotation
+
+    short = make_histories({"A": [100.0, 105.0, 110.0, 120.0]})
+    assert VolTargetRotation(lookback=2, vol_window=30).target_weights(short) == {}

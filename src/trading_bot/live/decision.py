@@ -88,20 +88,23 @@ def utcnow() -> datetime:
     return datetime.now(tz=UTC)
 
 
-def rotation_weights(
-    frames: dict[str, pl.DataFrame], lookback: int, top_k: int = ROTATION_TOP_K
-) -> dict[str, float]:
-    """Current dual-momentum rotation weights (stateless, from latest closes)."""
-    scores: dict[str, float] = {}
+def _histories(frames: dict[str, pl.DataFrame]) -> dict[str, Any]:
+    from trading_bot.core.events import bars_from_frame
+
+    out = {}
     for symbol, df in frames.items():
-        closes = df["close"]
-        if closes.len() > lookback:
-            past = closes[-1 - lookback]
-            now_ = closes[-1]
-            assert isinstance(past, float) and isinstance(now_, float)
-            scores[symbol] = now_ / past - 1.0
-    ranked = sorted(scores, key=lambda s: scores[s], reverse=True)[:top_k]
-    return {s: 1.0 / top_k for s in ranked if scores[s] > 0.0}
+        history = History(bars_from_frame(df))
+        for _ in range(df.height):
+            history.advance()
+        out[symbol] = history
+    return out
+
+
+def rotation_weights(frames: dict[str, pl.DataFrame], lookback: int) -> dict[str, float]:
+    """Current VolTargetRotation weights — the same class the validation ran."""
+    from trading_bot.strategies.rotation import VolTargetRotation
+
+    return VolTargetRotation(int(lookback)).target_weights(_histories(frames))
 
 
 def select_rotation_param(frames: dict[str, pl.DataFrame]) -> float:
@@ -109,7 +112,7 @@ def select_rotation_param(frames: dict[str, pl.DataFrame]) -> float:
     the walk-forward validation (train-only, by annualized Sharpe)."""
     from trading_bot.backtesting.metrics import compute_metrics
     from trading_bot.backtesting.multi import MultiBacktestConfig, run_multi_backtest
-    from trading_bot.strategies.rotation import DualMomentumRotation
+    from trading_bot.strategies.rotation import VolTargetRotation
 
     best_param: float = float(ROTATION_GRID[0])
     best_sharpe = float("-inf")
@@ -117,9 +120,9 @@ def select_rotation_param(frames: dict[str, pl.DataFrame]) -> float:
         sliced = {s: df.tail(TRAIN_DAYS) for s, df in frames.items()}
         result = run_multi_backtest(
             sliced,
-            DualMomentumRotation(int(lookback)),
+            VolTargetRotation(int(lookback)),
             config=MultiBacktestConfig(initial_cash=10_000.0),
-            warmup_bars=int(lookback) + 1,
+            warmup_bars=max(int(lookback), 30) + 1,
         )
         if result.equity_curve.height < 30:
             continue

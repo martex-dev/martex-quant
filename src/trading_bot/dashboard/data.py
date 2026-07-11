@@ -99,10 +99,29 @@ def _git_rev(base: Path) -> str:
     return _GIT_REV_CACHE[key]
 
 
+def _discover_strategies(base: Path) -> list[str]:
+    names = set()
+    for kind in ("paper", "live"):
+        root = base / "data" / kind
+        if root.exists():
+            for child in root.iterdir():
+                if child.is_dir() and child.name != "guard":
+                    names.add(child.name)
+    return sorted(names) if names else ["vol-target"]
+
+
 def gather_status(base: Path) -> dict[str, Any]:
     """Everything the dashboard page needs, in one JSON-safe dict."""
     symbol_map = read_json(base / "config" / "symbol_map.json")
+    strategies = {
+        name: {
+            "paper": _account_section(base / "data" / "paper" / name),
+            "live": _account_section(base / "data" / "live" / name),
+        }
+        for name in _discover_strategies(base)
+    }
     return {
+        "strategies": strategies,
         "generated_at": datetime.now().astimezone().isoformat(),
         "git_rev": _git_rev(base),
         "strategy": "vol-target momentum (30% target vol), EW 8 symbols, 1.5x eval sizing",

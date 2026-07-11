@@ -34,12 +34,15 @@ import polars as pl
 from trading_bot.data.collectors.binance import BinanceCollector
 from trading_bot.execution.simulated import ExecutionConfig
 from trading_bot.live.decision import (
+    CROSS_SECTIONAL,
     STRATEGIES,
     SYMBOLS,
     current_exposure,
     fetch_frames,
     needs_reselect,
     reselect_params,
+    rotation_weights,
+    select_rotation_param,
 )
 
 logger = logging.getLogger(__name__)
@@ -56,10 +59,10 @@ class PaperTrader:
         initial_cash: float = 5_000.0,
         execution: ExecutionConfig | None = None,
     ) -> None:
-        if strategy_name not in STRATEGIES:
+        if strategy_name not in STRATEGIES and strategy_name not in CROSS_SECTIONAL:
             raise ValueError(f"unknown strategy {strategy_name!r}")
         self.strategy_name = strategy_name
-        self.grid, self.factory, self.warmup_of = STRATEGIES[strategy_name]
+        self.is_cross_sectional = strategy_name in CROSS_SECTIONAL
         self.root = root
         self.root.mkdir(parents=True, exist_ok=True)
         self.collector = collector if collector is not None else BinanceCollector()
@@ -99,24 +102,35 @@ class PaperTrader:
         frames = fetch_frames(self.collector, now)
 
         if needs_reselect(self.state.get("last_reselect"), self.state["params"], now):
-            self.state["params"] = reselect_params(frames, self.strategy_name)
+            if self.is_cross_sectional:
+                self.state["params"] = {"lookback": select_rotation_param(frames)}
+            else:
+                self.state["params"] = reselect_params(frames, self.strategy_name)
             self.state["last_reselect"] = now.isoformat()
             logger.info("reselected params: %s", self.state["params"])
 
         prices: dict[str, float] = {}
-        exposures: dict[str, float] = {}
         for symbol, df in frames.items():
-            exposures[symbol] = current_exposure(
-                self.strategy_name, self.state["params"][symbol], df
-            )
             close = df["close"][-1]
             assert isinstance(close, float)
             prices[symbol] = close
 
+        # ``fractions``: fraction of TOTAL equity per symbol, both paths.
+        if self.is_cross_sectional:
+            weights = rotation_weights(frames, int(self.state["params"]["lookback"]))
+            fractions = {s: weights.get(s, 0.0) for s in SYMBOLS}
+            exposures = dict(fractions)
+        else:
+            exposures = {
+                s: current_exposure(self.strategy_name, self.state["params"][s], frames[s])
+                for s in SYMBOLS
+            }
+            fractions = {s: exposures[s] / len(SYMBOLS) for s in SYMBOLS}
+
         equity = self._equity(prices)
         fills = []
         for symbol in SYMBOLS:
-            target_units = exposures[symbol] * (equity / len(SYMBOLS)) / prices[symbol]
+            target_units = fractions[symbol] * equity / prices[symbol]
             delta = target_units - self.state["positions"].get(symbol, 0.0)
             notional = abs(delta) * prices[symbol]
             if notional < equity * 0.001:  # skip dust rebalances (<0.1% equity)
@@ -174,7 +188,9 @@ class PaperTrader:
 def main() -> int:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     parser = argparse.ArgumentParser(prog="python -m trading_bot.live.paper")
-    parser.add_argument("--strategy", choices=list(STRATEGIES), default="vol-target")
+    parser.add_argument(
+        "--strategy", choices=[*STRATEGIES, *sorted(CROSS_SECTIONAL)], default="vol-target"
+    )
     parser.add_argument(
         "--root", type=Path, default=None, help="state dir (default data/paper/<strategy>)"
     )

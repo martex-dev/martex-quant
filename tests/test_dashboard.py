@@ -119,3 +119,16 @@ def test_run_action_inherits_full_environment(tmp_path: Path, monkeypatch) -> No
     assert result["exit_code"] == 0
     assert "present" in result["output"]
     assert os.environ.get("DASHBOARD_ENV_CANARY") == "present"
+
+
+def test_strategies_discovered_and_sectioned(tmp_path: Path) -> None:
+    for name in ("vol-target", "rotation"):
+        write_jsonl(
+            tmp_path / "data" / "paper" / name / "equity.jsonl",
+            [{"ts": "2026-07-11T00:10:00+00:00", "equity": 5000.0, "exposures": {}}],
+        )
+    (tmp_path / "data" / "live" / "guard").mkdir(parents=True)  # excluded
+    status = gather_status(tmp_path)
+    assert sorted(status["strategies"]) == ["rotation", "vol-target"]
+    assert status["strategies"]["rotation"]["paper"]["started"] is True
+    assert status["strategies"]["rotation"]["live"]["started"] is False

@@ -8,6 +8,7 @@ Spec pre-registered in docs/hypotheses/11-cross-sectional-rotation.md.
 from __future__ import annotations
 
 import statistics
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -25,8 +26,19 @@ from trading_bot.backtesting.walkforward import walk_forward_windows
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
 from trading_bot.risk_management.prop_sim import PropFirmRules, simulate_evaluation
-from trading_bot.strategies.rotation import DualMomentumRotation
+from trading_bot.strategies.rotation import DualMomentumRotation, VolTargetRotation
 from trading_bot.strategies.vol_target import VolTargetMomentum
+
+SIZED = "--sized" in sys.argv
+
+
+def make_strategy(lookback: int):  # noqa: ANN201
+    return VolTargetRotation(lookback) if SIZED else DualMomentumRotation(lookback)
+
+
+def warmup_of(lookback: int) -> int:
+    return (max(lookback, 30) if SIZED else lookback) + 1
+
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 GRID = [30, 90]
@@ -72,9 +84,9 @@ def main() -> None:
         for lookback in GRID:
             train = run_multi_backtest(
                 slice_frames(frames, t0, t1),
-                DualMomentumRotation(lookback),
+                make_strategy(lookback),
                 config=CONFIG,
-                warmup_bars=lookback + 1,
+                warmup_bars=warmup_of(lookback),
             )
             s = sharpe_of(train.equity_curve)
             if s > best_sharpe:
@@ -82,12 +94,12 @@ def main() -> None:
         assert best_param is not None
         chosen_list.append(best_param)
 
-        warm_start = t1 - timedelta(days=best_param + 10)
+        warm_start = t1 - timedelta(days=warmup_of(best_param) + 10)
         test = run_multi_backtest(
             slice_frames(frames, warm_start, t2),
-            DualMomentumRotation(best_param),
+            make_strategy(best_param),
             config=CONFIG,
-            warmup_bars=best_param + 1,
+            warmup_bars=warmup_of(best_param),
         )
         curve = test.equity_curve.filter(pl.col("timestamp") >= t1)
         if curve.height == 0:
@@ -101,6 +113,7 @@ def main() -> None:
     returns = oos["equity"].pct_change().drop_nulls()
     pp_sharpe = (returns.mean() or 0.0) / (returns.std() or 1.0)
 
+    print(f"variant: {'SIZED (vol-target)' if SIZED else 'RAW'}")
     print(f"walk-forward OOS: {oos.height} days, chosen L per window: {chosen_list}")
     print(m.to_text())
 
@@ -109,7 +122,7 @@ def main() -> None:
     trial_sharpes = []
     for lookback in GRID:
         fixed = run_multi_backtest(
-            frames, DualMomentumRotation(lookback), config=CONFIG, warmup_bars=lookback + 1
+            frames, make_strategy(lookback), config=CONFIG, warmup_bars=warmup_of(lookback)
         )
         curve = fixed.equity_curve.filter(pl.col("timestamp") >= oos_start)
         r = curve["equity"].pct_change().drop_nulls()

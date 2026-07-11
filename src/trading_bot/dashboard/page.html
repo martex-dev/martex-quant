@@ -57,7 +57,13 @@
   </div>
 
   <div class="card wide">
-    <h2>Paper account <span class="badge off" id="paper-badge"></span></h2>
+    <h2>Strategies</h2>
+    <div id="tabs"></div>
+    <div class="sub" style="margin-top:6px">Each strategy is an independent paper (and later live) account. Click to switch every panel below.</div>
+  </div>
+
+  <div class="card wide">
+    <h2><span id="paper-title">Paper account</span> <span class="badge off" id="paper-badge"></span></h2>
     <svg id="paper-chart" preserveAspectRatio="none"></svg>
     <div id="paper-info"></div>
   </div>
@@ -69,7 +75,7 @@
   </div>
 
   <div class="card wide">
-    <h2>Recent fills (paper)</h2>
+    <h2><span id="fills-title">Recent fills (paper)</span></h2>
     <table id="fills"><thead><tr><th>time</th><th>symbol</th><th>side</th><th>quantity</th><th>price</th><th>fee</th></tr></thead><tbody></tbody></table>
   </div>
 
@@ -94,6 +100,7 @@
 
 <script>
 const $ = (id) => document.getElementById(id);
+let currentStrategy = localStorage.getItem("strategy") || "vol-target";
 const fmt = (x, d=2) => x == null ? "—" : Number(x).toLocaleString("en-US", {maximumFractionDigits:d});
 const kv = (k, v) => `<div class="kv"><span>${k}</span><b>${v}</b></div>`;
 
@@ -127,14 +134,30 @@ function accountInfo(section) {
   return html;
 }
 
+function renderTabs(s) {
+  const names = Object.keys(s.strategies || {});
+  if (!names.includes(currentStrategy)) currentStrategy = names[0] || "vol-target";
+  $("tabs").innerHTML = names.map(n =>
+    `<button class="${n === currentStrategy ? "" : "secondary"}" data-tab="${n}">${n}</button>`
+  ).join("");
+  document.querySelectorAll("button[data-tab]").forEach(b => b.addEventListener("click", () => {
+    currentStrategy = b.dataset.tab;
+    localStorage.setItem("strategy", currentStrategy);
+    refresh();
+  }));
+}
+
 async function refresh() {
   const s = await (await fetch("/api/status")).json();
+  renderTabs(s);
+  const st = (s.strategies && s.strategies[currentStrategy]) || {paper: s.paper, live: s.live};
   $("meta").textContent = `${s.strategy} · ${s.plan} · rev ${s.git_rev} · refreshed ${s.generated_at.slice(11,19)}`;
 
-  const liveLabel = !s.live.started ? "not purchased yet"
-    : (s.live.last_mark && s.live.last_mark.dry_run) ? "dry-run testing" : "LIVE";
+  const liveLabel = !st.live.started ? "not purchased yet"
+    : (st.live.last_mark && st.live.last_mark.dry_run) ? "dry-run testing" : "LIVE";
   $("system").innerHTML =
-    kv("paper trading", s.paper.started ? "running nightly (03:10)" : "not started") +
+    kv("strategies tracked", Object.keys(s.strategies || {}).join(", ")) +
+    kv("paper trading", st.paper.started ? "running nightly (03:10)" : "not started") +
     kv("eval / live", liveLabel) +
     kv("firm symbol map", s.symbol_map_present ? "written" : "pending (eval day 0)") +
     kv("code revision", s.git_rev);
@@ -150,24 +173,26 @@ async function refresh() {
 
   $("checklist").innerHTML = s.checklist.map(c => {
     let done = !!c.done;
-    if (c.auto === "days") done = s.paper.days_running >= 14;
+    if (c.auto === "days") done = (s.strategies["vol-target"] || st).paper.days_running >= 14;
     if (c.auto === "map") done = s.symbol_map_present;
-    return `<li class="${done ? "done" : ""}">${c.item}${c.auto === "days" ? ` (${s.paper.days_running}/14 days)` : ""}</li>`;
+    return `<li class="${done ? "done" : ""}">${c.item}${c.auto === "days" ? ` (${(s.strategies["vol-target"] || st).paper.days_running}/14 days)` : ""}</li>`;
   }).join("");
 
-  $("paper-badge").textContent = s.paper.started ? "active" : "waiting for first run";
-  drawChart("paper-chart", s.paper.equity_series);
-  $("paper-info").innerHTML = accountInfo(s.paper);
+  $("paper-title").textContent = `Paper — ${currentStrategy}`;
+  $("fills-title").textContent = `Recent fills (paper — ${currentStrategy})`;
+  $("paper-badge").textContent = st.paper.started ? "active" : "waiting for first run";
+  drawChart("paper-chart", st.paper.equity_series);
+  $("paper-info").innerHTML = accountInfo(st.paper);
 
-  if (s.live.started) {
-    $("live-card").style.display = "";
-    const dry = s.live.last_mark && s.live.last_mark.dry_run;
+  $("live-card").style.display = st.live.started ? "" : "none";
+  if (st.live.started) {
+    const dry = st.live.last_mark && st.live.last_mark.dry_run;
     $("live-badge").textContent = dry ? "DRY RUN" : "LIVE";
-    drawChart("live-chart", s.live.equity_series);
-    $("live-info").innerHTML = accountInfo(s.live);
+    drawChart("live-chart", st.live.equity_series);
+    $("live-info").innerHTML = accountInfo(st.live);
   }
 
-  $("fills").querySelector("tbody").innerHTML = (s.paper.recent_fills || []).map(f =>
+  $("fills").querySelector("tbody").innerHTML = (st.paper.recent_fills || []).map(f =>
     `<tr><td>${(f.ts||"").replace("T"," ").slice(0,16)}</td><td>${f.symbol}</td><td>${f.side}</td>` +
     `<td>${fmt(f.quantity,6)}</td><td>${fmt(f.price)}</td><td>${fmt(f.fee,4)}</td></tr>`).join("")
     || "<tr><td colspan='6' style='color:#7d8a99'>no fills yet — the system is deliberately flat when momentum is negative</td></tr>";
