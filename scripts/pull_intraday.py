@@ -37,11 +37,16 @@ PAUSE_S = 0.25
 MIN_COMPLETE_BARS = 30_000  # smaller cache files are treated as partial
 
 
+# Bybit lists some micro-priced coins in 1000-unit contracts; returns
+# are unaffected, so we fetch the 1000x market and keep our label.
+MARKET_OVERRIDES = {"PEPEUSDT": "1000PEPE/USDT:USDT"}
+
+
 def fetch(symbol: str) -> pl.DataFrame:
     import ccxt
 
     exchange = ccxt.bybit({"enableRateLimit": True})
-    market = f"{symbol[:-4]}/USDT:USDT"
+    market = MARKET_OVERRIDES.get(symbol, f"{symbol[:-4]}/USDT:USDT")
     rows: list[list[float]] = []
     since = SINCE
     now_ms = exchange.milliseconds()
