@@ -84,15 +84,15 @@ New strategies: strategies/blend.py, strategies/stops.py.
 
 ## JULY SPRINT (user goal 2026-07-12: ~$400 banked by Jul 31)
 
-Plan: docs/research/july-sprint.md + eval-runbook-sprint-amendment.md.
-**FIRM DECIDED: HyroTrader 1-step 5k, $69 + $39 swing-drawdown upgrade
-= $108** (swing = static drawdown, the simulated geometry — MANDATORY,
-select at purchase). Support answers (AI agent) folded into the
-amendment: 3%-per-trade loss cap -> per-position stops; low-cap 5%
-rule -> universe compliance filter; 2x notional cap -> 1.8x gross
-clamp; consistency counting undefined -> accepted risk w/ dilution
-tactic. **User buys 2026-07-13** (platform: Bybit), then API keys ->
-config/secrets/hyro.json (gitignored).
+Plan: docs/research/july-sprint.md + eval-runbook-sprint-amendment.md
+(**SINGLE-ATTEMPT REVISION 2026-07-13 governs**: user has ONE fee).
+**FIRM: HyroTrader 1-step 5k, $69 + $39 swing upgrade = $108.**
+**Config: rotation-stop ALONE @ RISK_SCALE 0.85** — P(pass) 62.3%,
+bust 37.7%, median 48d (funded ~end Aug); bounce overlay dropped from
+the eval (lowers one-shot odds); no retries, bust -> gate plan.
+Rule adjustments stand: per-position 3% stops, low-cap filter, 1.8x
+gross clamp, consistency dilution tactic. **User buys 2026-07-13**
+(platform: Bybit), then API keys -> config/secrets/hyro.json.
 
 ## Next actions (in order)
 
