@@ -24,12 +24,33 @@ stop-loss per position, max risk 3%/trade, payout >= $100 net profit
   eventual success). A 4th attempt requires a new human decision.
 - Guard: daily trip at -3.5% (inside the firm's 4%), static latch at
   $4,750 equivalent; KILLED latch cleared only by human (unchanged).
-- Mandatory-SL compliance: resting stop order per position at the
-  chandelier level (2xATR14 below entry-side 30d high), which is the
-  strategy's own exit anyway. Verify with support that a resting stop
-  order satisfies the rule (pre-purchase question).
 - Execution: Bybit API via ccxt adapter (live/bybit_broker.py, to be
   built), DRY-RUN default, --live flag, same shared decision core.
+
+## Firm-rule adjustments (support answers 2026-07-12, AI agent)
+
+1. **Per-trade loss cap 3% of initial balance ($150)**: every position
+   carries a resting stop at min(chandelier level, the price where the
+   position's loss = $150). SL itself is no longer mandatory, but the
+   loss cap is a hard rule; the stop enforces it mechanically. Extra
+   whipsaw risk vs the validated chandelier accepted and monitored.
+2. **Low-cap rule (max 5% of initial balance across assets with
+   <$100M mcap / $500K-5M 24h vol / Innovation Zone)**: day-0 task
+   classifies every universe symbol; non-compliant symbols are
+   EXCLUDED from the eval account's universe
+   (config/universe_hyro.json). If >8 of 40 are excluded, re-run the
+   wf validation on the reduced universe before first order (+1
+   pre-registered trial).
+3. **Gross exposure clamp**: open notional hard-capped at 1.8x initial
+   balance (firm caps at 2x). Effective sizing = min(4.0 x weights,
+   1.8 gross). Margin use stays far under the 25% funded cap at 100x
+   available leverage.
+4. **Consistency-rule residual risk** (counting undefined in docs):
+   accepted. Mitigation: near-daily rebalances spread realized P&L
+   across many closed trades over the >=10-day minimum; if the largest
+   single trade approaches 40% of total profit at target, keep trading
+   (unlimited time) to dilute before the pass is claimed. Dashboard
+   monitors the ratio.
 
 ## Switch-down rule (non-negotiable, automated)
 
