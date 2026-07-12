@@ -3,8 +3,8 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 114 pre-registered trials, all run. Every new spec raises
-## the DSR bar for everything. Do not test without a numbered doc FIRST.
+## Trial ledger: 120 registered (119 run, 1 data-blocked: H54). Every new
+## spec raises the DSR bar. Do not test without a numbered doc FIRST.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
 
@@ -49,6 +49,7 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 | 43 | Combo batch on rot-stop base | screen: only bounce admits; **43a KILLED (eval bars)** | rot-stop x V1 corr 0.521, x rotation 0.821 (blends dead); rot-stop+bounce Sharpe 1.55, +79%/yr, DSR 1.000 but prop 47.5%<73%, MDD worse -> replaces H41 as own-capital archive |
 | 44-50 | Retail intraday batch (maker regime, 15m Bybit) | ALL 7 claims KILLED; **H44 ORB + H45 first-hour INVERTED (significant)** | fade earns 0.16-0.20%/event = 4-5x maker toll; sessions/funding/levels/bursts/VWAP noise -> H51 |
 | 51 | Intraday fade strategies (51a fade-ORB, 51b fade-1st-hour) | BOTH KILLED (taker floor) | 51a Sharpe 0.14; 51b 0.44 < 0.7 bar; maker-PROXY 51b 0.90 corr +0.01 (most independent stream ever measured) — true maker-fill model = possible H52, queued behind sprint |
+| 52-57 | Intraday frontier (true maker fill, order-flow, OI, lead-lag, ratio, POC) | 5 run ALL CLOSED; H54 data-blocked | H52 killed 0.69 vs 0.70 bar (near-miss stays closed); H53 contrarian SIGNAL 1.9bp + H57 bounce SIGNAL 2.8bp both SUB-TOLL; H55/H56 noise. Intraday family CLOSED absent new data dimension |
 
 ## Prop-firm simulation results (real CFD rules, 20k paths, EOD approx)
 
@@ -86,11 +87,15 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 6. **Frequency kills.** Everything at 1h or faster dies after costs
    (01, 04, sessions). The edge lives at daily+.
 7. **Horizon flips the sign: crypto CONTINUES at daily+ and REVERTS
-   intraday.** H44/H45 (15m, maker regime): the classic retail
-   breakout entries (opening range, first hour) are significantly
-   the WRONG side; fading them clears the maker toll 4-5x. Complements
-   meta-finding 1 without contradiction — crowding continues over
-   days, but intraday breakout-chasers are exit liquidity.
+   intraday — and the intraday reversion premium is the market
+   maker's, not ours.** Four independent confirmations (H44 ORB, H45
+   first-hour, H53 aggressor-flow fade, H57 POC bounce): every
+   measurable intraday reversion premium is 2-4bp/event — real,
+   significant, and BELOW retail execution at every accessible
+   resolution (best strategy-grade attempt: H52 Sharpe 0.69 vs 0.70
+   bar). Profitable day traders are rebate-tier market makers,
+   untestable discretion, or survivorship. Intraday family CLOSED
+   absent a new data dimension (deep OI, order-book depth).
 8. **The objective function picks the config.** A deadline flipped BOTH
    standing rules (july-sprint.md): with retries and a hard date,
    4x sizing beats 1.5x and the eval-killed 43a book beats the

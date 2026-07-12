@@ -109,15 +109,14 @@ config/secrets/hyro.json (gitignored).
 4. Paper shakedown continues untouched (4 accounts nightly); Jul 25
    gate now only governs the PATIENT fallback if all 3 sprint attempts
    bust.
-5. TRACK 2 COMPLETE (2026-07-12): H44-50 all retail claims killed;
-   ORB + first-hour momentum significantly INVERTED (intraday crypto
-   REVERTS — meta-finding). H51 fade strategies BOTH KILLED at the
-   registered taker-floor bars (51a Sharpe 0.14, 51b 0.44). Loose end:
-   51b maker-PROXY Sharpe 0.90 at corr +0.01 to rotation-stop — a true
-   maker-fill engine model (limit orders, missable fills) is the one
-   remaining intraday question (possible H52), queued BEHIND the
-   sprint build. Data: data/intraday/ (12 Bybit perps, 15m, 2021+).
-   Ledger: 114.
+5. TRACK 2 CLOSED (2026-07-13): the full intraday campaign (H44-57,
+   26 trials) is complete. Meta-finding: intraday crypto REVERTS and
+   every reversion premium (4 independent confirmations) is 2-4bp —
+   real but BELOW retail execution costs; best strategy-grade attempt
+   H52 Sharpe 0.69 vs 0.70 bar. The intraday family is CLOSED absent
+   a new data dimension (H54 OI is registered-but-data-blocked).
+   Data assets gained: 15m OHLCV + taker-buy imbalance, 12 Bybit/
+   Binance perps, 2021+ (data/intraday/). Ledger: 120 (119 run).
 3. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
    correlation-spike de-risking, carry infra (post-eval, own-capital);
    own-capital book = rotation-stop + crash-bounce overlay (43a:

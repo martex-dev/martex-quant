@@ -90,5 +90,29 @@ live book mid-sprint.
   [+0.0002, +0.056]: statistically real, economically dead (< 4bp
   maker RT). Recorded as the cleanest example yet of a true retail
   observation that cannot pay its own execution.
-- H53 (aggressor imbalance) and H54 (OI divergence): data fetch in
-  progress; verdicts pending.
+- **H53 aggressor imbalance: SIGNAL — CONTRARIAN, SUB-TOLL — closed.**
+  n=118,717: extreme aggressor flow REVERSES next hour, -0.0187%
+  signed continuation (CI [-0.028, -0.008]). Fading aggressive flow
+  earns ~1.9bp/event — under half the maker toll. Real information,
+  unpayable execution: the order-flow edge at 15m resolution is the
+  market maker's paycheck, not a taker's.
+- **H54 OI divergence: DATA-BLOCKED, not run.** Bybit serves ~200h of
+  OI history; deep positioning history is paid data. Stays registered
+  and dormant until a data source exists (5 of 6 trials run; ledger
+  counts 119 run + 1 blocked = 120 registered).
+
+## The closing answer to "how are there profitable day traders?"
+
+26 intraday trials across three sessions, four independent
+confirmations (H44, H45, H53, H57) of ONE structure: intraday crypto
+mean-reverts, and every measurable reversion premium is 2-4bp per
+event — real, statistically solid, and BELOW retail execution costs
+at every resolution accessible to us. The premium is collected by
+fee-rebate market makers as compensation for providing liquidity.
+Retail day traders who win are either (a) effectively market-making
+with rebate-tier fees, (b) discretionary in ways that leave no
+testable mechanical residue at OHLCV resolution, or (c) survivorship
+noise. The project's edge remains where the ledger found it: daily+
+horizons, where continuation is strong enough to pay tolls many times
+over. The intraday family is CLOSED absent a new data dimension
+(H54's positioning data, or true order-book depth).
