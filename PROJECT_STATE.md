@@ -84,30 +84,31 @@ New strategies: strategies/blend.py, strategies/stops.py.
 
 ## JULY SPRINT (user goal 2026-07-12: ~$400 banked by Jul 31)
 
-Plan + numbers: docs/research/july-sprint.md. **The5ers is OUT**
-(14-day payout wait kills the July goal; crypto = BTC+ETH only kills
-the engines). Firm search done: **recommended HyroTrader 1-step 5k
-$119** (700+ Bybit pairs = exact validated universe, real API, fee
-refunded at first payout; 43a @4x: P(July goal) 16.4%, P(funded by
-Aug) 60.4%). Breakout ($45, better math 24.1%/71.5%) has NO API —
-manual-execution hybrid only. Awaiting user's firm choice; then:
-Bybit ccxt adapter, 43a live engine, runbook amendment (pre-registered
-BEFORE purchase), guard at sprint sizing, automated switch-down to
-0.5-1.5x after funded/July.
+Plan: docs/research/july-sprint.md + eval-runbook-sprint-amendment.md.
+**FIRM DECIDED: HyroTrader 1-step 5k, $69 + $39 swing-drawdown upgrade
+= $108** (swing = static drawdown, the simulated geometry — MANDATORY,
+select at purchase). Support answers (AI agent) folded into the
+amendment: 3%-per-trade loss cap -> per-position stops; low-cap 5%
+rule -> universe compliance filter; 2x notional cap -> 1.8x gross
+clamp; consistency counting undefined -> accepted risk w/ dilution
+tactic. **User buys 2026-07-13** (platform: Bybit), then API keys ->
+config/secrets/hyro.json (gitignored).
 
 ## Next actions (in order)
 
-1. USER: choose firm (HyroTrader recommended / Breakout manual-hybrid)
-   + send HyroTrader pre-purchase verifications (consistency-rule
-   counting, bot policy in writing, low-cap 5% rule, SL mechanics,
-   EU KYC, payout wallet).
-2. Nothing daily — let the shakedown run; watch dashboard. NOTE:
-   rotation-stop joined mid-shakedown (2026-07-12); record is 13 days
-   at the gate.
-3. On firm confirmation: build queue in july-sprint.md (Bybit adapter,
-   43a engine, amendment, guard). If sprint NO-GO: 2026-07-25 gate as
-   planned — menu: V1 @1.5x (50.0%), rotation @0.5x (62.9%),
-   rotation-stop @0.5x (73.0%, DSR 0.992).
+1. USER (2026-07-13): buy 1-step 5k + SWING upgrade ($108), Bybit
+   platform; create API keys (trade-only); save config/secrets/hyro.json;
+   say "keys are in".
+2. BUILD (in progress): live/bybit_broker.py (ccxt, DRY-RUN default),
+   universe_hyro.json low-cap filter, per-position 3% stops, 1.8x gross
+   clamp, sprint scheduler, guard entry. Dry-run go/no-go together
+   BEFORE first live order.
+3. Sprint doctrine going forward: EVALS get aggressive sprint config
+   (downside = fee); FUNDED accounts get sustainable sizing (downside
+   = the account). Switch-down automated per amendment.
+4. Paper shakedown continues untouched (4 accounts nightly); Jul 25
+   gate now only governs the PATIENT fallback if all 3 sprint attempts
+   bust.
 3. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
    correlation-spike de-risking, carry infra (post-eval, own-capital);
    own-capital book = rotation-stop + crash-bounce overlay (43a:

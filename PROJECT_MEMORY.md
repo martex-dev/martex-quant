@@ -83,6 +83,15 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
    0.77) and nearly justified a bad combined book.
 6. **Frequency kills.** Everything at 1h or faster dies after costs
    (01, 04, sessions). The edge lives at daily+.
+7. **The objective function picks the config.** A deadline flipped BOTH
+   standing rules (july-sprint.md): with retries and a hard date,
+   4x sizing beats 1.5x and the eval-killed 43a book beats the
+   champion. Corollary doctrine: EVALS = aggressive sprint config
+   (downside capped at the fee), FUNDED = sustainable sizing (downside
+   is the account). Also: rule GEOMETRY is worth money — HyroTrader's
+   $39 swing upgrade (trailing->static drawdown) restores the exact
+   geometry all our pass rates assume; without it they are overstated
+   (cf. V1 50.0% static vs 39.1% EOD-trailing, intraday worse).
 7. **The ranking is not improvable; the exits were.** Nine
    institutional factor rankings (24-32) all died against raw momentum,
    but the chandelier stop (40/42) — a better EXIT — beat the champion
