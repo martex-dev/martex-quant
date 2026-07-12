@@ -1,7 +1,8 @@
 # Hypotheses 52-57 — Intraday Frontier Batch
 
-Status: **PRE-REGISTERED (2026-07-13)** — no test has run yet.
-Trial ledger: +6 -> 120.
+Status: **4 of 6 RUN (2026-07-13): H52, H55, H56 KILLED; H57 signal
+but sub-toll (closed). H53/H54 pending data fetch.** Ledger: +6 -> 120.
+Verdicts at the bottom.
 
 Motivation: the intraday price-SHAPE canon is now fully tested and
 dead (H44-51). What remains are (a) the one near-validated lead —
@@ -68,3 +69,26 @@ features use data <= t; gross effects with the maker toll (~0.04% RT)
 printed. Verdict = CI excludes 0 (direction recorded). Strategy-grade
 graduation only via a further pre-registered spec; nothing joins the
 live book mid-sprint.
+
+## Verdicts (2026-07-13, scripts/h52_55_57_studies.py)
+
+- **H52: KILLED — Sharpe 0.69 vs the 0.70 bar** (corr +0.015, fill
+  rate 100%, CAGR +19.0%, MDD -45.6%). The honest fill model explains
+  the proxy's flattery: after an up first hour, price often continues
+  into 01:00, so the proxy's market entry shorted HIGHER than a
+  resting limit at the signal close. Near-miss stays closed. (A
+  resting-until-filled fill window would be a new spec — deliberately
+  NOT run now; iterating fill models until one passes is forking-paths
+  hacking. If ever reopened it needs its own registration and a raised
+  bar.)
+- H55 lead-lag: next-15m +0.010% (CI includes 0), next-1h -0.002% —
+  KILLED. The minutes-scale echo is fully arbitraged.
+- H56 ratio reversion: -0.017% CI [-0.037, +0.0002] — KILLED; the
+  near-miss is AGAIN on the momentum side (even intraday, the ratio
+  wants to trend, echoing H35).
+- **H57 POC: SIGNAL, sub-toll — closed.** +0.028% per event, CI
+  [+0.0002, +0.056]: statistically real, economically dead (< 4bp
+  maker RT). Recorded as the cleanest example yet of a true retail
+  observation that cannot pay its own execution.
+- H53 (aggressor imbalance) and H54 (OI divergence): data fetch in
+  progress; verdicts pending.
