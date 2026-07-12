@@ -1,7 +1,7 @@
 # Hypothesis 41 — Rotation + Crash-Bounce Combined Book
 
-Status: **PRE-REGISTERED (2026-07-12)** — no test has run yet.
-Trial ledger: +1 -> 101 (with batches 24-32 and 33-40).
+Status: **NOT ELIGIBLE (2026-07-12)** — fails the prop bar; verdict at
+the bottom. Trial ledger: +1 -> 101 (with batches 24-32 and 33-40).
 
 ## The claim
 
@@ -42,3 +42,21 @@ sleeve correlation 0.77 — averaging correlated books insures nothing.
 No new blend gets registered until a component with timestamp-joined
 corr < 0.3 vs the champion exists (candidates: H35 pairs sleeve,
 post-eval carry).
+
+## Verdict (2026-07-12, scripts/h41_h42_fub1_studies.py, 2,880d OOS)
+
+**NOT ELIGIBLE — fails bar 2 (prop pass).** The diversification thesis
+was RIGHT: 317 bounce days, mean 77% idle cash deployed, overlay corr
+to rotation only **0.188** (first genuinely low-corr sleeve found),
+Sharpe 1.36 vs 1.10, CAGR +66.2% vs +31.2%, MDD -55.3% vs -58.0%
+(bars 1 and 3 PASS), DSR 0.995. But prop pass @0.5x DROPS to 45.3%
+from 62.8%: the overlay adds its variance on post-crash days — exactly
+when daily moves are extreme — and trips the firm's 3% daily-loss rule.
+Constraint geometry beats raw returns, third time now (Donchian, H41,
+sizing scans).
+
+Disposition per registration: rotation-alone stands as the runbook
+engine. The combined book is archived as an OWN-CAPITAL candidate
+(like carry): highest-CAGR validated-grade book we have, wrong shape
+for the eval. Revisit post-funded with own capital; any resized/eval
+variant (e.g. lower bounce sizing) would be a NEW registered spec.

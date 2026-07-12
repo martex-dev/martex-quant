@@ -66,15 +66,33 @@ closes data/perp/. Universe rule in config/universe.json.
 
 ## Code health
 
-~195 tests green, ruff + strict mypy clean, CI on GitHub. Trial ledger: 83
-(single source of truth: PROJECT_MEMORY.md + CLAUDE.md history).
+~200 tests green, ruff + strict mypy clean, CI on GitHub. Trial ledger:
+104 (single source of truth: PROJECT_MEMORY.md).
+
+## Research batch H24-H42 (2026-07-12, complete)
+
+17 new base hypotheses + combined book + stop overlays: 15 killed at
+info stage, blend-V1 killed at strategy grade, H41 combined book NOT
+eligible (own-capital archive). **NEW: rotation+chandelier-stop (42b)
+is CANDIDATE with DSR 0.992, beating the champion on every metric**
+(Sharpe 1.47/1.10, MDD -29%/-58%, prop 73.0%/62.8% @0.5x); V1+stop
+(42a) also candidate. New strategies: strategies/blend.py,
+strategies/stops.py.
 
 ## Next actions (in order)
 
 1. Nothing daily — let the shakedown run; watch dashboard.
-2. 2026-07-25 gate: review 14-day record -> eval purchase decision +
+2. **HUMAN DECISION pending: rotation+stop (42b).** Options: fourth
+   paper account, replace rotation record (archive + fresh $5,000), or
+   hold for the gate. It has zero paper days — the gate engine choice
+   currently still weighs V1 (shaken down) vs rotation (validated,
+   young record); 42b enters that discussion with the best simulated
+   numbers and the youngest evidence.
+3. 2026-07-25 gate: review 14-day record -> eval purchase decision +
    engine choice (needs firm symbol list).
-3. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
-   correlation-spike de-risking, carry infra (post-eval, own-capital).
-4. October: move paper task 03:10 -> 02:10 local (DST) to stay near the
+4. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
+   correlation-spike de-risking, carry infra (post-eval, own-capital);
+   H41 combined book joins the own-capital list (corr 0.188 overlay,
+   CAGR +66%, fails eval geometry only).
+5. October: move paper task 03:10 -> 02:10 local (DST) to stay near the
    UTC close.

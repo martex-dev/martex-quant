@@ -200,9 +200,7 @@ def main() -> None:
 
     # --- H35 pairs ratio stat-arb ---
     print("=== H35 pairs / ratio stat-arb (legacy 8, 28 pairs, |z|>=1.5) ===")
-    closes = {
-        s: wide.filter(pl.col("symbol") == s).select("day", "close") for s in LEGACY8
-    }
+    closes = {s: wide.filter(pl.col("symbol") == s).select("day", "close") for s in LEGACY8}
     event_parts = []
     for a_sym, b_sym in combinations(LEGACY8, 2):
         df = (

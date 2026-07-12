@@ -101,7 +101,7 @@ def main() -> None:
     print(f"universe loaded: {len(frames)} symbols\n")
 
     eligible = False
-    for top_k in ((2,) if "--grid7" in sys.argv else (2, 5)):
+    for top_k in (2,) if "--grid7" in sys.argv else (2, 5):
         oos = wf_stream(frames, top_k)
         m = compute_metrics(oos, [], Interval.D1)
         returns = oos["equity"].pct_change().drop_nulls()

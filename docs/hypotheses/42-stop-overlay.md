@@ -1,7 +1,8 @@
 # Hypothesis 42 — Chandelier Stop Overlay on the Deployed Specs
 
-Status: **PRE-REGISTERED (2026-07-12)** — no test has run yet.
-Trial ledger: +2 -> 104 (with batches 24-41 and FU-B1).
+Status: **BOTH CANDIDATE (2026-07-12)** — first strategy-grade result
+to beat the champion on every metric. Trial ledger: +2 -> 104 (with
+batches 24-41 and FU-B1). Verdicts at the bottom.
 
 ## Why this reopens the switch family (stated reason, per process)
 
@@ -44,3 +45,43 @@ closes the stop family entirely: the info signal then joins H16's
 archive (likely mechanism: the stop exits vol expansions that the vol
 targeting already sizes down, and re-entry at fresh 30d highs pays
 breakout premium the momentum gate already avoided).
+
+## Verdicts (2026-07-12, scripts/h41_h42_fub1_studies.py)
+
+- **42a V1+stop: CANDIDATE.** 1,710d common window: Sharpe 0.84 vs
+  V1 0.53, CAGR +9.1% vs +7.5%, MDD **-13.3% vs -25.1%**, prop @1.5x
+  31.1% vs 27.9% (both bars PASS). DSR 0.744. Slower passes (median
+  53d vs 28d) — the stop trades speed for survival, the funded-stage
+  profile.
+- **42b rotation+stop: CANDIDATE — beats the champion on everything.**
+  2,880d OOS window: Sharpe **1.47 vs 1.10**, CAGR +42.9% vs +31.2%,
+  MDD **-29.0% vs -58.0%**, prop @0.5x **73.0% vs 62.8%** (median 106d
+  vs 101d). **DSR 0.992 vs the full 104-trial ledger — above the 0.95
+  absolute bar.** The mechanism is coherent with the H40 info signal:
+  rotation's worst stretches were riding top-2 coins through 2xATR
+  breakdowns that the momentum gate exits too slowly; the chandelier
+  latch cuts exactly that tail.
+
+## Honest caveats (recorded at validation time)
+
+- The stop constants (2xATR14, 30d high) were fixed a priori, not
+  tuned — but the FAMILY was selected on the same history the strategy
+  test ran on (true of every hypothesis here; walk-forward guards
+  params, not family selection). The paper record is the out-of-sample
+  test that guards this.
+- Sharpe 1.47 with halved MDD from one overlay is a large jump —
+  treat with the standard young-result skepticism until it has a paper
+  record. Champion status in the runbook is a GATE-DAY decision, not
+  automatic.
+- Same residual survivorship caveat as rotation (fully-delisted coins
+  absent).
+
+## Disposition
+
+42b is eligible for a paper account (validated-grade by the ledger's
+own standard). Whether it (a) gets a fourth paper account, (b) replaces
+the rotation record (archive + fresh $5,000), or (c) waits for the
+07-25 gate is a HUMAN decision — flagged in PROJECT_STATE next actions.
+The eval-runbook engine choice at the gate should weigh: rotation has
+the older paper record; rotation+stop has strictly better simulated
+numbers but zero paper days.

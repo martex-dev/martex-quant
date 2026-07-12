@@ -130,3 +130,15 @@ predicts death; the data referees.
   registered follow-up here, so graduation requires a new spec:
   pre-registered as docs/hypotheses/42-stop-overlay.md with
   incremental bars vs the deployed systems.
+
+## FU-B1 verdict (2026-07-12, scripts/h41_h42_fub1_studies.py, +1 trial)
+
+**KILLED.** On the 1,710d common window (shortened by the blend's 181d
+warmup + inner join): blend-V1 Sharpe 0.60 vs V1 0.53 (bar1 PASS, MDD
+also better: -22.0% vs -25.1%), but prop pass @1.5x 28.0% vs the
+registered >50.0% bar — FAIL. Honest note: V1 itself shows only 27.9%
+on this same shortened window (the 50% figure came from the longer
+phase-5 window), so the blend merely MATCHED the deployed engine's
+pass rate while beating its Sharpe. Blend DSR 0.857. The averaging idea
+is directionally right but not strong enough to displace anything;
+closed per the near-miss rule.

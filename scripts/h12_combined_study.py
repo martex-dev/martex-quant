@@ -1,6 +1,6 @@
 """Hypothesis 12: 50/50 combined book — validation on the common OOS window.
 
-    .venv/Scripts/python scripts/h12_combined_study.py
+.venv/Scripts/python scripts/h12_combined_study.py
 """
 
 from __future__ import annotations
@@ -81,9 +81,7 @@ def rotation_stream(frames: dict[str, pl.DataFrame]) -> pl.DataFrame:
         stitched.append(curve.with_columns(pl.col("equity") * (level / first)))
         level *= last / first
     oos = pl.concat(stitched)
-    return oos.select(
-        "timestamp", (pl.col("equity").pct_change().fill_null(0.0)).alias("rot")
-    )
+    return oos.select("timestamp", (pl.col("equity").pct_change().fill_null(0.0)).alias("rot"))
 
 
 def v1_stream(frames: dict[str, pl.DataFrame]) -> pl.DataFrame:
@@ -108,9 +106,7 @@ def v1_stream(frames: dict[str, pl.DataFrame]) -> pl.DataFrame:
     wide = per_symbol[0]
     for part in per_symbol[1:]:
         wide = wide.join(part, on="timestamp", how="inner")
-    return wide.select(
-        "timestamp", pl.mean_horizontal([pl.col(s) for s in SYMBOLS]).alias("v1")
-    )
+    return wide.select("timestamp", pl.mean_horizontal([pl.col(s) for s in SYMBOLS]).alias("v1"))
 
 
 def summarize(name: str, returns: pl.Series, timestamps: pl.Series) -> tuple[float, float]:
@@ -123,8 +119,7 @@ def summarize(name: str, returns: pl.Series, timestamps: pl.Series) -> tuple[flo
     )
     m = compute_metrics(curve, [], Interval.D1)
     print(
-        f"{name:<10} Sharpe {m.sharpe:.2f}  CAGR {m.cagr_pct:+.1f}%  "
-        f"MDD {m.max_drawdown_pct:.1f}%"
+        f"{name:<10} Sharpe {m.sharpe:.2f}  CAGR {m.cagr_pct:+.1f}%  MDD {m.max_drawdown_pct:.1f}%"
     )
     return m.sharpe, m.max_drawdown_pct
 
@@ -152,9 +147,7 @@ def main() -> None:
     pp = (combined.mean() or 0.0) / (combined.std() or 1.0)
     skew = combined.skew()
     kurt = combined.kurtosis()
-    trial_pp = [
-        (joined[c].mean() or 0.0) / (joined[c].std() or 1.0) for c in ("v1", "rot")
-    ]
+    trial_pp = [(joined[c].mean() or 0.0) / (joined[c].std() or 1.0) for c in ("v1", "rot")]
     dsr = probabilistic_sharpe_ratio(
         pp,
         n_obs=joined.height,

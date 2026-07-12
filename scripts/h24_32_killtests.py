@@ -75,8 +75,7 @@ def daily_panel(store: ParquetStore, symbols: list[str]) -> pl.DataFrame:
             vol90=pl.col("ret").rolling_std(90),
             max365=pl.col("close").rolling_max(365),
             maxret30=pl.col("ret").rolling_max(30),
-            illiq30=(pl.col("ret").abs() / (pl.col("close") * pl.col("volume")))
-            .rolling_mean(30),
+            illiq30=(pl.col("ret").abs() / (pl.col("close") * pl.col("volume"))).rolling_mean(30),
             vshock=pl.col("volume") / pl.col("volume").rolling_mean(30),
             upshare90=(pl.col("ret") > 0).cast(pl.Float64).rolling_mean(90),
             fwd7=pl.col("close").shift(-7) / pl.col("close") - 1.0,
@@ -152,9 +151,7 @@ def main() -> None:
     show("rank by close/max365", pt, lo, hi, n, "PASS if CI>0")
 
     print("=== H26 residual momentum (BTC beta stripped, BTC excluded) ===")
-    pt, lo, hi, n = ranking_spread(
-        wide.filter(pl.col("symbol") != "BTCUSDT"), "resmom90", 2610
-    )
+    pt, lo, hi, n = ranking_spread(wide.filter(pl.col("symbol") != "BTCUSDT"), "resmom90", 2610)
     show("rank by 90d residual momentum", pt, lo, hi, n, "PASS if CI>0")
 
     print("=== H27 low-volatility anomaly (two-sided) ===")
@@ -174,9 +171,7 @@ def main() -> None:
     show("rank by volume/30d avg volume", pt, lo, hi, n, "two-sided")
 
     print("=== H31 trend smoothness among r90>0 coins ===")
-    pt, lo, hi, n = ranking_spread(
-        wide, "upshare90", 3110, gate=pl.col("r90") > 0, min_coins=6
-    )
+    pt, lo, hi, n = ranking_spread(wide, "upshare90", 3110, gate=pl.col("r90") > 0, min_coins=6)
     show("rank by up-day share | r90>0", pt, lo, hi, n, "PASS if CI>0")
 
     print("=== H32 skip-week momentum ===")

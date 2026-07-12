@@ -3,7 +3,7 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 83 pre-registered trials. Every new spec raises the DSR
+## Trial ledger: 104 pre-registered trials. Every new spec raises the DSR
 ## bar for everything. Do not test without a numbered doc committed FIRST.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
@@ -34,6 +34,18 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 | 21 | Volume-conviction | KILLED (near-miss) | +2.44%, CI [-0.23,+4.65] |
 | 22 | Crash-bounce strategy | **ELIGIBLE -> paper #3** | +0.441%/held-day net (CI clear), +32%/yr, Sharpe 0.89, MDD -48%; overlay shape, zero params |
 | 23 | Incremental features | BOTH KILLED | shocks redundant w/ momentum; funding-confirm misses |
+| 24-32 | Ranking batch (risk-adj, 52wh, residual, low-vol, MAX, illiq, vol-shock, FIP, skip-week) | ALL 9 KILLED | no institutional factor ranking beats raw momentum; references themselves noise at daily-spread level |
+| 33 | Multi-horizon blend | info SIGNAL; FU-B1 KILLED | monotone in score, +2.41% CI+; blend-V1 Sharpe 0.60>0.53 but prop 28%<50% bar |
+| 34 | Basis momentum | KILLED | like 23b: positioning change adds nothing to price momentum |
+| 35 | Pairs ratio stat-arb | KILLED | reversion refuted; near-miss on MOMENTUM side (6th continuation confirmation) |
+| 36 | Short-leg viability | KILLED | bottom-2 does NOT keep falling; long/flat stands |
+| 37 | Breadth dial | KILLED | terciles monotone but CI wide |
+| 38 | Dispersion dial | KILLED | terciles monotone but CI wide |
+| 39 | Pick-correlation | KILLED | diversified picks buy no return |
+| 40 | Trailing stop info test | **SIGNAL (stops help)** | post-stop-fire fwd30 -8.77% vs uptrend baseline, CI clear -> H42 |
+| 41 | Rotation+crash-bounce book | **NOT eligible (prop bar)** | corr 0.188 (first low-corr sleeve!), Sharpe 1.36, CAGR +66%, DSR 0.995 — but prop 45.3%<62.8%: bounce variance trips 3% daily rule. Archived as OWN-CAPITAL book |
+| 42a | V1 + chandelier stop | **CANDIDATE** | Sharpe 0.84 vs 0.53, MDD -13.3% vs -25.1%, prop 31.1%>27.9% |
+| 42b | Rotation + chandelier stop | **CANDIDATE — beats champion on all metrics** | Sharpe 1.47 vs 1.10, MDD -29% vs -58%, prop 73.0%>62.8% @0.5x, **DSR 0.992 > 0.95 bar** (104 trials); zero paper days yet — gate-day decision |
 
 ## Prop-firm simulation results (real CFD rules, 20k paths, EOD approx)
 
@@ -70,6 +82,17 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
    0.77) and nearly justified a bad combined book.
 6. **Frequency kills.** Everything at 1h or faster dies after costs
    (01, 04, sessions). The edge lives at daily+.
+7. **The ranking is not improvable; the exits were.** Nine
+   institutional factor rankings (24-32) all died against raw momentum,
+   but the chandelier stop (40/42) — a better EXIT — beat the champion
+   decisively. Refinement budget should go to exits/risk, not entries.
+   Nuance to finding 2: a switch backed by a significant info-level
+   signal can win; switches as free-floating filters still always died.
+8. **Constraint geometry picks strategies, third confirmation (H41).**
+   A book with corr 0.188, Sharpe 1.36 and double the CAGR still FAILED
+   the eval bars because its variance lands on post-crash days that
+   trip the 3% daily rule. Eval-fit and own-capital-fit are different
+   objectives; H41's book is archived for the own-capital stage.
 
 ## Validated/deployed specs (exact)
 
