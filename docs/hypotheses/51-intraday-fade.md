@@ -1,7 +1,8 @@
 # Hypothesis 51 — Intraday Fade Strategies (from H44/H45 inversions)
 
-Status: **PRE-REGISTERED (2026-07-12)** — no test has run yet.
-Trial ledger: +2 -> 114.
+Status: **BOTH KILLED at the registered taker-floor bars (2026-07-12).**
+Trial ledger: +2 -> 114. Verdicts at the bottom; one honest loose end
+(true maker-fill model) noted for a possible H52.
 
 ## Stated reason (per process)
 
@@ -52,3 +53,26 @@ inversion joins H16's archive (real info, unusable as strategy).
 - Effect discovered and strategy tested on the same history (family-
   selection caveat, same as H42); a paper record guards deployment.
 - Bybit perp data starts 2021 — no 2017-2020 regimes in this panel.
+
+## Verdicts (2026-07-12, scripts/h51_fade_study.py, 1,989 days)
+
+- **51a fade-ORB: KILLED.** Taker floor Sharpe 0.14 (CAGR -0.8%).
+  The 0.16%/event info edge dies against the ~0.13% real round trip.
+  Maker-proxy sensitivity: Sharpe 0.59 — still under the bar.
+- **51b fade-first-hour: KILLED as registered.** Taker floor Sharpe
+  0.44 < 0.7 (bar 1 explicitly named the taker-floor case). The
+  maker-proxy run printed Sharpe 0.90, corr +0.01 and the script's
+  generic bar labeled it CANDIDATE — that label is NOT a verdict: the
+  proxy discounts fees but still assumes every entry fills. The doc's
+  true maker variant (limit fills that can be MISSED — and fades miss
+  their best entries) was not actually modeled; the truth lies between
+  0.44 and 0.90.
+
+## Loose end (possible H52, NOT yet registered)
+
+corr +0.01 to rotation-stop makes 51b the most independent return
+stream ever measured here — IF the edge survives honest maker-fill
+modeling. Graduating requires: engine limit-order support with
+crossed-range fill logic, then a new pre-registered trial. Queued
+BEHIND the sprint build; register only with the engine extension in
+hand. Everything else in the intraday family is closed.

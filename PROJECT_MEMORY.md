@@ -3,7 +3,7 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 112 run + 2 registered (H51) = 114. Every new spec raises
+## Trial ledger: 114 pre-registered trials, all run. Every new spec raises
 ## the DSR bar for everything. Do not test without a numbered doc FIRST.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
@@ -48,7 +48,7 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 | 42b | Rotation + chandelier stop | **CANDIDATE — beats champion on all metrics** | Sharpe 1.47 vs 1.10, MDD -29% vs -58%, prop 73.0%>62.8% @0.5x, **DSR 0.992 > 0.95 bar** (104 trials); paper account #4 since 2026-07-12 |
 | 43 | Combo batch on rot-stop base | screen: only bounce admits; **43a KILLED (eval bars)** | rot-stop x V1 corr 0.521, x rotation 0.821 (blends dead); rot-stop+bounce Sharpe 1.55, +79%/yr, DSR 1.000 but prop 47.5%<73%, MDD worse -> replaces H41 as own-capital archive |
 | 44-50 | Retail intraday batch (maker regime, 15m Bybit) | ALL 7 claims KILLED; **H44 ORB + H45 first-hour INVERTED (significant)** | fade earns 0.16-0.20%/event = 4-5x maker toll; sessions/funding/levels/bursts/VWAP noise -> H51 |
-| 51 | Intraday fade strategies (51a fade-ORB, 51b fade-1st-hour) | REGISTERED, not yet run | bars: net Sharpe>0.7 + corr<0.30 vs rot-stop (diversifier), taker-floor costs |
+| 51 | Intraday fade strategies (51a fade-ORB, 51b fade-1st-hour) | BOTH KILLED (taker floor) | 51a Sharpe 0.14; 51b 0.44 < 0.7 bar; maker-PROXY 51b 0.90 corr +0.01 (most independent stream ever measured) — true maker-fill model = possible H52, queued behind sprint |
 
 ## Prop-firm simulation results (real CFD rules, 20k paths, EOD approx)
 
