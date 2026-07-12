@@ -2,12 +2,15 @@
 
     .venv/Scripts/python scripts/pull_intraday.py
 
-Caches to data/intraday/<symbol>_15m.parquet (append-safe: full refetch,
-atomic overwrite). ~12 liquid majors, max available history.
+Caches to data/intraday/<symbol>_15m.parquet (atomic overwrite). ~12
+liquid majors, max available history. Paginates by timestamp until
+`now` (short batches are NOT an end signal on Bybit) and backs off on
+rate limits.
 """
 
 from __future__ import annotations
 
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -29,7 +32,9 @@ SYMBOLS = [
 ]
 OUT = Path("data/intraday")
 SINCE = int(datetime(2021, 1, 1, tzinfo=UTC).timestamp() * 1000)
-STEP_LIMIT = 1000
+BAR_MS = 15 * 60 * 1000
+PAUSE_S = 0.25
+MIN_COMPLETE_BARS = 30_000  # smaller cache files are treated as partial
 
 
 def fetch(symbol: str) -> pl.DataFrame:
@@ -39,15 +44,25 @@ def fetch(symbol: str) -> pl.DataFrame:
     market = f"{symbol[:-4]}/USDT:USDT"
     rows: list[list[float]] = []
     since = SINCE
-    while True:
-        batch = exchange.fetch_ohlcv(market, "15m", since=since, limit=STEP_LIMIT)
+    now_ms = exchange.milliseconds()
+    while since < now_ms - BAR_MS:
+        batch = None
+        for attempt in range(8):
+            try:
+                batch = exchange.fetch_ohlcv(market, "15m", since=since, limit=1000)
+                break
+            except ccxt.RateLimitExceeded:
+                time.sleep(2.0**attempt)
+        if batch is None:
+            raise RuntimeError(f"{symbol}: persistently rate-limited")
         if not batch:
             break
         rows.extend(batch)
-        new_since = int(batch[-1][0]) + 1
-        if new_since <= since or len(batch) < STEP_LIMIT:
+        new_since = int(batch[-1][0]) + BAR_MS
+        if new_since <= since:
             break
         since = new_since
+        time.sleep(PAUSE_S)
     df = pl.DataFrame(
         {
             "ts": [int(r[0]) for r in rows],
@@ -66,8 +81,14 @@ def main() -> None:
     for symbol in SYMBOLS:
         path = OUT / f"{symbol}_15m.parquet"
         if path.exists():
-            print(f"{symbol}: cached ({pl.read_parquet(path).height} bars)")
-            continue
+            cached = pl.read_parquet(path)
+            first_ts = cached["ts"][0]
+            # Young listings legitimately have shorter history; only refetch
+            # when the cache is BOTH short and claims to start at SINCE.
+            if cached.height >= MIN_COMPLETE_BARS or int(first_ts.timestamp() * 1000) > SINCE:
+                print(f"{symbol}: cached ({cached.height} bars)")
+                continue
+            print(f"{symbol}: partial cache ({cached.height} bars) — refetching")
         df = fetch(symbol)
         tmp = path.with_suffix(".tmp")
         df.write_parquet(tmp)
