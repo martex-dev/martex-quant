@@ -82,17 +82,29 @@ rot-stop+bounce (43a) killed on eval bars but is THE own-capital
 archive book (Sharpe 1.55, +79%/yr, DSR 1.000, corr 0.118 components).
 New strategies: strategies/blend.py, strategies/stops.py.
 
+## JULY SPRINT (user goal 2026-07-12: ~$400 banked by Jul 31)
+
+Plan + numbers: docs/research/july-sprint.md. Best option: buy eval
+early (~Jul 14-19), 43a book @ 4x with retry budget (3 fees):
+P(chain by Jul 31) 18-23%, P(funded by Aug 1) 64-70% — upper bounds.
+**BLOCKED ON USER verifying with the firm: payout terms (min days,
+cycle, split), CFD symbol list (~40 alts), activation delay, retry
+policy.** Before any purchase: pre-registered runbook amendment +
+43a live engine build + guard at sprint sizing + switch-down rule
+(sustainable 0.5-1.5x once funded/August).
+
 ## Next actions (in order)
 
-1. Nothing daily — let the shakedown run; watch dashboard. NOTE:
+1. USER: ask the firm the four sprint questions (payout, symbols,
+   activation, retries) — everything else waits on the answers.
+2. Nothing daily — let the shakedown run; watch dashboard. NOTE:
    rotation-stop joined mid-shakedown (2026-07-12); its record is 13
    days at the gate, mark it accordingly.
-2. 2026-07-25 gate: review record -> eval purchase decision + engine
-   choice (needs firm symbol list). Engine menu now: V1 @1.5x (50.0%,
-   fully shaken down), rotation @0.5x (62.9%, validated), rotation-stop
-   @0.5x (73.0%, DSR 0.992, youngest record). Weigh evidence age vs
-   simulated strength; symbol-coverage check applies to both rotation
-   variants.
+3. If sprint is GO: build 43a live engine + runbook amendment, then
+   purchase per the chosen date row in july-sprint.md. If NO-GO:
+   2026-07-25 gate as planned — engine menu: V1 @1.5x (50.0%, fully
+   shaken down), rotation @0.5x (62.9%), rotation-stop @0.5x (73.0%,
+   DSR 0.992, youngest record).
 3. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
    correlation-spike de-risking, carry infra (post-eval, own-capital);
    own-capital book = rotation-stop + crash-bounce overlay (43a:
