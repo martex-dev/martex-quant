@@ -3,7 +3,7 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 104 pre-registered trials. Every new spec raises the DSR
+## Trial ledger: 105 pre-registered trials. Every new spec raises the DSR
 ## bar for everything. Do not test without a numbered doc committed FIRST.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
@@ -45,7 +45,8 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 | 40 | Trailing stop info test | **SIGNAL (stops help)** | post-stop-fire fwd30 -8.77% vs uptrend baseline, CI clear -> H42 |
 | 41 | Rotation+crash-bounce book | **NOT eligible (prop bar)** | corr 0.188 (first low-corr sleeve!), Sharpe 1.36, CAGR +66%, DSR 0.995 — but prop 45.3%<62.8%: bounce variance trips 3% daily rule. Archived as OWN-CAPITAL book |
 | 42a | V1 + chandelier stop | **CANDIDATE** | Sharpe 0.84 vs 0.53, MDD -13.3% vs -25.1%, prop 31.1%>27.9% |
-| 42b | Rotation + chandelier stop | **CANDIDATE — beats champion on all metrics** | Sharpe 1.47 vs 1.10, MDD -29% vs -58%, prop 73.0%>62.8% @0.5x, **DSR 0.992 > 0.95 bar** (104 trials); zero paper days yet — gate-day decision |
+| 42b | Rotation + chandelier stop | **CANDIDATE — beats champion on all metrics** | Sharpe 1.47 vs 1.10, MDD -29% vs -58%, prop 73.0%>62.8% @0.5x, **DSR 0.992 > 0.95 bar** (104 trials); paper account #4 since 2026-07-12 |
+| 43 | Combo batch on rot-stop base | screen: only bounce admits; **43a KILLED (eval bars)** | rot-stop x V1 corr 0.521, x rotation 0.821 (blends dead); rot-stop+bounce Sharpe 1.55, +79%/yr, DSR 1.000 but prop 47.5%<73%, MDD worse -> replaces H41 as own-capital archive |
 
 ## Prop-firm simulation results (real CFD rules, 20k paths, EOD approx)
 

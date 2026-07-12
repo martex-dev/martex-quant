@@ -1,7 +1,8 @@
 # Hypothesis 43 — Combination Batch on the Rotation-Stop Base
 
-Status: **PRE-REGISTERED (2026-07-12)** — no test has run yet.
-Trial ledger: +1 to +3 conditional -> up to 107.
+Status: **COMPLETE (2026-07-12)** — screen admitted one blend; it was
+killed on the eval bars. Trial ledger: +1 consumed -> 105 (43b/43c
+screened out, no trials consumed). Verdicts at the bottom.
 
 ## Motivation (user request, filtered by the H12 lesson)
 
@@ -55,3 +56,28 @@ A passer becomes eligible for its own paper account (one spec per
 record). A screened-out pair is recorded with its measured correlation
 and closed WITHOUT consuming a trial. A failed trial closes per the
 near-miss rule. Nothing here touches the eval runbook before the gate.
+
+## Verdicts (2026-07-12, scripts/h43_combo_study.py)
+
+Correlation screen (timestamp-joined, common windows):
+- (a) rotation-stop x V1: **+0.521 — SCREENED OUT.** 43b and 43c never
+  fire. The H12 lesson now has a second measurement: every long-crypto
+  momentum book correlates too highly with every other one to blend.
+- (b) rotation-stop x champion rotation: **+0.821** — the pre-declared
+  tautology, confirmed. No blend of a strategy with its own parent.
+- (c) rotation-stop x crash-bounce overlay: **+0.118 — ADMITTED.**
+- (d) V1 x overlay: +0.141 (moot, since (a) failed).
+
+**43a — KILLED on the eval bars** (2,880d window, 317 bounce days,
+mean 82% idle cash deployed): Sharpe 1.55 vs 1.47 (bar 1 PASS), CAGR
++79.0%/yr vs +42.9%, DSR 1.000 — but prop pass @0.5x **47.5% vs 73.0%**
+(bar 2 FAIL) and MDD -37.6% vs -29.0% (bar 3 FAIL, worse by 8.6 pts).
+Identical failure geometry to H41: the bounce deploys idle cash into
+the highest-variance days on the calendar and the firm's 3% daily rule
+punishes exactly that. NO paper account — a paper record of a book the
+eval can't use would measure execution of nothing actionable.
+
+Disposition: rotation-stop + bounce replaces H41's book as THE
+own-capital archive candidate (higher Sharpe, higher CAGR, smaller
+MDD than H41's version). Own-capital bars (not eval-shaped) to be
+registered post-funded, per the backlog.

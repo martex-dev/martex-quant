@@ -9,13 +9,14 @@ Phase 5 (paper trading). Shakedown day 3 of 14; **gate: ~2026-07-25** —
 if the paper record is clean (no missed nightly runs, sane decisions),
 buy the eval. NO fee before the gate.
 
-## The three paper accounts ($5,000 each, since 2026-07-11/12)
+## The four paper accounts ($5,000 each)
 
 | Account | Spec | Universe | Status |
 |---|---|---|---|
 | vol-target | VolTargetMomentum (30% vol target, 30d window), per-symbol lookback walk-forward {7..180d}/90d reselect, long/flat | legacy 8 | Flat (no momentum regime) |
 | rotation | VolTargetRotation K=2, L walk-forward {30,90}/90d reselect, abs-momentum gate, 30% vol budget | WIDE 40 (config/universe.json) | Holding DEXE+SYN ~6% each; first green mark +$17 |
 | crash-bounce | CrashBounce: BTC day < -3% -> EW all alts one day; zero params | WIDE alts | Flat (no crash) |
+| rotation-stop | StopVolTargetRotation = rotation spec + chandelier latch (2xATR14 off 30d high, clears on new 30d high); H42b, DSR 0.992 | WIDE 40 | Since 2026-07-12; holds ATM+DEXE ~11% each (SYN stop-latched — first live divergence from rotation) |
 
 All three run nightly at 03:10 local via Task Scheduler task
 "TradingBot Paper Trader" -> scripts/run_paper_daily.cmd (StartWhenAvailable).
@@ -69,30 +70,33 @@ closes data/perp/. Universe rule in config/universe.json.
 ~200 tests green, ruff + strict mypy clean, CI on GitHub. Trial ledger:
 104 (single source of truth: PROJECT_MEMORY.md).
 
-## Research batch H24-H42 (2026-07-12, complete)
+## Research batches H24-H43 (2026-07-12, complete)
 
-17 new base hypotheses + combined book + stop overlays: 15 killed at
-info stage, blend-V1 killed at strategy grade, H41 combined book NOT
-eligible (own-capital archive). **NEW: rotation+chandelier-stop (42b)
-is CANDIDATE with DSR 0.992, beating the champion on every metric**
-(Sharpe 1.47/1.10, MDD -29%/-58%, prop 73.0%/62.8% @0.5x); V1+stop
-(42a) also candidate. New strategies: strategies/blend.py,
-strategies/stops.py.
+17 new base hypotheses + combos: 15 killed at info stage, blend-V1
+killed at strategy grade, H41 combined book NOT eligible.
+**Rotation+chandelier-stop (42b) is CANDIDATE with DSR 0.992, beating
+the champion on every metric** (Sharpe 1.47/1.10, MDD -29%/-58%, prop
+73.0%/62.8% @0.5x) -> paper account #4. V1+stop (42a) also candidate.
+H43 combo screen: momentum books inter-correlate 0.52-0.82 (no blends);
+rot-stop+bounce (43a) killed on eval bars but is THE own-capital
+archive book (Sharpe 1.55, +79%/yr, DSR 1.000, corr 0.118 components).
+New strategies: strategies/blend.py, strategies/stops.py.
 
 ## Next actions (in order)
 
-1. Nothing daily — let the shakedown run; watch dashboard.
-2. **HUMAN DECISION pending: rotation+stop (42b).** Options: fourth
-   paper account, replace rotation record (archive + fresh $5,000), or
-   hold for the gate. It has zero paper days — the gate engine choice
-   currently still weighs V1 (shaken down) vs rotation (validated,
-   young record); 42b enters that discussion with the best simulated
-   numbers and the youngest evidence.
-3. 2026-07-25 gate: review 14-day record -> eval purchase decision +
-   engine choice (needs firm symbol list).
-4. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
+1. Nothing daily — let the shakedown run; watch dashboard. NOTE:
+   rotation-stop joined mid-shakedown (2026-07-12); its record is 13
+   days at the gate, mark it accordingly.
+2. 2026-07-25 gate: review record -> eval purchase decision + engine
+   choice (needs firm symbol list). Engine menu now: V1 @1.5x (50.0%,
+   fully shaken down), rotation @0.5x (62.9%, validated), rotation-stop
+   @0.5x (73.0%, DSR 0.992, youngest record). Weigh evidence age vs
+   simulated strength; symbol-coverage check applies to both rotation
+   variants.
+3. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
    correlation-spike de-risking, carry infra (post-eval, own-capital);
-   H41 combined book joins the own-capital list (corr 0.188 overlay,
-   CAGR +66%, fails eval geometry only).
-5. October: move paper task 03:10 -> 02:10 local (DST) to stay near the
+   own-capital book = rotation-stop + crash-bounce overlay (43a:
+   Sharpe 1.55, +79%/yr, fails only eval geometry) — register
+   own-capital bars post-funded.
+4. October: move paper task 03:10 -> 02:10 local (DST) to stay near the
    UTC close.
