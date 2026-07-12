@@ -2,7 +2,7 @@
 
 1. **PROJECT_STATE.md** — what is running right now, schedules, the firm,
    the eval plan, next actions.
-2. **PROJECT_MEMORY.md** — full hypothesis ledger (83 trials), all
+2. **PROJECT_MEMORY.md** — full hypothesis ledger (105 trials), all
    results, meta-findings, lessons, open caveats.
 
 Do not re-derive or re-litigate anything recorded there. Do not re-test
@@ -30,7 +30,24 @@ killed ideas without a new pre-registered spec and a stated reason.
 - Report negative results with the same rigor as positive ones. The
   ledger's honesty is the project's only real asset.
 
-## HOUSE STYLE
+## THE USER'S GOAL (stated 2026-07-12 — calibrate everything to it)
+
+This is an INCOME project, not an investing project. Target:
+income-scale returns (aspiration >= 20%/month; e.g. >= $1k/mo on a $5k
+funded account), starting from tiny capital ($50-100 own, $5k funded).
+Mode 2 (aggressive growth) of the original charter is FIRST-CLASS, not
+an afterthought. Concretely:
+
+- Strategy search and RR/sizing decisions optimize expected GROWTH and
+  monthly income potential; "maximum survivable aggression"
+  (growth-optimal/Kelly-style sizing of validated edges), not
+  drawdown minimization for its own sake.
+- Present the aggressive option's real numbers (including failure
+  probability and worst windows) instead of defaulting to the
+  conservative recommendation; the user chooses.
+- The ONE thing that never bends for the goal: validation discipline.
+  No unvalidated edge gets aggressive sizing — busting guarantees
+  $0/month. Aggression in sizing, discipline in evidence.
 
 - Python 3.12, polars, src layout, stdlib-first (no new deps without
   reason). Windows: use the Write tool for .cmd files; full env +
