@@ -1,0 +1,123 @@
+# PROJECT_MEMORY.md — everything learned (through 2026-07-12)
+
+The knowledge file: ledger, results, meta-findings, lessons, open
+assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
+
+## Trial ledger: 83 pre-registered trials. Every new spec raises the DSR
+## bar for everything. Do not test without a numbered doc committed FIRST.
+
+## Hypothesis ledger (docs/hypotheses/, docs/research/)
+
+| # | Hypothesis | Verdict | Key numbers |
+|---|---|---|---|
+| 01 | TSMOM 1h | REJECTED | median DSR 0.39 (9y: 0.95 but 3/8 vs B&H, -90% MDDs) |
+| 02 | TSMOM daily | positive, superseded | 9y per-symbol median DSR 0.911 |
+| 03 | Vol-gated momentum | REJECTED | filter cuts returns more than DD |
+| 04 | Mean reversion 1h | REJECTED decisively | 0/8, DSR 0.036 on 9y |
+| 05 | Carry (funding) | premium CONFIRMED, infra deferred | 5.8-7.9%/yr gross, SOL negative; needs 2 legs -> own-capital, post-eval |
+| 06 | Vol-target sizing | SURVIVED -> deployed (V1) | the cure for MDD; prop-fit maker |
+| 07 | Donchian breakout | strong but superseded | per-symbol median DSR 0.947; loses to vol-target under 3% daily-loss rules |
+| V2 | BTC dominance rotation | KILLED at info stage | 0/3 lookbacks; quadrants contradict own logic |
+| 08 | Funding extremes contrarian | KILLED — backwards | high funding -> HIGHER fwd returns |
+| 09 | Calendar (ToM/weekend/funding-hrs) | 1/3 marginal | ToM +0.39%/d CI grazes 0 (low-priority); others dead |
+| 10 | Spot-perp basis contrarian | KILLED — significantly backwards | premium -> +14.8% vs +6.1% fwd30 |
+| 11 | Cross-sectional rotation | **VALIDATED (wide)** | kill +0.8-1.0%/wk spread; sized 8-coin Sharpe 0.90; WIDE: Sharpe 1.10, prop 62.9%@0.5x, **DSR 0.990 > 0.95 bar — first absolute validation** |
+| 12 | 50/50 combined book | NOT eligible | true sleeve corr 0.77 (0.35 was an alignment bug — corrected); blend averages, doesn't insure |
+| 13 | Shock persistence | extreme UP continues (+3.54% fwd7 CI+) | later shown redundant with momentum (23a) |
+| 14 | Vol-expansion breakout | KILLED | compression adds nothing (increment negative) |
+| 15 | Weekly crash bounce | KILLED | CI straddles 0; vol-conditioning nothing |
+| 16 | Momentum acceleration | 7d ranking info-SIGNAL; accel KILLED | follow-up: grid{7,30,90} DEGRADES rotation (0.83 vs 1.10) — champion unchanged |
+| 17 | Fallen-angel recovery | KILLED | -1.9%, wide CI |
+| 18 | Trend overextension | SIGNAL — OPPOSITE | stretched coins earn MORE (+10.5% fwd30) |
+| 19 | BTC->alt lead-lag | down-day SIGNAL (+0.82% next day) | up-days nothing; -> H22 |
+| 20 | Sessions | US hours carry the drift | not tradable vs costs; execution note |
+| 21 | Volume-conviction | KILLED (near-miss) | +2.44%, CI [-0.23,+4.65] |
+| 22 | Crash-bounce strategy | **ELIGIBLE -> paper #3** | +0.441%/held-day net (CI clear), +32%/yr, Sharpe 0.89, MDD -48%; overlay shape, zero params |
+| 23 | Incremental features | BOTH KILLED | shocks redundant w/ momentum; funding-confirm misses |
+
+## Prop-firm simulation results (real CFD rules, 20k paths, EOD approx)
+
+- V1 vol-target: 1-step static best **1.5x -> 50.0% pass, median 80d**,
+  breakeven funded value $104. 2-step: 47.8%@1.5x.
+- Rotation-wide: **0.5x -> 62.9% pass, median 100d**. Donchian: 46.5%@0.75x
+  (GENERIC), loses under the firm's 3% daily rule.
+- Crash-bounce: overlay only (78% flat -> eval timeouts standalone).
+- UNIVERSAL: sizing beyond ~1.5x ALWAYS lowers pass rates; the
+  constraint geometry (daily-loss + max-loss), not the return stream,
+  dictates strategy choice and size. All pass rates are UPPER bounds
+  (EOD trailing/daily checks; intraday is stricter). Intraday guard
+  makes them slightly conservative in our favor.
+
+## Meta-findings (the big ones)
+
+1. **Crypto is a continuation market — 5+ independent confirmations.**
+   Funding extremes, perp premium, dominance quadrants, single-day
+   shocks, overextension: every crowding/strength signal predicted
+   CONTINUATION; every contrarian folk-theory died. Only exception:
+   next-day alt bounce after BTC crash days (H22) — a 1-day reactive
+   effect, not positioning-based.
+2. **Sizing beats switching.** Vol-target sizing (dial) survived where
+   every regime filter (switch) failed (03, 06, rotation-sized).
+3. **Cross-sectional edges feed on breadth.** Rotation got STRONGER on
+   40 coins than 8 (Sharpe 0.90 -> 1.10) — opposite of the survivorship
+   fear.
+4. **Info-signal ≠ strategy improvement.** 7d ranking was real at info
+   level but degraded the walk-forward (selector chases noise); shock
+   signal was real but fully absorbed by deployed momentum. Incremental
+   bars (beat the deployed system, not zero) killed both.
+5. **Diversification claims need timestamp-joined correlation on the
+   common window** — tail-count alignment produced a false 0.35 (true:
+   0.77) and nearly justified a bad combined book.
+6. **Frequency kills.** Everything at 1h or faster dies after costs
+   (01, 04, sessions). The edge lives at daily+.
+
+## Validated/deployed specs (exact)
+
+- V1: VolTargetMomentum(lookback L, target 30%, window 30), per-symbol
+  L re-selected each 90d by 1y-train walk-forward from {7,14,30,60,90,180};
+  EW 8 slots, long/flat. Candidate-grade (DSR ~0.66 all-trials window).
+- Rotation: VolTargetRotation(L, K=2, target 30%, window 30), L from
+  {30,90} same protocol, abs-momentum gate, wide 40-coin universe.
+  VALIDATED (DSR 0.990). Residual survivorship: fully-delisted coins
+  absent (needs paid point-in-time data to erase).
+- CrashBounce(threshold=-0.03): zero params, overlay shape.
+- Shared decision core: live/decision.py — paper and MT5-live use the
+  SAME code; strategies replayed over history each run (hysteresis-safe).
+
+## Process rules that made this work (keep them)
+
+- Numbered hypothesis doc with verdict bars committed BEFORE results.
+- Kill test (cheap info study) before any strategy build; vectorized
+  screening allowed pre-engine, event-driven engine is source of truth.
+- Every trial (incl. failed variants and descriptive horizons) joins the
+  ledger; DSR benchmarked vs ALL trials.
+- Near-misses stay closed; reopening = new spec + stated reason.
+- Paper accounts run ONLY validated/eligible specs, one spec per record
+  (spec change = archive + fresh start).
+- Report negative results with the same care as positive ones.
+
+## Technical lessons (Windows/session specifics — also in auto-memory)
+
+- Dashboard server loads code once: RESTART after dashboard changes.
+- Windowless (pythonw) parents need CREATE_NO_WINDOW on subprocesses.
+- Subprocesses need FULL env (stripped env breaks polars CPU detection).
+- Patching .cmd files via Python string-replace fails silently on
+  backslash paths — use the Write tool + grep -c to verify (bit twice).
+- MetaQuotes-Demo has no crypto; firm server != MT5 default server.
+- Binance funding API pagination needs explicit `since` (default returns
+  only recent records — caused a wrong carry verdict, fixed same day).
+- polars: from_epoch needs explicit cast to ms dtype; tzdata required on
+  Windows; PYTHONIOENCODING=utf-8 for console polars printing.
+
+## Open assumptions / honest caveats
+
+- All EV numbers conditional on edges being real; V1 remains below the
+  0.95 absolute bar (rotation is above it).
+- Paper fills = signal-bar close (engine says next open) — adjacent in
+  24/7 markets when run right after 00:00 UTC; drift is what Phase 5
+  measures. MT5/live spreads at the firm are unverified vs the 1bp model.
+- 5k funded account realistic value ~$50-80/mo initially; the prop path
+  scales via bigger/multiple accounts, not summer riches. Expectations
+  were set honestly and accepted.
+- Survivorship: mitigated (wide universe incl. 90%+ crashers), not
+  eliminated (fully-delisted coins unmeasurable without paid data).

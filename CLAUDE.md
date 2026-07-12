@@ -1,213 +1,47 @@
-## CURRENT STATE
-- Phase: 5 (Paper Trading) — LIVE since 2026-07-11; real-firm analysis
-  in docs/research/phase5-realfirm.md
-- Current milestone: paper record accumulating; eval fee gated on 2-3
-  months of paper-vs-backtest consistency
-- Completed: Phase 0 research (see below); MILESTONE 1 COMPLETE —
-  data subsystem implemented and verified live: canonical OHLCV schema,
-  8-check validator, hive-partitioned Parquet store + JSON catalog,
-  Binance collector (ccxt), pull CLI, lake-wide report CLI; 48 tests,
-  ruff + strict mypy green, CI workflow in place; 4y of 1h OHLCV pulled
-  and validated for 8 instruments (BTC, ETH, BNB, SOL, XRP, ADA, DOGE,
-  LTC vs USDT) — 35,063 bars each, 100% grid completeness, 0 errors;
-  the 2023-03-24 Binance outage appears as the same single gap in all
-  8 datasets (cross-instrument confirmation the gap check works)
-- Design decisions (data subsystem): UTC ms timestamps = bar OPEN time;
-  validator reports and never repairs; ERROR findings block lake writes
-  (exit 1); lake partitioned symbol/interval/year with atomic year-file
-  upserts (new rows win on overlap); symbol ids are slashless (BTCUSDT),
-  mapped to ccxt form inside the collector only
-- Decisions locked: Python 3.12, Polars, Parquet lake, ccxt/Binance
-  first collector, custom event-driven engine (Phase 2), pluggable
-  risk policy (Mode 1 primary)
-- Open questions: futures data vendor choice deferred; prop firm
-  automation rules unverified
-- Phase 2 (backtesting) built and verified: core/events (Bar/Order/
-  Fill), History view (look-ahead structurally impossible — clairvoyant
-  strategy raises IndexError, tested), Strategy ABC + benchmarks,
-  Portfolio (orders only on exposure change), RiskPolicy gate
-  (passthrough until Phase 4), SimulatedBroker (next-bar-open fills,
-  half-spread + linear volume-impact + taker fees, all bps-config),
-  engine loop (signal at close, fill at next open, one-bar latency),
-  metrics (Sharpe, PSR/expected-max-Sharpe for deflated Sharpe, MDD,
-  round-trip stats), walk-forward splitter; 102 tests green
-- Phase 2 exit criteria: known-answer reproduced exactly; look-ahead
-  unexpressable via API; buy-and-hold on real 4y BTCUSDT matches raw
-  price change within cost model (+204.45% vs +204.56% raw); 35k-bar
-  run in ~0.1-0.3s
-- Known limitations (accepted for MVP, revisit when needed): single
-  instrument per run; market orders only; no intrabar stop modeling;
-  no borrow costs for shorts (allow_short off by default); orders only
-  on exposure change (no continuous rebalancing)
-- Phase 3 infrastructure: engine warmup_bars, walk-forward research
-  harness (train-only selection, tested leak-proof: poisoning test
-  region cannot change selection), reproducible study scripts in
-  scripts/; hypothesis docs in docs/hypotheses/ with pre-registered
-  verdict standards BEFORE results
-- Hypothesis 01 (TSMOM, long/flat, 1h bars, L=1w-90d): REJECTED
-  2026-07-11 — 2/8 symbols beat B&H Sharpe, median DSR 0.393 vs 0.95
-  bar, chosen lookback unstable across windows (noise signature).
-  Full results in docs/hypotheses/01-time-series-momentum.md. Trial
-  count to date (for multiple-testing accounting): 6 lookbacks x 8
-  symbols, 1 spec
-- Phase 3 COMPLETE (2026-07-11), 23 trials total, all pre-registered:
-  01 hourly TSMOM REJECTED (median DSR 0.393); 02 daily TSMOM
-  INCONCLUSIVE-POSITIVE -> THE candidate (6/8 beat B&H, portfolio
-  Sharpe 0.87, DSR 0.828 vs all-23-trials benchmark); 03 vol-gated
-  momentum REJECTED (cut returns more than drawdown); 04 mean reversion
-  REJECTED decisively (0/8, falling-knife confirmed); 05 carry
-  feasibility CONFIRMED (4y gross funding 5.8-7.9%/yr on 4/5 majors,
-  SOL negative) — infra build deferred post-Phase 4
-- CHOSEN CANDIDATE: daily TSMOM, long/flat, equal-weight 8 symbols,
-  lookback re-selected each 90d by 1y-train walk-forward (grid 7-180d).
-  NOT validated (DSR 0.828 < 0.95 bar) — promoted for Phase 4
-  engineering only; -44% OOS MDD must be addressed by risk layer
-- Phase 4 core (2026-07-11): RiskPolicy gains timestamp; policies —
-  MaxExposure, DrawdownGuard (linear soft->hard, LATCHED kill switch),
-  DailyLoss (UTC-day re-arm), Composite, mode1/mode2 presets;
-  prop_sim — block-bootstrap Monte Carlo vs GENERIC rulesets, Wilson
-  CI, EV-vs-assumed-funded-value; candidate return stream reusable via
-  backtesting/candidate.py; 137 tests green
-- Prop-sim headline (candidate, 1080d OOS returns, 36% ann vol):
-  GENERIC-A (6%/4%tr/2%d, $170) best at 0.25x sizing -> 37.3% pass
-  (CI 36.7-38.0), EV +$576..+$3,563 for funded value $2k..$10k;
-  GENERIC-B strict -> 23.6% at 1.0x. Optimal sizing dictated by the
-  trailing-DD geometry, NOT the return stream. All numbers upper
-  bounds (EOD trailing) and conditional on the edge being real
-  (candidate DSR 0.828 — unvalidated)
-- EXTENDED-DATA PASS (2026-07-11): lake extended to each listing
-  (2017+, 1d + 1h, 100% complete, 0 errors); every hypothesis re-run;
-  new hypotheses 06 (vol-target momentum) + 07 (Donchian breakout);
-  trial accounting now 38 specs. Verdicts: 01 still REJECTED (DSR up
-  to 0.952 but 3/8 vs B&H, -90% MDDs); 02 strengthened (median DSR
-  0.911) but superseded; 03/04 still REJECTED (04: 0/8, DSR 0.036);
-  06 survives its relative bar (MDD -20%, prop pass 38.4%); 07
-  strongest evidence (per-symbol median DSR 0.947, portfolio 0.821)
-- FINAL SELECTION (docs/research/final-selection.md): two-stage —
-  evaluation stage Donchian breakout (EW 8 symbols, N walk-forward
-  10-120d, 1.0x; pass 29.1%, median 23d, EV +$1,285/attempt at $5k
-  funded value); funded stage vol-target momentum (30% target vol,
-  MDD -20%). Nothing passed absolute DSR>0.95 (best 0.821); more
-  aggression tested and REDUCES EV (2x sizing lowers pass rates)
-- PHASE 5 (2026-07-11): user's REAL firm simulated (both options,
-  static+trailing variants, scripts/phase5_realfirm.py). KEY FINDING:
-  the 3% daily-loss rule flips the engine — vol-target (9.4% vol)
-  dominates Donchian (16.4% vol) under these rules. Best: Option 1
-  static @ 1.5x -> 50.0% pass, median 80d, breakeven funded value
-  $130; if max loss is TRAILING -> Option 2 @ 1.25-1.5x. >1.5x sizing
-  always lowers pass rate. MUST ASK FIRM: static or trailing max
-  loss; automation policy; weekend holding. Fees assumed $65/$45
-- Paper trader LIVE: python -m trading_bot.live.paper --strategy
-  vol-target, run daily after 00:00 UTC; state in data/paper/;
-  shares selection code path with research (select_param). First run
-  2026-07-11: all-flat (negative momentum regime) — correct behavior
-- Futures-vs-crypto: firm has BOTH arms. All confirmed rules/fees =
-  CFD program (crypto CFDs, our instruments) -> primary path. Futures
-  arm (25k 1-step, 4% trailing EOD, 40% consistency rule, Swing $120)
-  PARKED: blocked on micro-crypto availability in their futures list;
-  would be a new 2-symbol spec; revisit after CFD funded account
-- REVISED PLAN (2026-07-11, user is a student, summer availability):
-  paper gate COMPRESSED to a 2-3 week operational shakedown (honest
-  basis: the statistical gate was the 4.7y OOS; 60 more days adds
-  little; the eval fee $51.80 is the only capital at risk). Then buy
-  the 1-step 5k eval; budget 2 attempts. Expectations set honestly:
-  even success means ~$50-80/mo from a funded 5k initially
-- EXECUTION: firm offers MT5 (chosen — official Python API, no
-  surcharge), TradingView, cTrader (+$10). MT5 adapter built:
-  live/mt5_broker.py + live/trade.py (dry-run DEFAULT, --live flag);
-  decision core shared with paper trader (live/decision.py); user
-  must install MT5 terminal + log in; verify firm's symbol names vs
-  DEFAULT_SYMBOL_MAP before --live; RISK_SCALE=1.5
-- V2 (dominance rotation, from a trader's video): Phase 0 doc written,
-  KILL TEST FAILED 2026-07-11 (0/3 lookbacks, CIs straddle zero;
-  quadrant table contradicts the strategy's own logic) -> V2 CONCLUDED
-  at M1, no strategy code written. Trial ledger now 41. Kept: 6h/12h
-  resampler, EW investable indices, dominance proxy (data/indices.py,
-  data/resample.py). docs/research/v2-dominance-rotation-phase0.md
-- Hypothesis 08 (funding extremes, contrarian): pre-registered then
-  FAILED kill test 2026-07-11 (7d diff -0.95%, CI straddles 0, 4/8;
-  point estimates lean momentum-confirming, not contrarian — crowded
-  funding accompanies trends that continue). Ledger now 44. 7y funding
-  history cached in data/funding/. Idea closed; momentum-flavored
-  variant also not significant at 30d, not promoted
-- RESEARCH BACKLOG adopted (docs/research/backlog.md, living doc,
-  scored by prior/cost/ledger-impact/deployability): #1 calendar
-  effects (data in hand, cheapest), #2 cross-sectional rotation
-  (best prior, needs multi-asset engine), #3 spot-perp basis;
-  carry infra post-eval; Tier B parked on data; Tier C parked with
-  reasons. Rule: kill test before build; EV includes ledger cost
-- KILL-TEST ROUND 2026-07-11 (ledger now 52): hyp 09 calendar — 1/3
-  (turn-of-month PASSES marginally, CI grazes zero -> low-priority
-  strategy-grade candidate; weekend + funding-hours REJECTED); hyp 10
-  basis — FAILED significantly BACKWARDS (high premium -> higher fwd
-  returns; 3rd confirmation crowded positioning = continuation, not
-  reversal, in crypto); hyp 11 CROSS-SECTIONAL ROTATION — PASSED
-  cleanly (both lookbacks CI>0: 30d +0.82%/wk, 90d +1.02%/wk spread)
-  -> GRADUATES to strategy-grade: multi-asset engine build justified
-  (design first), long-only variant prioritized, survivorship caveat
-  open. Backlog gained 3 new candidates (short-term reversal,
-  dispersion-conditioned rotation, positioning-as-confirmation)
-- NEXT BUILD: multi-asset event-driven engine (Step 2 design doc
-  first) for hyp 11 strategy-grade; end-state vision: multi-strategy
-  book (V1 momentum + rotation + later carry) with portfolio-level
-  allocation once >=2 validated engines exist
-- HYP 11 STRATEGY-GRADE (2026-07-11, ledger 56): raw rotation strong
-  (Sharpe 0.98, DSR 0.888) but -76% MDD fails real-firm prop bar;
-  SIZED VolTargetRotation (30% vol budget on selected basket) PASSES
-  both bars: Sharpe 0.90, corr with V1 0.35, DSR 0.923 (program's
-  best), prop 51.2% @ 0.5x. ELIGIBLE -> paper trading started
-  2026-07-11 (data/paper/rotation/, nightly task runs both
-  strategies). Multi-asset engine + configurable rotation live in
-  backtesting/multi.py + strategies/rotation.py; dashboard now
-  multi-strategy (tabs auto-discovered). Eval decision remains with
-  V1 vol-target; rotation earns live status via its own record +
-  wide-universe survivorship re-run (queued)
-- HYP 12 combined book (2026-07-12, ledger 57): NOT eligible — true
-  sleeve correlation is 0.77 (the 0.35 in hyp 11 was a tail-alignment
-  bug, corrected in both docs); combined Sharpe 0.72 < rotation's 0.78,
-  MDD not better than both -> blend averages, doesn't insure. No third
-  paper account. Combined-book code kept (paper.py supports
-  "combined") for a future genuinely-uncorrelated engine; carry
-  (market-neutral, post-eval) is the natural candidate. Plain-English
-  diary shipped (live/narrate.py, dashboard diary card)
-- KILL ROUND 2026-07-12 (ledger 63): hyp 13 shock persistence —
-  extreme UP days (z>=2) continue (+3.54% fwd7, CI [+1.25,+5.99]);
-  other buckets noise; graduated as candidate FEATURE (must beat
-  price-momentum baseline incrementally). Hyp 14 vol-expansion
-  breakout — FAILED both bars (compression adds nothing, increment
-  negative). Meta-finding now 4x confirmed: crypto crowding/shock
-  signals mean CONTINUATION, never reversal. External idea list
-  triaged into backlog (breadth parked on wide-universe project;
-  regime/ML gated behind it)
-- WIDE-UNIVERSE PROJECT (2026-07-12, ledger 65): top-40-by-volume
-  universe (config/universe.json, objective rule), 32 new symbols
-  pulled full-depth, 48 datasets 0 errors. Rotation re-test: K=2
-  Sharpe 1.10, prop 62.9% @ 0.5x, **DSR 0.990 — FIRST ABSOLUTE
-  VALIDATION (>0.95 bar)**; K=5 also passes. Survivorship caveat
-  DOWNGRADED (residual: fully-delisted coins absent). Rotation paper
-  spec switched to wide universe (8-coin record archived); first wide
-  decision: DEXE+SYN at 13% combined (vol budget throttling extreme
-  movers). PaperTrader supports per-strategy symbol lists
-- OVERNIGHT BATCH 2026-07-12 (hyp 15-21, ledger 79): KILLED crash
-  bounce, fallen-angel recovery, acceleration, volume-conviction;
-  SIGNALS: 7d cross-sectional ranking (info-level; strategy follow-up
-  FAILED — grid {7,30,90} degrades rotation to Sharpe 0.83 vs 1.10,
-  champion spec unchanged), overextension = MORE strength (+10.5%
-  fwd30 — 5th continuation confirmation), BTC down-day -> alts +0.82%
-  next day (queued as mini-strategy candidate needing cost-grade
-  test), US session carries the daily drift (execution note only)
-- H22/H23 (2026-07-12, ledger 83): CRASH-BOUNCE strategy ELIGIBLE
-  (zero-param: BTC<-3% day -> EW all alts one day; +0.441%/held-day
-  net CI[+0.17,+0.74], +32%/yr, Sharpe 0.89, MDD -47.8% -> overlay
-  shape, fractional sizing if ever live) -> THIRD paper account
-  (data/paper/crash-bounce/), nightly task runs all three. Both
-  incremental features FAILED (shock redundant with momentum; funding
-  confirmation misses) — closed. Strategy in strategies/event.py
-- Next: accumulate 2-3 months paper record (Phase 5 exit gate:
-  paper-vs-backtest consistency, fill drift within cost model);
-  verify firm's 3 open questions; then eval attempt decision. NO fee
-  before the paper gate. Later: carry infra, live drift monitoring
-  dashboards
+## SESSION START — READ THESE FIRST
+
+1. **PROJECT_STATE.md** — what is running right now, schedules, the firm,
+   the eval plan, next actions.
+2. **PROJECT_MEMORY.md** — full hypothesis ledger (83 trials), all
+   results, meta-findings, lessons, open caveats.
+
+Do not re-derive or re-litigate anything recorded there. Do not re-test
+killed ideas without a new pre-registered spec and a stated reason.
+
+## NON-NEGOTIABLE OPERATING RULES (distilled from 23 hypotheses)
+
+- Pre-register every hypothesis: numbered doc in docs/hypotheses/ with
+  verdict bars, COMMITTED BEFORE any test runs. Count every trial
+  (including variants and descriptive horizons) in the ledger; DSR is
+  always benchmarked against ALL trials ever run.
+- Kill test (cheap information study) BEFORE any strategy build.
+  Event-driven engine is the source of truth for strategies; vectorized
+  screening only pre-engine.
+- New features must beat the DEPLOYED system incrementally, not zero.
+- Paper accounts run only validated/eligible specs; one spec per record
+  (spec change = archive the record, fresh $5,000 start).
+- Live/real-money actions are gated: the runbook
+  (docs/research/eval-runbook.md) governs the eval; going live is a
+  deliberate CLI step, never a dashboard button; the guard's KILLED
+  latch is cleared only by a human.
+- Every session: run pytest + ruff + strict mypy before committing;
+  commit per component; push to origin (GitHub MartexHACK/trading-bot).
+- Restart the dashboard server after changing dashboard code.
+- Report negative results with the same rigor as positive ones. The
+  ledger's honesty is the project's only real asset.
+
+## HOUSE STYLE
+
+- Python 3.12, polars, src layout, stdlib-first (no new deps without
+  reason). Windows: use the Write tool for .cmd files; full env +
+  CREATE_NO_WINDOW for subprocesses; PYTHONIOENCODING=utf-8.
+- Update PROJECT_STATE.md when operational reality changes and
+  PROJECT_MEMORY.md when verdicts/lessons land; keep both current so
+  any session can hand off cleanly.
+- The user is a student and strong-beginner programmer: explain what
+  matters in plain language (the dashboard diary sets the tone), be
+  brutally honest about odds and expectations, challenge bad ideas, and
+  never let enthusiasm outrun the ledger.
 
 
 # Project instructions
