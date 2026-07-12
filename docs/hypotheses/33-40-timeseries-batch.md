@@ -1,7 +1,10 @@
 # Hypotheses 33-40 — Time-Series & Structure Batch
 
-Status: **PRE-REGISTERED (2026-07-12)** — no test has run yet.
-Trial ledger: +8 -> 100 (with 24-32 batch; before conditional follow-ups).
+Status: **COMPLETE (2026-07-12) — 2 signals (H33, H40), 6 kills.**
+Trial ledger: +8 -> 100 (with 24-32 batch; before conditional
+follow-ups). FU-B1 FIRED (H33 blend). H40's signal graduates via a NEW
+pre-registration (docs/hypotheses/42-stop-overlay.md) since no H40
+follow-up was registered here. Verdicts at the bottom.
 
 Shared machinery: WIDE 40-coin daily panel unless stated; 95%
 moving-block bootstrap (30d blocks, 5,000 draws); features use data
@@ -93,3 +96,37 @@ predicts death; the data referees.
   timestamp-joined corr vs rotation OOS < 0.30 (diversifier bar, per
   the H12 lesson). Own-capital shape (needs shorting both ways) —
   even a pass is post-eval infra, like carry.
+
+## Verdicts (2026-07-12, 64,484 symbol-days; scripts/h33_40_killtests.py)
+
+- **H33 blend: SIGNAL.** E[fwd7] is monotone in the horizon-agreement
+  score (0: +0.07%, 1: +0.39%, 2: +0.82%, 3: +3.00%); score-3 minus
+  score-1/2 = +2.41% CI [+0.43, +4.39]. Horizon agreement carries real
+  information beyond a single lookback. **FU-B1 FIRES**: strategy-grade
+  blend-V1 (+1 trial).
+- H34 basis momentum | momentum-long: -0.41% CI [-1.46, +0.55] —
+  KILLED. Like funding (23b), derivative-positioning changes add
+  nothing once price momentum is known. Family closed.
+- H35 pairs reversion: -0.64% CI [-1.39, +0.05] — KILLED as
+  registered (two-sided, no side excludes 0). Note the sign: the
+  near-miss is on the MOMENTUM side — even relative-value ratios trend
+  rather than revert here. Recorded as the 6th continuation
+  confirmation (descriptive). FU-B4 does not fire.
+- H36 short-leg: -0.15% CI [-1.06, +1.00] — KILLED. The bottom of the
+  ranking does NOT keep falling: the short leg has no premium to
+  harvest net of nothing, let alone costs. Long/flat stands. FU-B2
+  does not fire.
+- H37 breadth dial: terciles monotone (+0.90% / +1.15% / +2.92%) but
+  top-vs-bottom +2.02% CI [-2.10, +5.74] — KILLED (suggestive shape,
+  no significance; stays closed per the near-miss rule). FU-B3 no.
+- H38 dispersion dial: monotone (+0.50/+1.05/+1.40%) but +0.90%
+  CI [-2.66, +3.69] — KILLED. FU-B3 does not fire.
+- H39 pick-correlation: -0.18% CI [-3.19, +2.18] — KILLED. Forcing
+  diversified picks buys no return (risk effects were not the claim).
+- **H40 trailing stop: SIGNAL, stops-help direction.** Within uptrends
+  (r90>0), after price falls >= 2xATR14 off its 30d high, fwd30 is
+  -8.77% WORSE than uptrend baseline, CI [-15.57, -2.17]. The one
+  switch-like idea that survived an info test — but it had NO
+  registered follow-up here, so graduation requires a new spec:
+  pre-registered as docs/hypotheses/42-stop-overlay.md with
+  incremental bars vs the deployed systems.

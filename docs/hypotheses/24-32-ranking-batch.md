@@ -1,7 +1,7 @@
 # Hypotheses 24-32 — Cross-Sectional Ranking Batch
 
-Status: **PRE-REGISTERED (2026-07-12)** — no test has run yet.
-Trial ledger: +9 -> 92 (before any conditional follow-up).
+Status: **COMPLETE (2026-07-12) — ALL 9 KILLED.** Trial ledger: +9 -> 92.
+FU-A did NOT fire (no passer). Verdicts at the bottom.
 
 Motivation: the only absolutely validated spec (rotation, DSR 0.990)
 is a cross-sectional ranking, and meta-finding 3 says these edges feed
@@ -88,3 +88,35 @@ protocol unchanged) with THE SINGLE BEST such ranking substituted for
 raw momentum. Bars: OOS Sharpe > 1.10 AND prop pass @0.5x > 62.9%
 (beat the champion on both, same firm rules, 20k paths). One follow-up
 maximum from this batch — the best passer only.
+
+## Verdicts (2026-07-12, 64,484 symbol-days; scripts/h24_32_killtests.py)
+
+**All nine KILLED — no ranking alternative passes its info bar.**
+References on this panel: r30 spread +0.869% (noise), r90 +0.745%
+(noise) — consistent with H16's r30 reference; the champion's edge
+lives in the walk-forward strategy layer, not in naive daily spreads.
+
+- H24 risk-adjusted: +0.768% CI [-0.43, +2.23] — noise.
+- H25 52w-high: +0.977% CI [-0.35, +2.36] — noise (best point
+  estimate of the batch, still inside the CI).
+- H26 residual momentum: +1.076% CI [-0.81, +2.17] — noise. Beats
+  both references on point estimate but FAILED its own CI bar, so
+  FU-A does not fire (pass AND beat references was required).
+- H27 low-vol: +0.822% toward HIGH vol CI [-1.07, +2.38] — noise;
+  no low-vol anomaly in crypto on this panel, direction if anything
+  favors high vol (continuation world).
+- H28 MAX/lottery: +0.471% toward high-MAX CI [-1.05, +2.19] — noise;
+  the equity lottery effect does not appear here.
+- H29 illiquidity: +0.761% CI [-0.62, +2.39] — noise (and would have
+  faced a cost haircut anyway).
+- H30 volume-shock: +0.305% CI [-1.26, +1.76] — noise.
+- H31 smoothness (FIP): -0.142% CI [-2.58, +1.98] — noise, wrong
+  side; smooth trends do NOT beat jumpy ones among winners here.
+- H32 skip-week: +0.143% CI [-1.21, +1.54] — noise; dropping the
+  recent week REMOVES information (coherent with H16: the recent week
+  is real info, just poisonous inside selectors).
+
+Meta-note: nine institutional equity-factor rankings, zero survivors —
+the deployed raw-momentum ranking is not obviously improvable by any
+standard factor on this universe. The edge is the protocol (walk-forward
++ vol targeting + breadth), not the ranking refinement.
