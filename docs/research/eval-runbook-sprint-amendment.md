@@ -6,11 +6,19 @@ firm facts: docs/research/july-sprint.md.
 
 ## Firm & product
 
-HyroTrader 1-step 5,000 USDT challenge, $119 (refunded at first
-payout). Rules as published 2026-07-12: target +10%, daily drawdown
-4%, max loss 6%, minimum 10 trading days, unlimited time, mandatory
-stop-loss per position, max risk 3%/trade, payout >= $100 net profit
-1 calendar day after first funded trade, split 70%.
+HyroTrader 1-step 5,000 USDT challenge: $69 + **$39 SWING DRAWDOWN
+UPGRADE (mandatory for this spec)** = $108, refunded at first payout.
+Swing = daily drawdown measured STATIC from the day's starting
+balance and a fixed max-loss floor — the exact geometry every prop
+simulation in this project assumed. The default (trailing-from-
+intraday-peak) would be tripped by unrealized spikes on held alt
+positions and invalidates our pass-rate numbers. Must be selected AT
+purchase (cannot be added later).
+
+Rules as published 2026-07-12: target +10%, daily drawdown 4%, max
+loss 6%, minimum 10 trading days, unlimited time, max loss 3% of
+initial balance per trade, payout >= $100 net profit 1 calendar day
+after first funded trade, split 70%.
 
 ## Sprint configuration
 
