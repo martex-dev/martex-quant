@@ -1,6 +1,6 @@
 # Hypothesis 23 — Incremental Feature Tests
 
-Status: UNDER TEST (pre-registered before the run). Trials +2 -> 83.
+Status: **BOTH FAILED (2026-07-12)** — features are redundant. Trials 83.
 
 The graduated features must beat the information the deployed systems
 already use, not zero. Both tests condition on the momentum state first.
@@ -20,6 +20,12 @@ funding cache): do high-funding days (>= 90th trailing percentile)
 show higher fwd 7d than mid-funding momentum days (10th-90th pct)?
 PASS: CI > 0. Tests whether crowding CONFIRMS trends beyond price.
 
-## Verdicts
+## Verdicts (2026-07-12)
 
-(after the run)
+- 23a shocks|momentum-flat: -0.15% (CI [-2.11%, +1.59%]) — FAIL. The
+  shock edge lives entirely inside days momentum already holds; as a
+  feature it is redundant. Closed.
+- 23b high-funding|momentum-long: +2.01% (CI [-0.28%, +4.60%]) — FAIL,
+  narrowly. Crowding does not significantly confirm trends beyond
+  price. Closed (a near-miss stays closed; re-opening = new spec, new
+  reason, higher ledger).

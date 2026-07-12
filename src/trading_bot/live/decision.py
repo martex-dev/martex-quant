@@ -41,7 +41,7 @@ FETCH_DAYS = 560  # train + max warmup + slack
 
 # Cross-sectional strategies decide over ALL symbols at once; their
 # exposures are fractions of TOTAL equity (not per-symbol slices).
-CROSS_SECTIONAL = {"rotation"}
+CROSS_SECTIONAL = {"rotation", "crash-bounce"}
 COMBINED = "combined"  # 50/50 vol-target + rotation (hypothesis 12)
 ROTATION_GRID = [30, 90]
 ROTATION_TOP_K = 2
@@ -148,3 +148,10 @@ def select_rotation_param(frames: dict[str, pl.DataFrame]) -> float:
         if sharpe > best_sharpe:
             best_param, best_sharpe = float(lookback), sharpe
     return best_param
+
+
+def crash_bounce_weights(frames: dict[str, pl.DataFrame]) -> dict[str, float]:
+    """Current CrashBounce weights — the same class the validation ran."""
+    from trading_bot.strategies.event import CrashBounce
+
+    return CrashBounce().target_weights(_histories(frames))

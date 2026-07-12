@@ -38,6 +38,7 @@ from trading_bot.live.decision import (
     CROSS_SECTIONAL,
     STRATEGIES,
     SYMBOLS,
+    crash_bounce_weights,
     current_exposure,
     fetch_frames,
     needs_reselect,
@@ -45,6 +46,7 @@ from trading_bot.live.decision import (
     rotation_weights,
     select_rotation_param,
 )
+from trading_bot.live.narrate import _trades_sentence as _ts
 from trading_bot.live.narrate import narrate_rotation, narrate_vol_target
 
 logger = logging.getLogger(__name__)
@@ -120,6 +122,8 @@ class PaperTrader:
                     "per_symbol": reselect_params(frames, "vol-target"),
                     "lookback": select_rotation_param(frames),
                 }
+            elif self.strategy_name == "crash-bounce":
+                self.state["params"] = {"threshold": -0.03}  # fixed, never tuned
             elif self.is_cross_sectional:
                 self.state["params"] = {"lookback": select_rotation_param(frames)}
             else:
@@ -144,6 +148,10 @@ class PaperTrader:
                 s: 0.5 * (vt_exposures[s] / len(SYMBOLS)) + 0.5 * rot.get(s, 0.0) for s in SYMBOLS
             }
             exposures = dict(fractions)
+        elif self.strategy_name == "crash-bounce":
+            weights = crash_bounce_weights(frames)
+            fractions = {s: weights.get(s, 0.0) for s in self.symbols}
+            exposures = {s: f for s, f in fractions.items() if f > 0}
         elif self.is_cross_sectional:
             weights = rotation_weights(frames, int(self.state["params"]["lookback"]))
             fractions = {s: weights.get(s, 0.0) for s in self.symbols}
@@ -166,7 +174,26 @@ class PaperTrader:
             fills.append(self._fill(symbol, delta, prices[symbol], frames[symbol], now))
 
         equity = self._equity(prices)
-        if self.is_combined:
+        if self.strategy_name == "crash-bounce":
+            btc = frames.get("BTCUSDT")
+            btc_ret = 0.0
+            if btc is not None and btc.height >= 2:
+                a, b = btc["close"][-2], btc["close"][-1]
+                assert isinstance(a, float) and isinstance(b, float)
+                btc_ret = b / a - 1.0
+            if exposures:
+                story = (
+                    f"BTC fell {btc_ret:+.1%} yesterday — a crash day. History says "
+                    f"altcoins bounce the day after, so it holds ALL "
+                    f"{len(exposures)} alts equally for exactly one day. " + _ts(fills)
+                )
+            else:
+                story = (
+                    f"BTC moved {btc_ret:+.1%} yesterday — no crash (trigger is -3%). "
+                    "This strategy only acts the day after BTC crashes; it waits in "
+                    "cash. " + _ts(fills)
+                )
+        elif self.is_combined:
             from trading_bot.live.narrate import _trades_sentence
 
             trend_part = narrate_vol_target(

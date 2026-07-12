@@ -159,3 +159,19 @@ def test_combined_paper_trader_blends_both_sleeves(tmp_path: Path) -> None:
     assert sum(fractions.values()) == pytest.approx(1.0, abs=0.05)
     story = mark["story"]
     assert "TREND HALF" in story and "ROTATION HALF" in story
+
+
+def test_crash_bounce_paper_flat_without_crash(tmp_path: Path) -> None:
+    now = T0 + timedelta(days=555)
+    trader = PaperTrader(
+        "crash-bounce",
+        tmp_path / "paper",
+        collector=FakeDailyCollector(),  # steady +0.2%/day: never a crash
+        initial_cash=5_000.0,
+        symbols=list(SYMBOLS),
+    )
+    mark = trader.run_once(now=now)
+    assert mark["n_fills"] == 0
+    assert mark["exposures"] == {}
+    assert "no crash" in mark["story"]
+    assert trader.state["params"] == {"threshold": -0.03}

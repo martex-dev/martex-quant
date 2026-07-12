@@ -196,6 +196,13 @@
   fwd30 — 5th continuation confirmation), BTC down-day -> alts +0.82%
   next day (queued as mini-strategy candidate needing cost-grade
   test), US session carries the daily drift (execution note only)
+- H22/H23 (2026-07-12, ledger 83): CRASH-BOUNCE strategy ELIGIBLE
+  (zero-param: BTC<-3% day -> EW all alts one day; +0.441%/held-day
+  net CI[+0.17,+0.74], +32%/yr, Sharpe 0.89, MDD -47.8% -> overlay
+  shape, fractional sizing if ever live) -> THIRD paper account
+  (data/paper/crash-bounce/), nightly task runs all three. Both
+  incremental features FAILED (shock redundant with momentum; funding
+  confirmation misses) — closed. Strategy in strategies/event.py
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee

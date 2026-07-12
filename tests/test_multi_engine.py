@@ -172,3 +172,34 @@ def test_vol_target_rotation_stays_out_without_history() -> None:
 
     short = make_histories({"A": [100.0, 105.0, 110.0, 120.0]})
     assert VolTargetRotation(lookback=2, vol_window=30).target_weights(short) == {}
+
+
+def test_crash_bounce_triggers_only_after_btc_crash() -> None:
+    from trading_bot.strategies.event import CrashBounce
+
+    crash = make_histories(
+        {
+            "BTCUSDT": [100.0, 100.0, 100.0, 95.0],  # -5% today
+            "ETHUSDT": [50.0, 50.0, 50.0, 49.0],
+            "SOLUSDT": [10.0, 10.0, 10.0, 9.5],
+        }
+    )
+    weights = CrashBounce().target_weights(crash)
+    assert weights == {"ETHUSDT": 0.5, "SOLUSDT": 0.5}  # EW alts, no BTC
+
+    quiet = make_histories(
+        {
+            "BTCUSDT": [100.0, 100.0, 100.0, 99.0],  # -1%: no trigger
+            "ETHUSDT": [50.0, 50.0, 50.0, 49.0],
+        }
+    )
+    assert CrashBounce().target_weights(quiet) == {}
+
+
+def test_crash_bounce_validation() -> None:
+    import pytest as _pytest
+
+    from trading_bot.strategies.event import CrashBounce
+
+    with _pytest.raises(ValueError):
+        CrashBounce(threshold=0.03)

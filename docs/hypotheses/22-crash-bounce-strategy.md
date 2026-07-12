@@ -1,6 +1,6 @@
 # Hypothesis 22 — Crash-Day Alt Bounce (strategy-grade)
 
-Status: UNDER TEST (pre-registered before the run). Trials +2 -> 81.
+Status: **ELIGIBLE — paper trading since 2026-07-12.** Trials 81.
 
 ## Claim (from H19's information result)
 
@@ -25,6 +25,13 @@ listed alts for exactly one day after each BTC crash day, flat otherwise.
 Prop-sim reported descriptively (an ~85%-flat stream cannot pass an
 eval alone; the deployment shape would be an overlay/sleeve).
 
-## Verdict
+## Verdict (2026-07-12, engine-grade, 3,248 days, 11,084 fills)
 
-(after the run)
+BOTH BARS PASS: mean net held-day return +0.441% (CI [+0.168%, +0.742%],
+727 held days — initial attribution counted exit days only, corrected
+same day, conservative direction), annualized net +32.1%/yr, Sharpe
+0.89, MDD -47.8%. Zero tunable parameters. Deployment shape: overlay/
+sleeve (flat ~78% of days; cannot pass an eval standalone — deep MDD
+from crash cascades means any live sizing must be fractional). Third
+paper account opened (data/paper/crash-bounce/, wide-universe alts,
+nightly task runs all three).
