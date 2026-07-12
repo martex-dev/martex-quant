@@ -36,18 +36,60 @@ options — and a funded account in August is the income engine the
 larger goal actually needs. The fees are not bets on July; they are
 bets on August with a July lottery ticket attached.
 
-## HARD BLOCKERS — verify with the firm BEFORE any purchase (user action)
+## FIRM ANSWERS (2026-07-12) — The5ers is OUT for our system
 
-1. **Payout terms**: minimum trading days before first payout, payout
-   cycle, profit split. If the first payout cannot physically land
-   before Jul 31, the cash goal is impossible regardless of trading —
-   the sprint then targets "funded + profit banked on-platform".
-2. **CFD symbol list**: the rotation family needs ~40 alt symbols.
-   Without coverage, fallback engine = V1 @ high scale (worse sprint
-   numbers). This was already the gate's day-0 check; it moves up.
-3. Activation delay between eval pass and funded account (1-3 days at
-   many firms) — directly shrinks the deadline.
-4. Whether 3 sequential attempts are allowed (retry policy).
+1. Payout: first payout **14 days after funded activation** -> the
+   July cash goal is mathematically impossible at The5ers.
+2. Symbol list: crypto CFDs = **BTCUSD + ETHUSD only** -> none of the
+   validated engines can run there (rotation needs ~40 alts, V1 needs
+   8 majors, crash-bounce needs the alt basket).
+3. Activation 24-72 BUSINESS hours + KYC + risk review.
+4. Immediate purchase allowed (moot).
+
+## Firm search (user authorized, 2026-07-12) — sprint sim on real rules
+
+scripts/firm_choice_study.py, 17d deadline, 43a engine, retry budget 3:
+
+| Firm | 5k fee | Rules | P($400 by Jul 31) | P(funded by Aug) | Fit |
+|---|---|---|---|---|---|
+| **HyroTrader** | $119 (refunded at 1st payout) | +10%, daily 4%, static 6%, **min 10 trading days**, payout 1d after 1st funded trade (min $100, 70% split), 700+ Bybit pairs | 16.4% @4x | **60.4%** | **FULL API (Bybit/OKX) — our stack connects natively; exact validated universe runs as-is** |
+| Breakout (Kraken) | $45 | +10%, daily 4%, static 6% (1-step; verify — one source says trailing), NO min days, on-demand payout, 80% split, ~50 major pairs | 24.1% @4x | 71.5% | **NO API — proprietary terminal only.** Best math, unusable for automation. Viable ONLY as manual-execution hybrid (user keys in the bot's ~2-4 daily orders) |
+| The5ers | $51.80 | 14d payout wait, 2 crypto symbols | ~0% | n/a | OUT |
+
+Caveats: Breakout/Hyro numbers assume our full 40-coin stream; Breakout's
+~50-major list would trim rotation breadth (re-validation = +1
+pre-registered trial on the real symbol list). HyroTrader's eval-phase
+consistency rule (no single trade >40% of total profit) is a risk for
+2-position books — verify how a "trade" is counted (daily vol-scaling
+rebalances may naturally split profits). Velotrade (full API on funded
+crypto accounts since May 2026, per their blog) is an unverified
+runner-up worth a support ping.
+
+## RECOMMENDATION
+
+**HyroTrader 1-step 5k ($119)** — the only firm found where the
+validated system runs EXACTLY as validated (700+ Bybit perps) with a
+real API. The sprint math is second-best (16% July goal, 60% funded by
+August, fee refunded on success), but Breakout's better math is
+unreachable for an automated system without manual execution. If the
+user is willing to hand-enter orders daily for ~3 weeks, Breakout at
+$45 is the aggressive-math option with execution-drift risk.
+
+Pre-purchase verifications at HyroTrader (support ticket): consistency
+rule counting, bot policy confirmation in writing, low-cap altcoin 5%
+exposure rule vs our universe, mandatory stop-loss mechanics (our
+chandelier stop maps naturally — confirm a resting SL order satisfies
+it), Bulgaria/EU KYC, USDT payout to user's wallet.
+
+## Build queue (GO, in order)
+
+1. Bybit execution adapter (ccxt) + symbol map for the wide universe —
+   replaces MT5 path for this firm. DRY-RUN default like live/trade.py.
+2. 43a combined live engine in live/decision.py (rotation-stop weights
+   + bounce overlay from idle cash) + runbook amendment pre-registered
+   BEFORE purchase.
+3. Guard scheduled at sprint sizing (daily trip 4%, static latch 6%).
+4. Switch-down rule automated: after funded + July ends -> 0.5-1.5x.
 
 ## Execution requirements before purchase (engineering)
 

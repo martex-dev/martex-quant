@@ -84,27 +84,30 @@ New strategies: strategies/blend.py, strategies/stops.py.
 
 ## JULY SPRINT (user goal 2026-07-12: ~$400 banked by Jul 31)
 
-Plan + numbers: docs/research/july-sprint.md. Best option: buy eval
-early (~Jul 14-19), 43a book @ 4x with retry budget (3 fees):
-P(chain by Jul 31) 18-23%, P(funded by Aug 1) 64-70% — upper bounds.
-**BLOCKED ON USER verifying with the firm: payout terms (min days,
-cycle, split), CFD symbol list (~40 alts), activation delay, retry
-policy.** Before any purchase: pre-registered runbook amendment +
-43a live engine build + guard at sprint sizing + switch-down rule
-(sustainable 0.5-1.5x once funded/August).
+Plan + numbers: docs/research/july-sprint.md. **The5ers is OUT**
+(14-day payout wait kills the July goal; crypto = BTC+ETH only kills
+the engines). Firm search done: **recommended HyroTrader 1-step 5k
+$119** (700+ Bybit pairs = exact validated universe, real API, fee
+refunded at first payout; 43a @4x: P(July goal) 16.4%, P(funded by
+Aug) 60.4%). Breakout ($45, better math 24.1%/71.5%) has NO API —
+manual-execution hybrid only. Awaiting user's firm choice; then:
+Bybit ccxt adapter, 43a live engine, runbook amendment (pre-registered
+BEFORE purchase), guard at sprint sizing, automated switch-down to
+0.5-1.5x after funded/July.
 
 ## Next actions (in order)
 
-1. USER: ask the firm the four sprint questions (payout, symbols,
-   activation, retries) — everything else waits on the answers.
+1. USER: choose firm (HyroTrader recommended / Breakout manual-hybrid)
+   + send HyroTrader pre-purchase verifications (consistency-rule
+   counting, bot policy in writing, low-cap 5% rule, SL mechanics,
+   EU KYC, payout wallet).
 2. Nothing daily — let the shakedown run; watch dashboard. NOTE:
-   rotation-stop joined mid-shakedown (2026-07-12); its record is 13
-   days at the gate, mark it accordingly.
-3. If sprint is GO: build 43a live engine + runbook amendment, then
-   purchase per the chosen date row in july-sprint.md. If NO-GO:
-   2026-07-25 gate as planned — engine menu: V1 @1.5x (50.0%, fully
-   shaken down), rotation @0.5x (62.9%), rotation-stop @0.5x (73.0%,
-   DSR 0.992, youngest record).
+   rotation-stop joined mid-shakedown (2026-07-12); record is 13 days
+   at the gate.
+3. On firm confirmation: build queue in july-sprint.md (Bybit adapter,
+   43a engine, amendment, guard). If sprint NO-GO: 2026-07-25 gate as
+   planned — menu: V1 @1.5x (50.0%), rotation @0.5x (62.9%),
+   rotation-stop @0.5x (73.0%, DSR 0.992).
 3. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
    correlation-spike de-risking, carry infra (post-eval, own-capital);
    own-capital book = rotation-stop + crash-bounce overlay (43a:
