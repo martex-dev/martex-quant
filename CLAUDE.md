@@ -188,6 +188,14 @@
   spec switched to wide universe (8-coin record archived); first wide
   decision: DEXE+SYN at 13% combined (vol budget throttling extreme
   movers). PaperTrader supports per-strategy symbol lists
+- OVERNIGHT BATCH 2026-07-12 (hyp 15-21, ledger 79): KILLED crash
+  bounce, fallen-angel recovery, acceleration, volume-conviction;
+  SIGNALS: 7d cross-sectional ranking (info-level; strategy follow-up
+  FAILED — grid {7,30,90} degrades rotation to Sharpe 0.83 vs 1.10,
+  champion spec unchanged), overextension = MORE strength (+10.5%
+  fwd30 — 5th continuation confirmation), BTC down-day -> alts +0.82%
+  next day (queued as mini-strategy candidate needing cost-grade
+  test), US session carries the daily drift (execution note only)
 - Next: accumulate 2-3 months paper record (Phase 5 exit gate:
   paper-vs-backtest consistency, fill drift within cost model);
   verify firm's 3 open questions; then eval attempt decision. NO fee

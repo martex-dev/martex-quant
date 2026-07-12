@@ -83,3 +83,12 @@ informative for the rotation filter).
   in US hours.
 - **H21 volume-conviction: noise** (+2.44%, CI [-0.23,+4.65]) — close,
   not qualified. Volume filter does not join the rotation spec.
+
+## Conditional follow-up verdict (2026-07-12, +1 trial -> 79)
+
+Wide rotation with grid {7,30,90}: **FAILS its bar** — Sharpe 0.83
+(champion {30,90}: 1.10), DSR 0.920 (0.990), prop 55.6% (62.9%). The
+selector chased the noisier 7d ranking in a third of windows and
+degraded OOS. The 7d signal is REAL at the information level but
+HARMFUL inside this strategy's selection loop. Champion spec unchanged;
+7d ranking archived as an info-positive/strategy-negative finding.

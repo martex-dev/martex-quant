@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import json
 import statistics
+import sys
 from datetime import timedelta
 from pathlib import Path
 
@@ -29,9 +30,7 @@ from trading_bot.risk_management.prop_sim import PropFirmRules, simulate_evaluat
 from trading_bot.strategies.rotation import VolTargetRotation
 
 TRAIN, TEST = 365, 90
-import sys as _sys
-
-GRID = [7, 30, 90] if "--grid7" in _sys.argv else [30, 90]
+GRID = [7, 30, 90] if "--grid7" in sys.argv else [30, 90]
 N_TRIALS = 65
 BASELINE_8COIN_SHARPE = 0.90  # hyp 11 sized variant, same protocol
 FIRM_RULES = PropFirmRules(
@@ -102,7 +101,7 @@ def main() -> None:
     print(f"universe loaded: {len(frames)} symbols\n")
 
     eligible = False
-    for top_k in ((2,) if "--grid7" in _sys.argv else (2, 5)):
+    for top_k in ((2,) if "--grid7" in sys.argv else (2, 5)):
         oos = wf_stream(frames, top_k)
         m = compute_metrics(oos, [], Interval.D1)
         returns = oos["equity"].pct_change().drop_nulls()
