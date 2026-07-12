@@ -189,3 +189,26 @@ def crash_bounce_weights(frames: dict[str, pl.DataFrame]) -> dict[str, float]:
     from trading_bot.strategies.event import CrashBounce
 
     return CrashBounce().target_weights(_histories(frames))
+
+
+def sprint_weights(
+    frames: dict[str, pl.DataFrame], lookback: int
+) -> tuple[dict[str, float], list[str]]:
+    """The 43a sprint book (eval-runbook sprint amendment): rotation-stop
+    weights, plus idle cash deployed EW into alts for one day after a BTC
+    crash day (< -3%) — the H22/H41 overlay construction. Returns
+    (weights, stopped symbols). Sizing (RISK_SCALE) is applied by the
+    execution layer, not here."""
+    weights, stopped = rotation_stop_weights(frames, lookback)
+    btc = frames.get("BTCUSDT")
+    if btc is not None and btc.height >= 2:
+        a, b = btc["close"][-2], btc["close"][-1]
+        assert isinstance(a, float) and isinstance(b, float)
+        if b / a - 1.0 < -0.03:
+            idle = max(0.0, 1.0 - sum(weights.values()))
+            alts = [s for s, df in frames.items() if s != "BTCUSDT" and df.height >= 2]
+            if idle > 0.0 and alts:
+                per = idle / len(alts)
+                for symbol in alts:
+                    weights[symbol] = weights.get(symbol, 0.0) + per
+    return weights, stopped

@@ -234,3 +234,38 @@ def test_rotation_stop_goes_flat_after_crash(tmp_path: Path) -> None:
     assert mark["exposures"] == {}
     assert mark["n_fills"] == 0
     assert "Safety stop active" in mark["story"]
+
+
+def test_sprint_weights_no_crash_equals_rotation_stop() -> None:
+    from trading_bot.live.decision import rotation_stop_weights, sprint_weights
+
+    collector = FakeDailyCollector()
+    now = T0 + timedelta(days=555)
+    frames = {
+        s: collector.fetch_ohlcv(s, None, T0, now)  # type: ignore[arg-type]
+        for s in SYMBOLS
+    }
+    base, _ = rotation_stop_weights(frames, 30)
+    sprint, _ = sprint_weights(frames, 30)
+    assert sprint == base  # steady uptrend: no crash, no overlay
+
+
+def test_sprint_weights_deploys_idle_cash_after_btc_crash() -> None:
+    """Crash scenario: every coin stop-latched (cash freed) and BTC down
+    -8% on the last bar -> the bounce overlay must deploy the idle cash
+    equally across the alts. This is exactly the 43a mechanism: stops
+    create idle cash at the same moment crashes create the bounce."""
+    from trading_bot.live.decision import sprint_weights
+
+    collector = CrashingCollector()
+    now = T0 + timedelta(days=555)
+    frames = {
+        s: collector.fetch_ohlcv(s, None, T0, now)  # type: ignore[arg-type]
+        for s in SYMBOLS
+    }
+    weights, stopped = sprint_weights(frames, 30)
+    alts = [s for s in SYMBOLS if s != "BTCUSDT"]
+    assert len(stopped) == len(SYMBOLS)  # all latched by the collapse
+    # Rotation slots are all in cash -> full account deployed as bounce.
+    assert sum(weights.values()) == pytest.approx(1.0, abs=0.02)
+    assert all(weights.get(s, 0.0) > 0 for s in alts)
