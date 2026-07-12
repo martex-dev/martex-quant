@@ -7,3 +7,4 @@ set PYTHONIOENCODING=utf-8
 .venv\Scripts\python.exe -m trading_bot.live.paper --strategy vol-target >> data\paper\runs.log 2>&1
 .venv\Scripts\python.exe -m trading_bot.live.paper --strategy rotation >> data\paper\runs.log 2>&1
 .venv\Scripts\python.exe -m trading_bot.live.paper --strategy crash-bounce >> data\paper\runs.log 2>&1
+.venv\Scripts\python.exe -m trading_bot.live.paper --strategy rotation-stop >> data\paper\runs.log 2>&1

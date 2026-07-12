@@ -41,7 +41,7 @@ FETCH_DAYS = 560  # train + max warmup + slack
 
 # Cross-sectional strategies decide over ALL symbols at once; their
 # exposures are fractions of TOTAL equity (not per-symbol slices).
-CROSS_SECTIONAL = {"rotation", "crash-bounce"}
+CROSS_SECTIONAL = {"rotation", "rotation-stop", "crash-bounce"}
 COMBINED = "combined"  # 50/50 vol-target + rotation (hypothesis 12)
 ROTATION_GRID = [30, 90]
 ROTATION_TOP_K = 2
@@ -125,20 +125,26 @@ def rotation_weights(frames: dict[str, pl.DataFrame], lookback: int) -> dict[str
     return VolTargetRotation(int(lookback)).target_weights(_histories(frames))
 
 
-def select_rotation_param(frames: dict[str, pl.DataFrame]) -> float:
+def select_rotation_param(frames: dict[str, pl.DataFrame], *, stop: bool = False) -> float:
     """Best rotation lookback on the trailing year — same selection idea as
-    the walk-forward validation (train-only, by annualized Sharpe)."""
+    the walk-forward validation (train-only, by annualized Sharpe). With
+    ``stop=True`` the selection runs the H42b stop variant, mirroring the
+    validation study exactly."""
     from trading_bot.backtesting.metrics import compute_metrics
     from trading_bot.backtesting.multi import MultiBacktestConfig, run_multi_backtest
     from trading_bot.strategies.rotation import VolTargetRotation
+    from trading_bot.strategies.stops import StopVolTargetRotation
 
     best_param: float = float(ROTATION_GRID[0])
     best_sharpe = float("-inf")
     for lookback in ROTATION_GRID:
         sliced = {s: df.tail(TRAIN_DAYS) for s, df in frames.items()}
+        strategy = (
+            StopVolTargetRotation(int(lookback)) if stop else VolTargetRotation(int(lookback))
+        )
         result = run_multi_backtest(
             sliced,
-            VolTargetRotation(int(lookback)),
+            strategy,
             config=MultiBacktestConfig(initial_cash=10_000.0),
             warmup_bars=max(int(lookback), 30) + 1,
         )
@@ -148,6 +154,34 @@ def select_rotation_param(frames: dict[str, pl.DataFrame]) -> float:
         if sharpe > best_sharpe:
             best_param, best_sharpe = float(lookback), sharpe
     return best_param
+
+
+def rotation_stop_weights(
+    frames: dict[str, pl.DataFrame], lookback: int
+) -> tuple[dict[str, float], list[str]]:
+    """Current StopVolTargetRotation weights plus the stopped symbols.
+
+    The stop latch is STATEFUL, so unlike plain rotation the strategy must
+    be replayed bar by bar over the fetched history (same hysteresis-safe
+    replay idea as ``current_exposure``, across the whole universe).
+    """
+    from trading_bot.strategies.stops import StopVolTargetRotation
+
+    strategy = StopVolTargetRotation(int(lookback))
+    bars_by_symbol = {s: bars_from_frame(df) for s, df in frames.items()}
+    timeline = sorted({b.timestamp for bars in bars_by_symbol.values() for b in bars})
+    cursors = dict.fromkeys(bars_by_symbol, 0)
+    histories = {s: History(b) for s, b in bars_by_symbol.items()}
+    weights: dict[str, float] = {}
+    for ts in timeline:
+        for symbol, bars in bars_by_symbol.items():
+            c = cursors[symbol]
+            if c < len(bars) and bars[c].timestamp == ts:
+                histories[symbol].advance()
+                cursors[symbol] = c + 1
+        visible = {s: h for s, h in histories.items() if len(h) > 0}
+        weights = strategy.target_weights(visible)
+    return weights, strategy.stopped_symbols
 
 
 def crash_bounce_weights(frames: dict[str, pl.DataFrame]) -> dict[str, float]:

@@ -79,6 +79,10 @@ class StopVolTargetRotation(VolTargetRotation):
         super().__init__(lookback, top_k, target_vol_annual, vol_window)
         self._stopped: dict[str, bool] = {}
 
+    @property
+    def stopped_symbols(self) -> list[str]:
+        return sorted(s for s, stopped in self._stopped.items() if stopped)
+
     def target_weights(self, histories: dict[str, History]) -> dict[str, float]:
         eligible: dict[str, History] = {}
         for symbol, history in histories.items():

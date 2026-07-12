@@ -175,3 +175,62 @@ def test_crash_bounce_paper_flat_without_crash(tmp_path: Path) -> None:
     assert mark["exposures"] == {}
     assert "no crash" in mark["story"]
     assert trader.state["params"] == {"threshold": -0.03}
+
+
+class CrashingCollector(FakeDailyCollector):
+    """Uptrend that collapses ~28% over days 551-554 (the last bars visible
+    to a run at day 555): long-lookback momentum stays positive, but the
+    chandelier stop must be latched."""
+
+    CRASH_FROM = 551
+
+    def __init__(self) -> None:
+        super().__init__()
+        closes = self.df["close"].to_list()
+        rows = []
+        start_ms = int(T0.timestamp() * 1000)
+        price = closes[0]
+        for i, close in enumerate(closes):
+            c = close * (0.92 ** (i - self.CRASH_FROM + 1)) if i >= self.CRASH_FROM else close
+            rows.append(
+                [start_ms + i * DAY_MS, price, max(c, price) * 1.001, min(c, price) * 0.999, c, 1e6]
+            )
+            price = c
+        from trading_bot.data.models import ohlcv_frame_from_rows
+
+        self.df = ohlcv_frame_from_rows(rows)
+
+
+def test_rotation_stop_paper_trader_end_to_end(tmp_path: Path) -> None:
+    """Stop variant: same cross-sectional path as rotation on calm data."""
+    now = T0 + timedelta(days=555)
+    trader = PaperTrader(
+        "rotation-stop",
+        tmp_path / "paper",
+        collector=FakeDailyCollector(),
+        initial_cash=5_000.0,
+        symbols=list(SYMBOLS),
+    )
+    mark = trader.run_once(now=now)
+    assert set(trader.state["params"]) == {"lookback"}
+    invested = {s: f for s, f in mark["exposures"].items() if f > 0}
+    assert len(invested) == 2  # steady uptrend: no stop fires, top-2 held
+    assert mark["n_fills"] == 2
+    assert "ranked all" in mark["story"]
+
+
+def test_rotation_stop_goes_flat_after_crash(tmp_path: Path) -> None:
+    """After a 30% collapse the stop latch must hold every slot in cash,
+    even while long-lookback momentum is still positive."""
+    now = T0 + timedelta(days=555)
+    trader = PaperTrader(
+        "rotation-stop",
+        tmp_path / "paper",
+        collector=CrashingCollector(),
+        initial_cash=5_000.0,
+        symbols=list(SYMBOLS),
+    )
+    mark = trader.run_once(now=now)
+    assert mark["exposures"] == {}
+    assert mark["n_fills"] == 0
+    assert "Safety stop active" in mark["story"]

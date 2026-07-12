@@ -43,6 +43,7 @@ from trading_bot.live.decision import (
     fetch_frames,
     needs_reselect,
     reselect_params,
+    rotation_stop_weights,
     rotation_weights,
     select_rotation_param,
 )
@@ -125,7 +126,11 @@ class PaperTrader:
             elif self.strategy_name == "crash-bounce":
                 self.state["params"] = {"threshold": -0.03}  # fixed, never tuned
             elif self.is_cross_sectional:
-                self.state["params"] = {"lookback": select_rotation_param(frames)}
+                self.state["params"] = {
+                    "lookback": select_rotation_param(
+                        frames, stop=self.strategy_name == "rotation-stop"
+                    )
+                }
             else:
                 self.state["params"] = reselect_params(frames, self.strategy_name)
             self.state["last_reselect"] = now.isoformat()
@@ -150,6 +155,10 @@ class PaperTrader:
             exposures = dict(fractions)
         elif self.strategy_name == "crash-bounce":
             weights = crash_bounce_weights(frames)
+            fractions = {s: weights.get(s, 0.0) for s in self.symbols}
+            exposures = {s: f for s, f in fractions.items() if f > 0}
+        elif self.strategy_name == "rotation-stop":
+            weights, stopped = rotation_stop_weights(frames, int(self.state["params"]["lookback"]))
             fractions = {s: weights.get(s, 0.0) for s in self.symbols}
             exposures = {s: f for s, f in fractions.items() if f > 0}
         elif self.is_cross_sectional:
@@ -206,6 +215,17 @@ class PaperTrader:
                 "This account runs BOTH strategies, half the money each. "
                 f"TREND HALF: {trend_part} ROTATION HALF: {rot_part} " + _trades_sentence(fills)
             )
+        elif self.strategy_name == "rotation-stop":
+            story = narrate_rotation(
+                frames, int(self.state["params"]["lookback"]), fractions, fills
+            )
+            if stopped:
+                names = ", ".join(stopped[:3]) + (", …" if len(stopped) > 3 else "")
+                story += (
+                    f" Safety stop active on {len(stopped)} coin(s) ({names}): each fell more "
+                    "than 2x its normal range from its recent high, so it is skipped until it "
+                    "makes a fresh 30-day high."
+                )
         elif self.is_cross_sectional:
             story = narrate_rotation(
                 frames, int(self.state["params"]["lookback"]), fractions, fills
