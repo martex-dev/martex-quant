@@ -3,8 +3,8 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 105 pre-registered trials. Every new spec raises the DSR
-## bar for everything. Do not test without a numbered doc committed FIRST.
+## Trial ledger: 112 run + 2 registered (H51) = 114. Every new spec raises
+## the DSR bar for everything. Do not test without a numbered doc FIRST.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
 
@@ -47,6 +47,8 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 | 42a | V1 + chandelier stop | **CANDIDATE** | Sharpe 0.84 vs 0.53, MDD -13.3% vs -25.1%, prop 31.1%>27.9% |
 | 42b | Rotation + chandelier stop | **CANDIDATE — beats champion on all metrics** | Sharpe 1.47 vs 1.10, MDD -29% vs -58%, prop 73.0%>62.8% @0.5x, **DSR 0.992 > 0.95 bar** (104 trials); paper account #4 since 2026-07-12 |
 | 43 | Combo batch on rot-stop base | screen: only bounce admits; **43a KILLED (eval bars)** | rot-stop x V1 corr 0.521, x rotation 0.821 (blends dead); rot-stop+bounce Sharpe 1.55, +79%/yr, DSR 1.000 but prop 47.5%<73%, MDD worse -> replaces H41 as own-capital archive |
+| 44-50 | Retail intraday batch (maker regime, 15m Bybit) | ALL 7 claims KILLED; **H44 ORB + H45 first-hour INVERTED (significant)** | fade earns 0.16-0.20%/event = 4-5x maker toll; sessions/funding/levels/bursts/VWAP noise -> H51 |
+| 51 | Intraday fade strategies (51a fade-ORB, 51b fade-1st-hour) | REGISTERED, not yet run | bars: net Sharpe>0.7 + corr<0.30 vs rot-stop (diversifier), taker-floor costs |
 
 ## Prop-firm simulation results (real CFD rules, 20k paths, EOD approx)
 
@@ -83,7 +85,13 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
    0.77) and nearly justified a bad combined book.
 6. **Frequency kills.** Everything at 1h or faster dies after costs
    (01, 04, sessions). The edge lives at daily+.
-7. **The objective function picks the config.** A deadline flipped BOTH
+7. **Horizon flips the sign: crypto CONTINUES at daily+ and REVERTS
+   intraday.** H44/H45 (15m, maker regime): the classic retail
+   breakout entries (opening range, first hour) are significantly
+   the WRONG side; fading them clears the maker toll 4-5x. Complements
+   meta-finding 1 without contradiction — crowding continues over
+   days, but intraday breakout-chasers are exit liquidity.
+8. **The objective function picks the config.** A deadline flipped BOTH
    standing rules (july-sprint.md): with retries and a hard date,
    4x sizing beats 1.5x and the eval-killed 43a book beats the
    champion. Corollary doctrine: EVALS = aggressive sprint config

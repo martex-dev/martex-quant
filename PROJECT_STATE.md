@@ -109,13 +109,15 @@ config/secrets/hyro.json (gitignored).
 4. Paper shakedown continues untouched (4 accounts nightly); Jul 25
    gate now only governs the PATIENT fallback if all 3 sprint attempts
    bust.
-5. TRACK 2 (parallel, user request 2026-07-12): retail intraday batch
-   H44-50 pre-registered (docs/hypotheses/44-50-retail-intraday-batch.md)
-   — ORB, session momentum, funding windows, key levels, vol bursts,
-   VWAP on 15m Bybit perp data under the MAKER-fee regime (the stated
-   reason frequency reopens). Data pull running -> data/intraday/.
-   Kill tests next session; survivors join the book only via runbook
-   (funded stage or next eval), never mid-attempt.
+5. TRACK 2 COMPLETE at info level (2026-07-12): H44-50 all retail
+   claims killed; **H44 ORB and H45 first-hour momentum significantly
+   INVERTED** — intraday crypto REVERTS (meta-finding 7). Fade effects
+   clear the maker toll 4-5x. **H51 pre-registered** (51a fade-ORB,
+   51b fade-first-hour, strategy grade, taker-floor costs, diversifier
+   bars vs rotation-stop): NEXT session's build+run. Survivors join
+   the book only via runbook (5th paper account / funded stage),
+   never mid-attempt. Data: data/intraday/ (12 Bybit perps, 15m,
+   2021+, ~2M bars).
 3. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
    correlation-spike de-risking, carry infra (post-eval, own-capital);
    own-capital book = rotation-stop + crash-bounce overlay (43a:
