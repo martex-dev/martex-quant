@@ -20,16 +20,24 @@ loss 6%, minimum 10 trading days, unlimited time, max loss 3% of
 initial balance per trade, payout >= $100 net profit 1 calendar day
 after first funded trade, split 70%.
 
-## Sprint configuration
+## SINGLE-ATTEMPT REVISION (2026-07-13 — supersedes the sprint config)
 
-- Engine: **43a book** — StopVolTargetRotation (K=2, L walk-forward
-  {30,90}, wide universe) + crash-bounce overlay from idle cash
-  (BTC day < -3% -> EW alts one day). live/decision.py sprint_weights.
-- Sizing: RISK_SCALE **4.0** during the sprint window (deadline
-  physics, scripts/july_sprint_study.py). Expected: fast pass or fast
-  bust; busts are retries.
-- Retry budget: up to **3 attempts** (~$357 max fees, refundable on
-  eventual success). A 4th attempt requires a new human decision.
+User constraint: ~$110 total = ONE attempt, no retries. That flips the
+objective from P(pass by deadline, retries cheap) to P(pass | one
+shot) — scripts/single_attempt_study.py + adaptive_sizing_study.py:
+
+- Engine: **rotation-stop ALONE** (the 43a bounce overlay LOWERS
+  single-attempt pass odds at every scale — 54% vs 76% @0.5x — and is
+  dropped from the eval; it remains the own-capital archive book).
+- Sizing: **static RISK_SCALE 0.85** (P(pass) 62.3%, bust 37.7%,
+  median 48 days, funded ~end of August; adaptive buffer-scaled
+  policies were simulated and do NOT beat the static frontier).
+- Retry budget: NONE. A bust ends the campaign; fallback = paper
+  record + gate plan while saving for one future fee (user decision
+  then).
+- The old 4x/3-retry sprint numbers remain in this doc for the record
+  of WHY deadline-physics conclusions do not survive a one-shot
+  wallet (meta-finding: the objective picks the config).
 - Guard: daily trip at -3.5% (inside the firm's 4%), static latch at
   $4,750 equivalent; KILLED latch cleared only by human (unchanged).
 - Execution: Bybit API via ccxt adapter (live/bybit_broker.py, to be
