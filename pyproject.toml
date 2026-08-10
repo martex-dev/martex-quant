@@ -19,6 +19,13 @@ dependencies = [
 mt5 = [
     "MetaTrader5>=5.0.45; sys_platform == 'win32'",  # official MT5 Python API
 ]
+research = [
+    # TSLA CNN study only (src/trading_bot/research/tesla). Not needed by the
+    # data pipeline, backtester, or any live/paper path — keep it out of the
+    # runtime install.
+    "tensorflow-cpu>=2.16",
+    "scikit-learn>=1.5",
+]
 dev = [
     "pytest>=8.2",
     "pytest-cov>=5.0",
@@ -55,6 +62,11 @@ ignore_missing_imports = true
 
 [[tool.mypy.overrides]]
 module = "MetaTrader5.*"
+ignore_missing_imports = true
+
+# Research-only deps (TSLA CNN study). Neither ships type stubs.
+[[tool.mypy.overrides]]
+module = ["keras.*", "sklearn.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
