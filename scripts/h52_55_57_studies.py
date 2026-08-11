@@ -15,6 +15,7 @@ import polars as pl
 
 from trading_bot.backtesting.metrics import compute_metrics
 from trading_bot.data.models import Interval
+from trading_bot.data.series.store import SeriesKind, SeriesStore
 from trading_bot.features.intraday import load_15m_bars
 from trading_bot.features.panel import forward_return, relative_forward_return_ratio
 from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
@@ -36,6 +37,7 @@ SYMBOLS = [
 ]
 DATA = Path("data/intraday")
 CACHE_DIR = Path("data/tmp/h4x_streams")
+SERIES = SeriesStore(Path("."))
 BLOCK_DAYS = 30
 N_BOOT = 5_000
 MAKER_FEE = 0.0002
@@ -142,7 +144,7 @@ def h52(rot_daily: pl.DataFrame) -> None:
 
 
 def main() -> None:
-    rot_stop = pl.read_parquet(CACHE_DIR / "rot_stop_stream.parquet")
+    rot_stop = SERIES.read(SeriesKind.EQUITY_STREAM, "rot_stop_stream")
     rot_daily = rot_stop.with_columns(day=pl.col("timestamp").dt.date()).select(
         "day", pl.col("equity").pct_change().fill_null(0.0).alias("rot_ret")
     )

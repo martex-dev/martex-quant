@@ -20,6 +20,7 @@ import polars as pl
 from trading_bot.backtesting.engine import BacktestConfig, run_backtest
 from trading_bot.backtesting.metrics import compute_metrics
 from trading_bot.data.models import Interval
+from trading_bot.data.series.store import SeriesKind, SeriesStore
 from trading_bot.execution.simulated import ExecutionConfig
 from trading_bot.risk_management.prop_sim import PropFirmRules, simulate_evaluation
 from trading_bot.strategies.base import Strategy
@@ -46,6 +47,7 @@ FIRM_RULES = PropFirmRules(
     "1step-5k-static", 5_000.0, 0.10, None, 0.03, None, 108.0, static_max_loss_pct=0.06
 )
 CACHE_DIR = Path("data/tmp/h4x_streams")
+SERIES = SeriesStore(Path("."))
 VOL_TARGET = 0.30
 
 
@@ -112,7 +114,7 @@ def evaluate(name: str, ew: pl.DataFrame, rot_daily: pl.DataFrame) -> None:
 
 
 def main() -> None:
-    rot_stop = pl.read_parquet(CACHE_DIR / "rot_stop_stream.parquet")
+    rot_stop = SERIES.read(SeriesKind.EQUITY_STREAM, "rot_stop_stream")
     rot_daily = rot_stop.with_columns(day=pl.col("timestamp").dt.date()).select(
         "day", pl.col("equity").pct_change().fill_null(0.0).alias("rot_ret")
     )
