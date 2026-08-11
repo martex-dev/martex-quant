@@ -187,12 +187,22 @@ quote volume, 2026-07-12, union legacy 8, stables/leveraged excluded".
 
 ## Code health
 
-`OBSERVATION` — full suite **228 tests, all passing** (2026-08-10).
-Working tree clean except the new MI audit document. CI workflow runs
-ruff check, ruff format --check, mypy (strict), pytest on every push.
+`OBSERVATION` — full suite **458 tests, all passing** (2026-08-11), of
+which 30 are golden-output regressions over the whole research corpus.
+Working tree clean. CI workflow runs ruff check, ruff format --check,
+mypy (strict), pytest on every push; the golden tests skip in CI (no
+market data there) and are a LOCAL gate.
 
-`OBSERVATION` — trial ledger: **120 registered, 119 run, 1 data-blocked
-(H54)**. Single source of truth remains PROJECT_MEMORY.md.
+`OBSERVATION` — trial ledger: **125 registered, 124 run, 1 data-blocked
+(H54)** as of 2026-08-11. H58 added 5 (learned indicator ensemble,
+KILLED). Single source of truth remains PROJECT_MEMORY.md; the machine-
+readable mirror is docs/research/ledger/trials.toml, whose documented
+per-hypothesis deltas sum to 120 with the unexplained 5 carried
+explicitly in `[unallocated]` rather than distributed by guess.
+
+`INTERPRETATION` — every future strategy claim is now deflated against
+125 rather than 120. That is a real cost, accepted deliberately and
+recorded in the H58 registration before the test ran.
 
 ---
 
