@@ -163,6 +163,21 @@ def verdict_for(p: float) -> str:
     return "WATCH" if p >= WATCH else "INCONSISTENT"
 
 
+def context_lake() -> tuple[ParquetStore, str]:
+    """The CURRENT lake for context, the frozen one only as a fallback.
+
+    data/lake is deliberately frozen at 2026-07-09 so it can witness the
+    published figures; it therefore cannot see the live window at all. The
+    market-context question needs current data, so it reads data/lake-current
+    and SAYS which lake it used — silently falling back would produce an
+    answer about the wrong period.
+    """
+    current = ROOT / "data/lake-current"
+    if current.is_dir():
+        return ParquetStore(current), "data/lake-current"
+    return ParquetStore(ROOT / "data/lake"), "data/lake (FROZEN — may not cover the window)"
+
+
 def market_context(lake: ParquetStore, start: datetime, end: datetime) -> None:
     """Descriptive only, and not a cell. A long-only momentum book falling in
     a falling market is the least surprising outcome in finance; reporting the
@@ -188,11 +203,21 @@ def market_context(lake: ParquetStore, start: datetime, end: datetime) -> None:
         print("  (no lake coverage for this window — context unavailable)")
         return
     btc = dict(moves).get("BTCUSDT")
+    ranked = sorted(moves, key=lambda pair: pair[1], reverse=True)
     equal_weight = sum(m for _, m in moves) / len(moves)
     losers = sum(1 for _, m in moves if m < 0)
     print(f"  BTC over the same window       : {btc:+.2%}" if btc is not None else "  BTC: n/a")
     print(f"  equal-weight universe ({len(moves):>2} coins): {equal_weight:+.2%}")
     print(f"  coins down over the window     : {losers}/{len(moves)}")
+    # The momentum books hold the TOP-ranked coins, so the universe average is
+    # not the relevant benchmark on its own: what the leaders did is closer to
+    # what the book could have earned.
+    top = ranked[:5]
+    print("  best 5 in the universe         : " + ", ".join(f"{s[:-4]} {m:+.1%}" for s, m in top))
+    print(
+        "  worst 5                        : "
+        + ", ".join(f"{s[:-4]} {m:+.1%}" for s, m in ranked[-5:])
+    )
 
 
 def main() -> None:
@@ -236,7 +261,9 @@ def main() -> None:
 
     print("=== descriptive context (NOT a cell, NOT a trial) ===")
     live = read_live("rotation-stop")
-    market_context(ParquetStore(ROOT / "data/lake"), live.start, live.end)
+    lake, which = context_lake()
+    print(f"  source: {which}")
+    market_context(lake, live.start, live.end)
 
     print("\n=== VERDICT (pre-registered bars) ===")
     control = results.get("vol-target")
