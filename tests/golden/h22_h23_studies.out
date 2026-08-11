@@ -1,0 +1,9 @@
+=== H22 crash-day alt bounce (engine-grade, full costs) ===
+  3248 days, 727 held days, 11084 fills
+  mean net held-day return +0.441%  CI [+0.168%, +0.742%]
+  annualized net +32.12%/yr  Sharpe 0.89  MDD -47.8%
+  bar1 (CI>0) PASS; bar2 (ann>=3%) PASS -> ELIGIBLE (overlay/paper candidate)
+
+=== H23 incremental feature tests ===
+  23a shocks|momentum-flat: n=1038  diff -0.15%  CI [-2.11%, +1.59%]  fail
+  23b high-funding|momentum-long: n=2161  diff +2.01%  CI [-0.28%, +4.60%]  fail

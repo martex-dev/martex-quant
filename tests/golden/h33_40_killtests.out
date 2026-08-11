@@ -1,0 +1,29 @@
+wide daily panel: 64484 symbol-days
+
+=== H33 multi-horizon momentum blend ===
+  E[fwd7 | score=0] = +0.071%  (n=17430)
+  E[fwd7 | score=1] = +0.392%  (n=15112)
+  E[fwd7 | score=2] = +0.822%  (n=12736)
+  E[fwd7 | score=3] = +2.999%  (n=12129)
+  score=3 vs score 1-2, fwd7                               n= 12129  diff +2.41%  CI [+0.43%, +4.39%]  SIGNAL
+=== H34 basis momentum | r90>0 (legacy 8, perp cache) ===
+  rising basis vs falling basis | momentum long, fwd7      n=  4839  diff -0.41%  CI [-1.46%, +0.55%]  noise
+=== H35 pairs / ratio stat-arb (legacy 8, 28 pairs, |z|>=1.5) ===
+  signed fwd7 ratio return on |z|>=1.5 (reversion claim >0)      n= 22265  mean -0.64%  CI [-1.39%, +0.05%]  noise
+=== H36 short-leg viability (bottom-2 by r90) ===
+  bottom-2 vs rest, fwd7 (short claim: CI<0)               n=  5144  diff -0.15%  CI [-1.06%, +1.00%]  noise
+=== H37 breadth dial (top2 fwd7 by breadth tercile) ===
+  tercile low  E[top2 fwd7] = +0.900% (n=889)
+  tercile mid  E[top2 fwd7] = +1.151% (n=833)
+  tercile high E[top2 fwd7] = +2.917% (n=850)
+  top breadth tercile vs bottom, top2 fwd7                 n=   850  diff +2.02%  CI [-2.10%, +5.74%]  noise
+=== H38 dispersion dial (spread by dispersion tercile) ===
+  tercile low  E[spread] = +0.497% (n=858)
+  tercile mid  E[spread] = +1.050% (n=857)
+  tercile high E[spread] = +1.399% (n=857)
+  high dispersion tercile vs low, r30 spread               n=   857  diff +0.90%  CI [-2.66%, +3.69%]  noise
+=== H39 pick-correlation diversification ===
+  median top-2 pick correlation: 0.39
+  low-corr picks vs high-corr picks, top2 fwd7             n=  1286  diff -0.18%  CI [-3.19%, +2.18%]  noise
+=== H40 trailing stop (2xATR14 from 30d high | r90>0) ===
+  stop-fired vs not | uptrend, fwd30 (stops help: CI<0)    n= 10247  diff -8.77%  CI [-15.57%, -2.17%]  SIGNAL

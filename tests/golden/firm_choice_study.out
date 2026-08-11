@@ -1,0 +1,26 @@
+deadline 17d (buy ~Jul 14), 20000 paths, retries up to 3, EOD checks (upper bounds)
+
+=== Breakout ($45, no min days) ===
+  engine: rotation-stop
+     1.0x  P(chain)   0.3%  P(funded by Aug)  11.5%  avg fee cost   50$
+     2.0x  P(chain)   4.7%  P(funded by Aug)  34.9%  avg fee cost   71$
+     3.0x  P(chain)  10.4%  P(funded by Aug)  50.0%  avg fee cost   83$
+     4.0x  P(chain)  14.7%  P(funded by Aug)  57.9%  avg fee cost   88$
+  engine: 43a book (rot-stop+bounce)
+     1.0x  P(chain)   1.9%  P(funded by Aug)  24.4%  avg fee cost   58$
+     2.0x  P(chain)  11.2%  P(funded by Aug)  52.3%  avg fee cost   77$
+     3.0x  P(chain)  19.3%  P(funded by Aug)  66.0%  avg fee cost   84$
+     4.0x  P(chain)  24.1%  P(funded by Aug)  71.5%  avg fee cost   87$
+
+=== HyroTrader ($119, 10d min, fee refund) ===
+  engine: rotation-stop
+     1.0x  P(chain)   0.2%  P(funded by Aug)  10.3%  avg fee cost  132$
+     2.0x  P(chain)   3.1%  P(funded by Aug)  30.0%  avg fee cost  185$
+     3.0x  P(chain)   7.0%  P(funded by Aug)  41.2%  avg fee cost  217$
+     4.0x  P(chain)   9.5%  P(funded by Aug)  48.2%  avg fee cost  229$
+  engine: 43a book (rot-stop+bounce)
+     1.0x  P(chain)   1.2%  P(funded by Aug)  21.6%  avg fee cost  151$
+     2.0x  P(chain)   6.9%  P(funded by Aug)  44.4%  avg fee cost  200$
+     3.0x  P(chain)  13.0%  P(funded by Aug)  54.8%  avg fee cost  221$
+     4.0x  P(chain)  16.4%  P(funded by Aug)  60.4%  avg fee cost  229$
+

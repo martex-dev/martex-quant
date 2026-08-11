@@ -1,0 +1,20 @@
+variant: RAW
+walk-forward OOS: 2880 days, chosen L per window: [30, 30, 30, 30, 90, 90, 90, 30, 30, 30, 30, 90, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 30, 90, 90, 90, 30, 90, 90, 30, 90, 90]
+bars: 2880   round trips: 0
+total return: +3996.86%   CAGR: +60.16%
+sharpe (ann.): 0.98   max drawdown: -76.38%
+win rate: n/a   profit factor: n/a
+time in market: 75.2%   fees paid: 0.00
+DSR vs 55-trial ledger: 0.888
+correlation with V1 vol-target (last 1710d overlap): 0.34
+V1 Sharpe on same overlap: 0.74 vs rotation 0.98
+
+prop-sim, REAL firm 1-step static rules ($51.80):
+  1step-5k-static @ scale 0.50: pass 30.2% (95% CI 29.5%-30.8%), bust 69.8%, timeout 0.0%, median days to pass: 16
+  1step-5k-static @ scale 0.75: pass 28.8% (95% CI 28.2%-29.5%), bust 71.2%, timeout 0.0%, median days to pass: 9
+  1step-5k-static @ scale 1.00: pass 28.4% (95% CI 27.8%-29.0%), bust 71.6%, timeout 0.0%, median days to pass: 6
+  1step-5k-static @ scale 1.25: pass 29.3% (95% CI 28.7%-29.9%), bust 70.7%, timeout 0.0%, median days to pass: 5
+  1step-5k-static @ scale 1.50: pass 29.2% (95% CI 28.6%-29.9%), bust 70.8%, timeout 0.0%, median days to pass: 4
+  1step-5k-static @ scale 2.00: pass 31.2% (95% CI 30.5%-31.8%), bust 68.8%, timeout 0.0%, median days to pass: 3
+
+VERDICT vs pre-registered bars: sharpe/diversification PASS; prop pass 31.2% @ 2.0x fail -> NOT eligible

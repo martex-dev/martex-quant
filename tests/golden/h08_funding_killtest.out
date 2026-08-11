@@ -1,0 +1,19 @@
+panel: 17910 symbol-days over 2398 dates, 2019-12-09 .. 2026-07-02
+bucket sizes: LOW 2054, MID 12494, HIGH 3362
+
+ horizon  E[fwd|LOW]  E[fwd|MID]  E[fwd|HIGH]  LOW-HIGH               95% CI
+      1d      0.24%      0.17%       0.49%   -0.24%     [-0.63%, +0.19%]
+      7d      2.35%      1.14%       3.30%   -0.95%     [-3.20%, +1.39%] <- PRIMARY
+     30d      4.83%      8.50%      12.61%   -7.78%    [-17.58%, +0.77%]
+
+per-symbol LOW-minus-HIGH at 7d (pre-registered: >=5/8 positive):
+  BTCUSDT   +0.83%
+  ETHUSDT   +0.49%
+  BNBUSDT   +0.63%
+  SOLUSDT   -2.93%
+  XRPUSDT   -2.71%
+  ADAUSDT   -0.61%
+  DOGEUSDT  -4.54%
+  LTCUSDT   +0.50%
+
+VERDICT: CI>0 NO; sign consistency 4/8 (need >=5) -> H08 FAILS

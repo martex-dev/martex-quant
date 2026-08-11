@@ -1,0 +1,23 @@
+wide daily panel: 64484 symbol-days
+
+=== H15 weekly crash bounce ===
+  crash days (r7<=-15%) vs rest, fwd7                  n=  6204  diff +1.30%  CI [-0.09%, +2.72%]  noise
+  crash + vol falling vs crash + vol rising, fwd7      n=  2116  diff -0.10%  CI [-2.22%, +2.46%]  noise
+=== H16 cross-sectional short-momentum / acceleration ===
+  rank by 7d return                                    n=  2632  spread +1.397%  CI [+0.243%, +2.758%]  SIGNAL
+  rank by acceleration                                 n=  2632  spread +0.296%  CI [-1.169%, +1.745%]  noise
+  rank by 30d return (reference)                       n=  2632  spread +0.869%  CI [-0.365%, +2.315%]  noise
+=== H17 fallen-angel recovery ===
+  fallen angels (<=-50% off peak, +20%/14d) fwd30      n=  2020  diff -1.90%  CI [-8.19%, +4.95%]  noise
+=== H18 trend overextension ===
+  stretched (>=95th pct above 90d MA) fwd7             n=  3025  diff +2.83%  CI [+0.19%, +5.60%]  SIGNAL
+  stretched (>=95th pct above 90d MA) fwd30            n=  3025  diff +10.52%  CI [+0.37%, +23.63%]  SIGNAL
+=== H19 BTC -> alt next-day lead-lag ===
+  BTC>+3% today -> alts next day (vs BTC quiet)        n=  7069  diff -0.07%  CI [-0.57%, +0.40%]  noise
+  BTC<-3% today -> alts next day (vs BTC quiet)        n=  6362  diff +0.82%  CI [+0.21%, +1.46%]  SIGNAL
+=== H20 UTC session effects (hourly, legacy 8) ===
+  session Asia 00-08 vs others (hourly mean)           n=187642  diff -0.01%  CI [-0.02%, +0.00%]  noise
+  session EU 08-16 vs others (hourly mean)             n=187969  diff -0.01%  CI [-0.02%, +0.00%]  noise
+  session US 16-24 vs others (hourly mean)             n=188085  diff +0.02%  CI [+0.01%, +0.02%]  SIGNAL
+=== H21 volume-conviction among top-2 momentum picks ===
+  top-2 picks: volume expanding vs contracting, fwd7   n=  2745  diff +2.44%  CI [-0.23%, +4.65%]  noise

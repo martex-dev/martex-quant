@@ -1,0 +1,15 @@
+universe: 8 symbols, data from each listing (2017+), costs included
+trial accounting: 38 specs total across the project
+
+=== daily-tsmom ===
+  OOS 1710d (4.7y): total +71%, CAGR +12.1%, Sharpe 0.67, MDD -39.0%, DSR(all 38 trials) 0.592
+  prop-fit best: GENERIC-A 50k @ 1.00x: pass 28.6% (CI 27.7%-29.5%), median 15d, EV $+1,260, EV/day $+84.0
+
+=== vol-target ===
+  OOS 1710d (4.7y): total +36%, CAGR +6.7%, Sharpe 0.74, MDD -20.0%, DSR(all 38 trials) 0.660
+  prop-fit best: GENERIC-A 50k @ 1.00x: pass 38.4% (CI 37.5%-39.4%), median 55d, EV $+1,751, EV/day $+31.8
+
+=== donchian ===
+  OOS 1710d (4.7y): total +58%, CAGR +10.3%, Sharpe 0.68, MDD -38.7%, DSR(all 38 trials) 0.821
+  prop-fit best: GENERIC-A 50k @ 1.00x: pass 29.1% (CI 28.2%-30.0%), median 23d, EV $+1,285, EV/day $+55.9
+

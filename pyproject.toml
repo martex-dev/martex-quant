@@ -72,3 +72,8 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q --strict-markers"
+markers = [
+    # Golden regression over the research scripts (MI Lab Layer 1). Needs the
+    # local data lake, which is gitignored — skips in CI, gates locally.
+    "slow: re-runs the research scripts end to end (~40s total)",
+]

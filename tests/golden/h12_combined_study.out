@@ -1,0 +1,17 @@
+common OOS window: 1710 days, 2021-08-11 .. 2026-04-16
+sleeve correlation: 0.77
+
+v1         Sharpe 0.53  CAGR +7.5%  MDD -25.1%
+rotation   Sharpe 0.78  CAGR +19.0%  MDD -42.8%
+combined   Sharpe 0.72  CAGR +13.5%  MDD -31.6%
+
+combined DSR vs 57-trial ledger: 0.777
+
+prop-sim, real firm 1-step static rules:
+  1step-5k-static @ scale 0.50: pass 48.0% (95% CI 47.3%-48.7%), bust 40.3%, timeout 11.7%, median days to pass: 140
+  1step-5k-static @ scale 0.75: pass 44.3% (95% CI 43.6%-45.0%), bust 54.8%, timeout 0.9%, median days to pass: 77
+  1step-5k-static @ scale 1.00: pass 36.0% (95% CI 35.3%-36.7%), bust 64.0%, timeout 0.0%, median days to pass: 42
+  1step-5k-static @ scale 1.25: pass 30.2% (95% CI 29.6%-30.8%), bust 69.8%, timeout 0.0%, median days to pass: 26
+  1step-5k-static @ scale 1.50: pass 28.7% (95% CI 28.0%-29.3%), bust 71.3%, timeout 0.0%, median days to pass: 18
+
+VERDICT: bar1 (Sharpe vs best sleeve) fail; bar2 (prop >= 45%) 48.0% PASS -> NOT eligible

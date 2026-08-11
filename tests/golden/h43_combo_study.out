@@ -1,0 +1,15 @@
+=== H43 correlation screen (descriptive, not trials) ===
+  corr (a) rotation-stop x vol-target V1            +0.521  (1710d common)  SCREENED OUT
+  corr (b) rotation-stop x champion rotation        +0.821  (2880d common)  SCREENED OUT
+  corr (c) rotation-stop x crash-bounce overlay     +0.118  (2880d common)  ADMITTED
+  corr (d) V1 x crash-bounce overlay                +0.141  (1710d common)  ADMITTED
+
+=== 43a: rotation-stop + crash-bounce overlay (FIRED) ===
+  bounce days: 317; mean idle cash deployed 82%
+  rotation-stop alone          2880d  Sharpe 1.47  CAGR +42.9%  MDD -29.0%  prop@0.5x 73.0% (median 106d)
+  rot-stop + bounce            2880d  Sharpe 1.55  CAGR +79.0%  MDD -37.6%  prop@0.5x 47.5% (median 47d)
+  combined DSR(107): 1.000
+  43a VERDICT: bar1 Sharpe PASS; bar2 prop@0.5x fail; bar3 MDD fail -> KILLED
+
+43b SCREENED OUT (corr >= 0.30) — no trial consumed
+43c SCREENED OUT (needs all three pairs < 0.30) — no trial consumed

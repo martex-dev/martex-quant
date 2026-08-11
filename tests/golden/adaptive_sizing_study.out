@@ -1,0 +1,9 @@
+rotation-stop stream, ONE attempt, 20000 paths, EOD upper bounds
+
+policy              P(pass)  P(bust)  median  by Aug31  by Sep30
+static 0.75x          65.7%    34.1%     60d     26.7%     42.3%
+static 0.85x          62.9%    37.0%     48d     32.4%     46.8%
+static 1.00x          57.3%    42.7%     37d     36.9%     48.5%
+adaptive up=1.00      60.6%    39.2%     43d     33.6%     44.6%
+adaptive up=1.25      52.4%    47.6%     28d     38.2%     45.9%
+adaptive up=1.50      46.0%    54.0%     20d     38.4%     43.3%
