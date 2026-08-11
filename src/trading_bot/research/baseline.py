@@ -458,6 +458,26 @@ SPECS: tuple[ScriptSpec, ...] = (
         seed_note="Imports build_streams from july_sprint_study; same inputs.",
     ),
     ScriptSpec(
+        name="research_graph_report",
+        hypotheses="Stage 12 research graph over the load-bearing spine",
+        seeds=(),
+        uses_universe=False,
+        # The graph's nodes and edges are literals that MIRROR these
+        # documents. Fingerprinting them is what makes a stale graph
+        # detectable: if the corpus moves and the literals do not, the
+        # inputs category changes and says so.
+        data_files=(
+            "PROJECT_MEMORY.md",
+            "docs/hypotheses/58-learned-indicator-ensemble.md",
+            "docs/hypotheses/59-live-drawdown-consistency.md",
+        ),
+        seed_note=(
+            "Pure structure: the nodes and edges are literals in the script, "
+            "each citing the committed document it was read from. No market "
+            "data, no RNG, no lake reads."
+        ),
+    ),
+    ScriptSpec(
         name="dsr_recheck",
         hypotheses="Re-deflation of the momentum books at the current ledger total",
         seeds=(),
