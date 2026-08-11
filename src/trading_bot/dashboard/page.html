@@ -85,6 +85,14 @@
   </div>
 
   <div class="card wide">
+    <h2>Research lab</h2>
+    <div id="lab-ledger" class="sub">loading…</div>
+    <div id="lab-independence"></div>
+    <div id="lab-recent"></div>
+    <div class="sub" style="margin:6px 0">This panel <b>reports</b> the ledger and the graph's own audit. It computes no verdicts — a dashboard that derived its own conclusions would become a second, unversioned source of truth.</div>
+  </div>
+
+  <div class="card wide">
     <h2>Actions</h2>
     <div>
       <button data-action="paper-run">Run paper now</button>
@@ -229,6 +237,60 @@ document.querySelectorAll("button[data-action]").forEach(btn => {
 
 refresh();
 setInterval(refresh, 30_000);
+
+async function refreshLab() {
+  let lab;
+  try {
+    lab = await (await fetch("/api/lab")).json();
+  } catch (e) {
+    document.getElementById("lab-ledger").textContent = "lab data unavailable: " + e;
+    return;
+  }
+  const L = lab.ledger || {};
+  const el = (id) => document.getElementById(id);
+  if (!L.available) {
+    el("lab-ledger").textContent = "no ledger recorded yet";
+  } else {
+    // The unallocated gap is shown, never folded into the total: documented
+    // deltas do not sum to the claim, and hiding that would present a
+    // reconstructed number as a verified one.
+    el("lab-ledger").innerHTML =
+      "<b>" + L.total + "</b> trials registered (" + L.run + " run, " +
+      L.data_blocked + " data-blocked) across " + L.families + " families &middot; " +
+      L.documented + " documented, <b>" + L.unallocated + " unallocated</b> " +
+      "(carried explicitly, not distributed by guess)";
+  }
+
+  const ind = lab.independence || {};
+  if (!ind.available) {
+    // "unavailable" and "clean" must never look alike.
+    el("lab-independence").innerHTML =
+      "<div class='sub'>independence audit unavailable: " + (ind.reason || "unknown") + "</div>";
+  } else {
+    const rows = (ind.claims || []).map(c => {
+      const flag = c.overstated
+        ? " <b style='color:#c1121f'>raw count overstates the evidence</b>"
+        : "";
+      const disc = (c.discounted || [])
+        .map(d => "<div class='sub'>discounted: " + d.a + " &amp; " + d.b +
+                  " correlate " + d.correlation + " — one event, seen twice</div>")
+        .join("");
+      return "<div>" + c.claim + ": " + c.claimed + " claimed, <b>" +
+             c.independent + "</b> independent" + flag + disc + "</div>";
+    }).join("");
+    el("lab-independence").innerHTML =
+      "<div class='sub' style='margin-top:8px'>graph: " + ind.nodes + " nodes, " +
+      ind.edges + " edges</div>" + rows;
+  }
+
+  const recent = lab.recent || [];
+  el("lab-recent").innerHTML =
+    "<div class='sub' style='margin-top:8px'>recent hypotheses</div>" +
+    recent.map(h => "<div class='sub'>H" + h.number + " " + h.title +
+                    " &mdash; <b>" + h.state + "</b></div>").join("");
+}
+refreshLab();
+setInterval(refreshLab, 60000);
 </script>
 </body>
 </html>

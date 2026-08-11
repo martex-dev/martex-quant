@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any
 
 from trading_bot.dashboard.data import gather_status
+from trading_bot.dashboard.lab import gather_lab
 
 PORT = 8765
 
@@ -77,6 +78,10 @@ class DashboardHandler(BaseHTTPRequestHandler):
             self._send(200, page, "text/html; charset=utf-8")
         elif self.path == "/api/status":
             self._send_json(gather_status(self.base))
+        elif self.path == "/api/lab":
+            # Separate endpoint, not folded into /api/status: the trading view
+            # must keep rendering when a research document is mid-edit.
+            self._send_json(gather_lab(self.base))
         else:
             self._send_json({"error": "not found"}, 404)
 
