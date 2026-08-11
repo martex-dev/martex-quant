@@ -203,7 +203,7 @@ def test_index_is_disposable_and_derived(ledger, tmp_path: Path) -> None:  # typ
 
 def test_invariant_11_every_recorded_dsr_carries_the_count_it_used(ledger) -> None:
     """Historical DSRs are preserved exactly, each with its own n_trials —
-    65 for rotation, 104 for H42b, 107 for H43a. None normalised to 120."""
+    65 for rotation, 104 for H42b, 107 for H43a. None normalised to 125."""
     published = {
         t.hypothesis.split("#")[0]: (t.dsr, t.dsr_n_trials)
         for t in ledger.trials
@@ -215,7 +215,7 @@ def test_invariant_11_every_recorded_dsr_carries_the_count_it_used(ledger) -> No
     assert published["H42"] == (0.992, 104)
     assert published["H43"] == (1.000, 107)
     assert all(n is not None for _, n in published.values())
-    assert {n for _, n in published.values()} != {120}, "nothing may be normalised to today's total"
+    assert {n for _, n in published.values()} != {125}, "nothing may be normalised to today's total"
 
 
 def test_invariant_12_evidence_descriptor_reports_its_weakest_dimension() -> None:
@@ -237,13 +237,17 @@ def test_invariant_12_evidence_descriptor_reports_its_weakest_dimension() -> Non
 
 def test_migration_reconciles_to_the_ledgers_own_claimed_totals(ledger) -> None:  # type: ignore[no-untyped-def]
     claims = ledger_claims(ROOT)
-    assert ledger.n_registered == claims["registered"] == 120
-    assert ledger.n_run == claims["run"] == 119
+    assert ledger.n_registered == claims["registered"] == 125
+    assert ledger.n_run == claims["run"] == 124
     assert ledger.n_registered - ledger.n_run == claims["data_blocked"] == 1
 
 
 def test_the_documentation_gap_is_carried_explicitly_not_absorbed(ledger) -> None:  # type: ignore[no-untyped-def]
-    """The honest finding: documented deltas do not sum to 120."""
+    """The honest finding: documented deltas do not sum to the claimed total.
+
+    The gap is checked against the ledger's OWN claim rather than a literal, so
+    it stays a real reconciliation as the ledger grows: H58 added 5 documented
+    trials and 5 to the total, leaving the gap at 5 where it was."""
     claims = ledger_claims(ROOT)
     gap = claims["registered"] - claims["documented"]
     unallocated = [t for t in ledger.trials if t.family == "unallocated"]

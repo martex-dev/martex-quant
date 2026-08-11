@@ -457,6 +457,17 @@ SPECS: tuple[ScriptSpec, ...] = (
         data_files=("data/tmp/h4x_streams/rot_stop_stream.parquet",),
         seed_note="Imports build_streams from july_sprint_study; same inputs.",
     ),
+    ScriptSpec(
+        name="h58_ensemble_study",
+        hypotheses="H58 learned indicator ensemble (killed: equal weights won)",
+        seeds=(5801, 5802, 5803, 5804, 5805, 5806),
+        uses_universe=True,
+        seed_note=(
+            "Bootstrap seeds are per-cell and fixed in the script. sklearn's "
+            "random_state is passed the same per-cell seed; lbfgs/liblinear are "
+            "deterministic here regardless, so the estimates do not depend on it."
+        ),
+    ),
 )
 
 
