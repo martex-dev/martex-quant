@@ -57150,6 +57150,64 @@
     "seed_note": "",
     "seeds": []
   },
+  "research_graph_report": {
+    "code": {
+      "git_rev": "63bcc81",
+      "package_sha256": "baf1306a862598ca07ef38fc73880b2a690379be8d7efa1bfe95bb20a679ecc1",
+      "script_sha256": "25e9fb10beceaec5d7b204b4a95f8442f73cd69caaaf91f19a4a1395bb5d0fe2"
+    },
+    "config": {
+      "config/universe.json": {
+        "n_symbols": 40,
+        "present": true,
+        "read_by_script": false,
+        "rule": "top40 by 24h quote volume, 2026-07-12, union legacy 8, stables/leveraged excluded",
+        "sha256": "87364003919c6a3dc3dff52f3e2be579e88044fa9b9402fd0959e33cc47e3bb0"
+      }
+    },
+    "environment": {
+      "implementation": "CPython",
+      "packages": {
+        "ccxt": "4.5.64",
+        "numpy": "2.5.1",
+        "polars": "1.42.1",
+        "pyarrow": "25.0.0",
+        "pydantic": "2.13.4"
+      },
+      "python": "3.12.10",
+      "python_hash_seed": "0"
+    },
+    "external_dependencies": [],
+    "hypotheses": "Stage 12 research graph over the load-bearing spine",
+    "inputs": {
+      "PROJECT_MEMORY.md": {
+        "bytes": 16001,
+        "present": true,
+        "sha256": "f8f9179dad449e0e4b0f0c00c29e82a72caa57ed002383380e8ff404cceb5f4f"
+      },
+      "docs/hypotheses/58-learned-indicator-ensemble.md": {
+        "bytes": 10610,
+        "present": true,
+        "sha256": "e459b27bcd8b302dcb213f7bea1cfdd21cb16110df2852da51b3509223e59a9a"
+      },
+      "docs/hypotheses/59-live-drawdown-consistency.md": {
+        "bytes": 11091,
+        "present": true,
+        "sha256": "92b866ac642c84a1d60d89f394d38031035d5ce53f5a02f21efc5e34a1c8b8fe"
+      }
+    },
+    "reproducibility": "deterministic",
+    "reproducibility_defect": "",
+    "rng": {
+      "n_draws": 512,
+      "probe_seed": 20260810,
+      "sha256": "b76b24ee69e7e28c51266e2bab73cf87a793674294488e5ff6411df288f1a62b",
+      "upper_bound": 9999
+    },
+    "script": "research_graph_report",
+    "seed_note": "Pure structure: the nodes and edges are literals in the script, each citing the committed document it was read from. No market data, no RNG, no lake reads.",
+    "seeds": []
+  },
   "single_attempt_study": {
     "code": {
       "git_rev": "b587923",

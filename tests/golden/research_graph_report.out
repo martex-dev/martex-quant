@@ -1,0 +1,23 @@
+research graph: 16 nodes, 14 edges
+scope: the load-bearing spine, NOT all 125 trials
+
+=== if rotation-stop is wrong, what is affected? ===
+  1 node(s): H59-rotstop-inconsistent
+  (H59 made this a live question, not a hypothetical)
+
+=== what does the deployed spec rest on? ===
+  H42b-beats-champion        rot-stop beats rotation on all metrics
+  H40-stops-help             post-stop-fire fwd30 -8.77%, CI clear
+  H36-no-short-leg           bottom-2 does not keep falling
+  H11-breadth                rotation strengthens on 40 coins vs 8
+
+=== is any claimed support actually independent? ===
+MF5-correlation-joins: 2 claimed confirmation(s), 1 independent
+  DISCOUNTED: H59-rotstop-inconsistent and H59-rotation-inconsistent correlate 0.821 — one event, seen twice
+  ** the raw count OVERSTATES the evidence **
+MF4-info-not-strategy: 2 claimed confirmation(s), 2 independent
+
+=== integrity ===
+  dependency cycles : none
+  support+contradict: none
+  orphaned nodes    : MF1-continuation
