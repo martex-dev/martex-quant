@@ -206,29 +206,51 @@ recorded in the H58 registration before the test ran.
 
 ---
 
-## BLOCKER — the research lake is stale (found 2026-08-11)
+## Data lake: TWO lakes, and why (decided 2026-08-11)
 
-`OBSERVATION` — `data/lake` BTCUSDT daily ends **2026-07-09**. The paper
-record starts **2026-07-10**. There is ZERO overlap. Verified directly by
-reading the lake, not inferred from a failed query.
+`OBSERVATION` — the lake was stale (ended 2026-07-09 against a paper record
+starting 07-10) and was refreshed: 40/40 symbols pulled, daily, no failures.
+`data/lake` now runs to 2026-08-10.
 
-`OBSERVATION` — consequence, hit immediately: H59's pre-registered
-descriptive context (what did the market do over the live window?) could
-not be computed at all.
+`OBSERVATION` — refreshing it into the single lake **broke the golden
+baseline**. All 30 deterministic scripts changed their `inputs` fingerprint,
+and at least one changed its STDOUT: `h58_ensemble_study` went from 30 to 31
+walk-forward windows (accuracy 0.5109 -> 0.5139) because an extra month of
+data admits an extra window. H58's verdict is unaffected — still noise, still
+killed — but the published figures moved.
 
-`INTERPRETATION` — this blocks the divergence hunt that H59 just opened.
-The most obvious alternative explanation for the drawdown — "the whole
-market fell" — is currently **untestable in this repository**. It is
-neither supported nor excluded.
+`INTERPRETATION` — this is not a bug in either the refresh or the goldens. It
+is the consequence of a design gap: the goldens prove that refactors change
+no published number, and that guarantee is only meaningful against a FROZEN
+input set. Published numbers were computed on data through 2026-07-09. A lake
+that moves underneath them cannot serve as their witness.
 
-**Next action: refresh the lake before any divergence-hunt work.** Note the
-trade-off that must be handled deliberately, not silently: the golden
-baseline's `inputs` fingerprint is computed over lake files frozen since
-2026-07-11. Refreshing the lake WILL change that fingerprint for every
-deterministic script. That is an expected input change, not a code
-regression — but it must be recorded as such when it happens, and the
-stdout goldens must be re-verified against the OLD lake first so a genuine
-regression cannot hide inside the refresh.
+**Decision — two lakes, both real, neither hidden:**
+
+| Path | Contents | Role |
+|---|---|---|
+| `data/lake` | through **2026-07-09** | the FROZEN research lake. The input set every published figure was computed on. Immutable until a deliberate, recorded epoch bump. |
+| `data/lake-current` | through **2026-08-10** | the CURRENT lake. New research, and the divergence hunt. |
+
+The frozen one keeps the plain name because every committed script points at
+`data/lake`; renaming would touch the whole corpus and would itself invalidate
+the goldens it was meant to protect.
+
+**Bumping the epoch is a deliberate act, never a side effect.** It means:
+re-verify every stdout golden against the OLD lake first, swap, re-freeze,
+and record in PROJECT_MEMORY which published figures moved and by how much.
+It is not done by running a pull.
+
+`OBSERVATION` — both lakes are under `data/`, which is gitignored, so neither
+is in version control. A backup of the frozen lake was taken before the pull
+and the restore was verified by reading both back.
+
+### Consequence for the H59 divergence hunt
+
+The hunt is now UNBLOCKED: `data/lake-current` covers 2026-07-10..08-10, the
+live paper window. The pre-registered market-context question — did the whole
+market fall? — is answerable for the first time, and answering it is the
+next step.
 
 ---
 
