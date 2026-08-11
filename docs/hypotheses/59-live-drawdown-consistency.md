@@ -231,3 +231,67 @@ deployed spec is a new strategy: its own registration, its own ledger cost,
 the event-driven engine, and the standing incremental bar.
 
 **Ledger: +0, total remains 125**, as registered.
+
+---
+
+## Market context — computed 2026-08-11 against `data/lake-current`
+
+The registration required this and the frozen lake could not supply it. With
+the refreshed lake it is now answerable, and it **rules out the simple
+explanation**.
+
+```
+source: data/lake-current
+BTC over the same window        : +2.62%
+equal-weight universe (40 coins): -9.77%
+coins down over the window      : 24/40
+best 5 : MMT +25.5%, ADA +21.2%, ENA +12.0%, UNI +11.0%, BNB +5.6%
+worst 5: VANRY -44.7%, ATM -46.3%, PYR -55.2%, SYN -58.5%, DEXE -95.0%
+```
+
+**"The whole market fell" is FALSE. BTC rose 2.62%.**
+
+But the altcoin cross-section is a different story: the equal-weight universe
+fell **−9.77%** with 24 of 40 coins down. So the environment for a long-only
+*alt* book was genuinely bad even while the headline asset rose.
+
+Against that, rotation-stop's −13.06% is worse than the −9.77% universe
+average but not dramatically so, and the book holds only one or two names at
+a time — a concentrated book underperforming a 40-coin average in a bad month
+is unremarkable. The market context therefore **softens** the INCONSISTENT
+verdict without overturning it: the verdict is against the strategy's own
+backtest distribution, which is a separate question from how the market did,
+and that verdict stands as recorded.
+
+### A LEAD, and it is emphatically not a finding
+
+`SYN` and `ATM` appear in the worst 5. Those are among the names the rotation
+books were actually holding or ranking at the top — the 2026-08-11 diary
+records the ranking as `SYN +72.0%, MMT +46.3%, ATM +45.8%` by 90-day
+momentum, with rotation holding MMT and SYN.
+
+So the coins the strategy ranked highest by trailing momentum are among those
+that fell hardest over the live window. That is a mechanism worth testing and
+it is **not tested here.**
+
+Recording it under the same rule `anomalies.py` enforces: this was noticed
+AFTER seeing the result, inside the guarded window, on n=1. It carries no
+verdict, spends no error budget, and can only become a finding through its
+own pre-registered hypothesis. It is written down so it cannot later be
+presented as something this document established.
+
+It is also interesting precisely because it sits against **meta-finding 1**
+(crypto CONTINUES at daily+, five independent confirmations). If the extreme
+top of the momentum cross-section reverses while the middle continues, that
+is a refinement of a settled result, not a contradiction of it — and
+refinements of settled results are exactly the claims that need the most
+careful registration, not the least.
+
+### Data caveat
+
+`DEXE −95.0%` is extreme enough to warrant checking before it is trusted in
+any follow-up: a move that size over a month is possible for a small alt but
+is also the signature of a redenomination or delisting artifact. It is not
+excluded from the average above — excluding it post-hoc would be a choice
+made after seeing that it is inconvenient — but any hypothesis built on this
+cross-section must verify it first.

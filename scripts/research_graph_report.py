@@ -56,8 +56,20 @@ NODES = [
     Node("MF4-info-not-strategy", NodeKind.META_FINDING, "info-signal != strategy gain", MEM),
     Node("MF5-correlation-joins", NodeKind.META_FINDING, "diversification needs joined corr", MEM),
     Node("MF1-continuation", NodeKind.META_FINDING, "crypto continues at daily+", MEM),
-    # --- an open lead, never a finding ---
+    Node(
+        "H59-market-context",
+        NodeKind.FINDING,
+        "BTC +2.62% while the equal-weight universe fell -9.77%",
+        H59,
+    ),
+    # --- open leads, never findings ---
     Node("LEAD-wrong-objective", NodeKind.LEAD, "direction target != return payoff", H58),
+    Node(
+        "LEAD-top-rank-crash",
+        NodeKind.LEAD,
+        "top-ranked 90d momentum names were among the worst performers",
+        H59,
+    ),
 ]
 
 EDGES = [
@@ -87,6 +99,10 @@ EDGES = [
     Edge("H58-equal-beats-learned", "MF4-info-not-strategy", EdgeKind.SUPPORTS, H58),
     Edge("H33-blend-killed", "MF4-info-not-strategy", EdgeKind.SUPPORTS, MEM),
     Edge("LEAD-wrong-objective", "H58-equal-beats-learned", EdgeKind.DEPENDS_ON, H58),
+    # The lead rests on the context measurement, and on nothing else. It is
+    # deliberately NOT linked to MF1-continuation: a lead contradicts nothing
+    # until it has its own registration and result.
+    Edge("LEAD-top-rank-crash", "H59-market-context", EdgeKind.DEPENDS_ON, H59),
 ]
 
 

@@ -57152,9 +57152,9 @@
   },
   "research_graph_report": {
     "code": {
-      "git_rev": "63bcc81",
-      "package_sha256": "baf1306a862598ca07ef38fc73880b2a690379be8d7efa1bfe95bb20a679ecc1",
-      "script_sha256": "25e9fb10beceaec5d7b204b4a95f8442f73cd69caaaf91f19a4a1395bb5d0fe2"
+      "git_rev": "34a8588",
+      "package_sha256": "1820f9589ca35f860f82c245943d03bb31eaae0aa9fd7dcca785c50b495417ae",
+      "script_sha256": "dad49f568242494a747da3dda953caff8c60e3347548e7fd1f0f2fafc726a94a"
     },
     "config": {
       "config/universe.json": {
@@ -57181,9 +57181,9 @@
     "hypotheses": "Stage 12 research graph over the load-bearing spine",
     "inputs": {
       "PROJECT_MEMORY.md": {
-        "bytes": 16001,
+        "bytes": 16640,
         "present": true,
-        "sha256": "f8f9179dad449e0e4b0f0c00c29e82a72caa57ed002383380e8ff404cceb5f4f"
+        "sha256": "e34ca6324a97099a006e913c38276070d1e31ce0bcded5d874d1708edb1605b1"
       },
       "docs/hypotheses/58-learned-indicator-ensemble.md": {
         "bytes": 10610,
@@ -57191,9 +57191,9 @@
         "sha256": "e459b27bcd8b302dcb213f7bea1cfdd21cb16110df2852da51b3509223e59a9a"
       },
       "docs/hypotheses/59-live-drawdown-consistency.md": {
-        "bytes": 11091,
+        "bytes": 14101,
         "present": true,
-        "sha256": "92b866ac642c84a1d60d89f394d38031035d5ce53f5a02f21efc5e34a1c8b8fe"
+        "sha256": "1b527cf44800f3e2e2ed5fd63757f0d42e8cc58dda9aa4f557f34ac0f712f4e7"
       }
     },
     "reproducibility": "deterministic",
