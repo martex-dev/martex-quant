@@ -1,126 +1,242 @@
-# PROJECT_STATE.md — operational snapshot (2026-07-12)
+# PROJECT_STATE.md — operational snapshot (refreshed 2026-08-10)
 
 Read together with PROJECT_MEMORY.md (knowledge/lessons) and CLAUDE.md
 (standing instructions). This file = what is RUNNING and what happens next.
 
+**Refresh note:** the previous version of this file was written
+2026-07-12 and described a July eval sprint as imminent. It went stale.
+This refresh is built from verified repository/OS evidence only,
+gathered 2026-08-10. Historical conclusions in PROJECT_MEMORY.md and in
+docs/ are NOT touched by this refresh — no verdict, ledger entry, or
+research result is changed here.
+
+**Convention used below:** `OBSERVATION` = a measured fact with its
+source. `INTERPRETATION` = a reading of those facts, explicitly marked
+as such and not to be cited as evidence. Where an interpretation would
+require a sample we do not have, it says so.
+
+---
+
 ## Phase
 
-Phase 5 (paper trading). Shakedown day 3 of 14; **gate: ~2026-07-25** —
-if the paper record is clean (no missed nightly runs, sane decisions),
-buy the eval. NO fee before the gate.
+Phase 5 (paper trading), running continuously since 2026-07-10.
 
-## The four paper accounts ($5,000 each)
+New in parallel: **Market Intelligence Lab, Phase 1** — repository audit
+complete (docs/research/market-intelligence-lab-audit.md, 2026-08-10).
+Approved scope: Layers 1-4 only (feature/statistics consolidation,
+multiple-testing framework, bitemporal series infrastructure,
+MarketState + poison tests). Large-scale discovery engine NOT approved.
 
-| Account | Spec | Universe | Status |
-|---|---|---|---|
-| vol-target | VolTargetMomentum (30% vol target, 30d window), per-symbol lookback walk-forward {7..180d}/90d reselect, long/flat | legacy 8 | Flat (no momentum regime) |
-| rotation | VolTargetRotation K=2, L walk-forward {30,90}/90d reselect, abs-momentum gate, 30% vol budget | WIDE 40 (config/universe.json) | Holding DEXE+SYN ~6% each; first green mark +$17 |
-| crash-bounce | CrashBounce: BTC day < -3% -> EW all alts one day; zero params | WIDE alts | Flat (no crash) |
-| rotation-stop | StopVolTargetRotation = rotation spec + chandelier latch (2xATR14 off 30d high, clears on new 30d high); H42b, DSR 0.992 | WIDE 40 | Since 2026-07-12; holds ATM+DEXE ~11% each (SYN stop-latched — first live divergence from rotation) |
+---
 
-All three run nightly at 03:10 local via Task Scheduler task
-"TradingBot Paper Trader" -> scripts/run_paper_daily.cmd (StartWhenAvailable).
-Each writes equity.jsonl + journal.jsonl + a plain-English diary story
-per day under data/paper/<name>/.
+## Paper accounts — verified state (source: data/paper/<name>/equity.jsonl)
 
-## Automation inventory
+All four started at $5,000. Figures are the last mark, 2026-08-10 00:10 UTC.
 
-- Task "TradingBot Paper Trader": daily 03:10 local (00:10 UTC summer).
-- Dashboard: http://127.0.0.1:8765 — HKCU Run key `TradingBotDashboard`
-  (windowless pythonw, scripts/dashboard_service.pyw). Desktop shortcut
-  "Trading Bot Dashboard". RESTART the server after any dashboard code
-  change (it loads Python once; stale rev in header = tell).
-- Guard (live/guard.py): built+tested, NOT scheduled yet — gets a 5-min
-  Task Scheduler entry on eval day 0 (daily trip -2.5%, static latch
-  $4,750 via KILLED file).
-- GitHub: private repo MartexHACK/trading-bot, CI green, push after commit.
+| Account | Marks / distinct days | Window | Equity | Since start | Peak (date) | Max DD on record |
+|---|---|---|---|---|---|---|
+| vol-target | 36 / 31 | 07-10 → 08-10 | $5,014.11 | +0.28% | $5,024.58 (08-07) | −0.21% |
+| rotation | 28 / 28 | 07-11 → 08-10 | $4,221.78 | **−15.55%** | $5,126.05 (07-13) | **−20.67%** |
+| rotation-stop | 26 / 26 | 07-12 → 08-10 | $4,395.58 | **−12.07%** | $5,095.19 (07-13) | **−13.73%** |
+| crash-bounce | 27 / 27 | 07-12 → 08-10 | $5,000.00 | 0.00% | — | 0.00% |
 
-## The firm (CFD program — confirmed answers)
+`OBSERVATION` — rotation's trough was $4,066.28 on 2026-08-04; it has
+recovered to $4,221.78. rotation-stop's trough IS its current mark, so
+its drawdown from peak (−13.73%) equals its max drawdown on record.
 
-- 1-step 5k eval: target +10%, max loss $300 STATIC, daily loss 3%,
-  unlimited time, 1:30, fee **$51.80**. Automation ALLOWED. No weekend
-  restrictions. (Other sizes: 10k 1-step $98; 2-step 2.5k/$19, 5k/$35,
-  10k/$69. Futures arm PARKED: 25k, 4% trailing EOD, 40% consistency,
-  Swing $120 — revisit post-funded, needs micro-crypto check.)
-- Platform: MT5 (chosen). Adapter built: live/mt5_broker.py +
-  live/trade.py (DRY-RUN default, --live flag, magic 520001).
-  User's terminal currently logged into MetaQuotes-Demo (no crypto) —
-  firm server credentials arrive only WITH the eval purchase.
+`OBSERVATION` — crash-bounce has never taken a position: 27 marks, zero
+exposure throughout, $5,000.00 unchanged. Its trigger (BTC day < −3%)
+has not fired in the record window.
 
-## Eval plan (docs/research/eval-runbook.md — pre-registered)
+`OBSERVATION` — vol-target holds 1 non-zero exposure, cash $4,700.73.
+Its per-symbol lookbacks at the last mark: BTC 180, ETH 180, BNB 90,
+SOL 180, XRP 60, ADA 60, DOGE 180, LTC 180.
 
-- At gate: choose eval engine. V1 vol-target @1.5x = 50.0% pass (fully
-  shaken down, needs only 8 majors). Rotation-wide @0.5x = 62.9% pass,
-  VALIDATED (DSR 0.990) but younger paper record and needs ~40 symbols —
-  **blocked on the firm's CFD symbol list coverage (day-0 check)**.
-- Day 0 = verification only: dry run vs firm server, write
-  config/symbol_map.json, check contract sizes/min volumes/spreads.
-- Live discipline: RISK_SCALE 1.5 (V1) in live/trade.py; guard scheduled;
-  no manual trades; budget 2 attempts (~$104); failure/success handling
-  pre-written in the runbook.
+### rotation-stop latch state (2026-08-10)
+
+`OBSERVATION` — from the account's own diary story and state file:
+- 38 coins ranked (universe config lists 40; 2 lack data at rank time).
+- **34 of 38 coins carry an active safety stop** (fell > 2×ATR14 from
+  their 30-day high; skipped until a fresh 30-day high clears the latch).
+- Single held position: HMSTRUSDT at 15.92% of equity.
+- Cash $3,695.64 = **84.1% of equity**.
+- Lookback parameter 90; `last_reselect` 2026-07-12, so the next 90-day
+  reselect is due ~2026-10-10.
+
+`INTERPRETATION` (flagged, low confidence) — the latch mechanism is
+doing mechanically what H42b specified: as trends broke, positions were
+exited and re-entry blocked, leaving the book mostly in cash, and
+rotation-stop is 3.5pp ahead of un-stopped rotation over the same
+window. **This is not evidence that the stop works.** 26 daily marks is
+far too short for any inference about the spec, and one shared drawdown
+episode is a single observation, not a sample. The validated claim for
+H42b rests on the pre-registered backtest (DSR 0.992), not on this
+record, and nothing here changes that verdict in either direction.
+
+`INTERPRETATION` — no conclusion is drawn here about *why* the
+cross-sectional book drew down. Any such analysis must be pre-registered
+before the window is examined (see "Guardrail" below).
+
+---
+
+## Automation health
+
+`OBSERVATION` — Task Scheduler task "TradingBot Paper Trader":
+State Enabled, Status Ready, Schedule Type Daily 03:10, Last Run
+2026-08-10 03:10:01, **Last Result 0**, Next Run 2026-08-11 03:10.
+
+`OBSERVATION` — **The nightly record has gaps.** Missing calendar days
+per account:
+
+| Account | Missing days |
+|---|---|
+| vol-target | 07-23 |
+| rotation | 07-23, 07-24, 07-27 |
+| rotation-stop | 07-22, 07-23, 07-24, 07-27 |
+| crash-bounce | 07-23, 07-24, 07-27 |
+
+`OBSERVATION` — all gaps fall in 2026-07-22 → 07-27. No run since
+07-28 has been missed by any account. data/paper/runs.log (1,940 lines)
+contains zero occurrences of "error", "traceback", or "failed".
+
+`OBSERVATION` — vol-target has 36 marks across 31 distinct days, i.e.
+five days carry more than one mark (consistent with manual/extra runs).
+
+`INTERPRETATION` — the clustering of every gap into one six-day window,
+with a clean log and a healthy scheduler before and after, is consistent
+with the machine being off or asleep during that window rather than with
+a code fault. This has not been confirmed against OS event logs.
+
+`OBSERVATION` — Dashboard autostart is registered: HKCU Run key
+`TradingBotDashboard` → `.venv\Scripts\pythonw.exe scripts/dashboard_service.pyw`.
+
+**Consequence for the shakedown gate:** the pre-registered gate was
+"no missed nightly runs over 2 weeks".
+
+`OBSERVATION` — **that gate FAILED.** Four nightly runs were missed on
+rotation-stop (three on rotation and crash-bounce, one on vol-target)
+during 2026-07-22 → 07-27. This is a permanent historical fact about
+the July shakedown and is not erased or re-satisfied by later evidence.
+
+`OBSERVATION` — separately, as *current* operational evidence: the most
+recent 13 days (2026-07-28 → 08-10) show zero missed runs across all
+four accounts.
+
+The second observation describes the system's present reliability. It is
+**not** retroactive satisfaction of the July gate. Any future decision
+that requires a clean shakedown needs a newly pre-registered window,
+not a re-reading of this one.
+
+---
+
+## Evaluation / funded-challenge status
+
+`OBSERVATION` — every artifact the July sprint plan required is absent
+from the repository:
+
+| Expected artifact | Status |
+|---|---|
+| `config/secrets/hyro.json` (API keys) | ABSENT |
+| `config/symbol_map.json` | ABSENT |
+| `config/universe_hyro.json` | ABSENT |
+| `src/trading_bot/live/bybit_broker.py` | ABSENT |
+| `data/live/guard/` (guard run state) | ABSENT |
+
+`OBSERVATION` — `data/live/` contains only the legacy vol-target
+dry-run record, last written 2026-07-11, `"dry_run": true`.
+
+`OBSERVATION` — no commit after 2026-07-13 touches eval, broker, or
+sprint code. Last commits: 2026-07-13 (single-attempt config canonical),
+then 2026-08-10 (TSLA CNN negative result).
+
+**Conclusion (verified):** no funded evaluation appears to have been
+purchased, and no live order has ever been placed. The July sprint plan
+(docs/research/july-sprint.md, the single-attempt revision, and the
+eval-runbook amendment) remains pre-registered and **unexecuted**. Those
+documents are not withdrawn or invalidated by this refresh; they are
+simply not in progress.
+
+`OBSERVATION` — the canonical eval config, if and when an attempt is
+made, remains the one committed 2026-07-13: rotation-stop alone at
+RISK_SCALE 0.85, one fee, no retries (P(pass) 62.3%, bust 37.7%,
+median 48d). That record stands unchanged.
+
+---
 
 ## Data lake
 
-48 validated datasets, 0 errors: legacy 8 (1h+1d, 2017+), +32 wide-universe
-coins (1d, full depth). Funding cache data/funding/ (7y, 8 symbols); perp
-closes data/perp/. Universe rule in config/universe.json.
+`OBSERVATION` — data/lake/catalog.json: 48 datasets, 40 symbols
+(40 × 1d, 8 × 1h). **0 validation errors, 49 warnings** across all
+datasets. Newest coverage end: 2026-07-10 21:00 UTC; oldest: 2026-07-09.
+
+`OBSERVATION` — the lake has not been refreshed since 2026-07-11. The
+paper trader does not read the lake: it fetches from Binance per run
+(live/decision.py `fetch_frames`), so the stale lake has not affected
+paper trading. It DOES mean any research run today is working on data
+that ends 2026-07-10.
+
+`OBSERVATION` — ancillary datasets live OUTSIDE the lake and outside
+the catalog/validation path: `data/funding/` (8 files), `data/perp/`
+(8), `data/intraday/` (34 files, 3 distinct ad-hoc schemas: `_15m`,
+`_tb15m`, `_oi1h`). Addressing this is Layer 3 of the MI Lab.
+
+`OBSERVATION` — `config/universe.json`: 40 symbols, rule "top40 by 24h
+quote volume, 2026-07-12, union legacy 8, stables/leveraged excluded".
+
+---
 
 ## Code health
 
-~200 tests green, ruff + strict mypy clean, CI on GitHub. Trial ledger:
-104 (single source of truth: PROJECT_MEMORY.md).
+`OBSERVATION` — full suite **228 tests, all passing** (2026-08-10).
+Working tree clean except the new MI audit document. CI workflow runs
+ruff check, ruff format --check, mypy (strict), pytest on every push.
 
-## Research batches H24-H43 (2026-07-12, complete)
+`OBSERVATION` — trial ledger: **120 registered, 119 run, 1 data-blocked
+(H54)**. Single source of truth remains PROJECT_MEMORY.md.
 
-17 new base hypotheses + combos: 15 killed at info stage, blend-V1
-killed at strategy grade, H41 combined book NOT eligible.
-**Rotation+chandelier-stop (42b) is CANDIDATE with DSR 0.992, beating
-the champion on every metric** (Sharpe 1.47/1.10, MDD -29%/-58%, prop
-73.0%/62.8% @0.5x) -> paper account #4. V1+stop (42a) also candidate.
-H43 combo screen: momentum books inter-correlate 0.52-0.82 (no blends);
-rot-stop+bounce (43a) killed on eval bars but is THE own-capital
-archive book (Sharpe 1.55, +79%/yr, DSR 1.000, corr 0.118 components).
-New strategies: strategies/blend.py, strategies/stops.py.
+---
 
-## JULY SPRINT (user goal 2026-07-12: ~$400 banked by Jul 31)
+## Guardrail for MI work (new, 2026-08-10)
 
-Plan: docs/research/july-sprint.md + eval-runbook-sprint-amendment.md
-(**SINGLE-ATTEMPT REVISION 2026-07-13 governs**: user has ONE fee).
-**FIRM: HyroTrader 1-step 5k, $69 + $39 swing upgrade = $108.**
-**Config: rotation-stop ALONE @ RISK_SCALE 0.85** — P(pass) 62.3%,
-bust 37.7%, median 48d (funded ~end Aug); bounce overlay dropped from
-the eval (lowers one-shot odds); no retries, bust -> gate plan.
-Rule adjustments stand: per-position 3% stops, low-cap filter, 1.8x
-gross clamp, consistency dilution tactic. **User buys 2026-07-13**
-(platform: Bybit), then API keys -> config/secrets/hyro.json.
+The rotation/rotation-stop drawdown described above is an open,
+unexplained window in a live paper record. It is exactly the kind of
+material that invites post-hoc explanation.
+
+**Rule:** any strategy × market-state analysis touching the
+2026-07-12 → 2026-08-10 window must be pre-registered with verdict bars
+BEFORE the window is examined, per the standing project rule. The
+drawdown is recorded here as an observation so that it cannot later be
+presented as a discovery.
+
+---
 
 ## Next actions (in order)
 
-1. USER (2026-07-13): buy 1-step 5k + SWING upgrade ($108), Bybit
-   platform; create API keys (trade-only); save config/secrets/hyro.json;
-   say "keys are in".
-2. BUILD (in progress): live/bybit_broker.py (ccxt, DRY-RUN default),
-   universe_hyro.json low-cap filter, per-position 3% stops, 1.8x gross
-   clamp, sprint scheduler, guard entry. Dry-run go/no-go together
-   BEFORE first live order.
-3. Sprint doctrine going forward: EVALS get aggressive sprint config
-   (downside = fee); FUNDED accounts get sustainable sizing (downside
-   = the account). Switch-down automated per amendment.
-4. Paper shakedown continues untouched (4 accounts nightly); Jul 25
-   gate now only governs the PATIENT fallback if all 3 sprint attempts
-   bust.
-5. TRACK 2 CLOSED (2026-07-13): the full intraday campaign (H44-57,
-   26 trials) is complete. Meta-finding: intraday crypto REVERTS and
-   every reversion premium (4 independent confirmations) is 2-4bp —
-   real but BELOW retail execution costs; best strategy-grade attempt
-   H52 Sharpe 0.69 vs 0.70 bar. The intraday family is CLOSED absent
-   a new data dimension (H54 OI is registered-but-data-blocked).
-   Data assets gained: 15m OHLCV + taker-buy imbalance, 12 Bybit/
-   Binance perps, 2021+ (data/intraday/). Ledger: 120 (119 run).
-3. Backlog (docs/research/backlog.md): options/Deribit VRP data project,
-   correlation-spike de-risking, carry infra (post-eval, own-capital);
-   own-capital book = rotation-stop + crash-bounce overlay (43a:
-   Sharpe 1.55, +79%/yr, fails only eval geometry) — register
-   own-capital bars post-funded.
-4. October: move paper task 03:10 -> 02:10 local (DST) to stay near the
-   UTC close.
+1. **MI Lab design gate (in progress):** statistical/accounting design
+   for the hierarchical trial framework —
+   docs/research/mi-trial-accounting-design.md. Review required before
+   any Layer 1 code.
+2. **MI Layer 1** after design review: consolidate 6 duplicated panel
+   builders, 11 block-bootstrap copies, 11 forward-return definitions
+   into canonical infrastructure with regression tests proving
+   historical behaviour is preserved. Research-integrity work, not
+   cleanup.
+3. **Data availability contract** to be written before Layer 3.
+4. **Decide the eval question explicitly.** It has been open and
+   undecided for ~4 weeks. Either register a decision to attempt with
+   the canonical single-attempt config, or record a decision to defer,
+   with a reason. Leaving it implicit is the one state that costs
+   information without buying any.
+5. **Refresh the lake** before any research run that needs data past
+   2026-07-10.
+6. **October:** move the paper task 03:10 → 02:10 local (DST) to stay
+   near the UTC close.
+
+---
+
+## Backlog (unchanged, docs/research/backlog.md)
+
+Options/Deribit VRP data project; correlation-spike de-risking; carry
+infrastructure (post-eval, own-capital); own-capital book = rotation-stop
++ crash-bounce overlay (43a: Sharpe 1.55, +79%/yr, fails only eval
+geometry) — own-capital bars to be registered post-funding.
