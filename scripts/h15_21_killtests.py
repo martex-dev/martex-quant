@@ -8,13 +8,24 @@ Pre-registered in docs/hypotheses/15-21-overnight-batch.md.
 from __future__ import annotations
 
 import json
-import random
 from pathlib import Path
 
 import polars as pl
 
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.features.cross_section import ranking_spread_series
+from trading_bot.features.panel import daily_panel as canonical_daily_panel
+from trading_bot.features.panel import (
+    forward_return,
+    momentum,
+    rolling_max_close,
+    rolling_mean_close,
+    rolling_mean_volume,
+    trailing_percentile_rank,
+    vol_excl_current,
+)
+from trading_bot.stats.bootstrap import daily_mean_ci, two_group_diff_ci
 
 LEGACY8 = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 BLOCK_DAYS = 30
@@ -37,33 +48,19 @@ def diff_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float]:
         .sort("day")
         .fill_null(0.0)
     )
-    arrays = [by_day[c].to_list() for c in ("a_sum", "a_n", "b_sum", "b_n")]
-    n = by_day.height
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + float(x))
-        return out
-
-    pa, pan, pb, pbn = (prefix(x) for x in arrays)
-    point = pa[n] / max(pan[n], 1.0) - pb[n] / max(pbn[n], 1.0)
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    diffs = []
-    for _ in range(N_BOOT):
-        sa = na = sb = nb = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            e = s + BLOCK_DAYS
-            sa += pa[e] - pa[s]
-            na += pan[e] - pan[s]
-            sb += pb[e] - pb[s]
-            nb += pbn[e] - pbn[s]
-        if na > 0 and nb > 0:
-            diffs.append(sa / na - sb / nb)
-    diffs.sort()
-    return point, diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs))]
+    a_sum, a_n, b_sum, b_n = (by_day[c].to_list() for c in ("a_sum", "a_n", "b_sum", "b_n"))
+    ci = two_group_diff_ci(
+        a_sum,
+        a_n,
+        b_sum,
+        b_n,
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        empty_denominator="guard",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
 
 def report(name: str, panel: pl.DataFrame, seed: int) -> bool:
@@ -78,61 +75,44 @@ def report(name: str, panel: pl.DataFrame, seed: int) -> bool:
 
 
 def mean_ci(values: list[float], seed: int) -> tuple[float, float, float]:
-    n = len(values)
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + x)
-        return out
-
-    p = prefix(values)
-    point = p[n] / n
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    means = []
-    for _ in range(N_BOOT):
-        total = 0.0
-        cnt = 0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            total += p[s + BLOCK_DAYS] - p[s]
-            cnt += BLOCK_DAYS
-        means.append(total / cnt)
-    means.sort()
-    return point, means[int(0.025 * len(means))], means[int(0.975 * len(means))]
+    """Unweighted: ``values`` is one spread per day, so every draw
+    contributes exactly BLOCK_DAYS to the denominator."""
+    ci = daily_mean_ci(
+        values,
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        accumulation="prefix_delta",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
 
 # --- panels ---------------------------------------------------------------------
 
 
 def daily_panel(store: ParquetStore, symbols: list[str]) -> pl.DataFrame:
-    parts = []
-    for symbol in symbols:
-        try:
-            df = store.read(symbol, Interval.D1).sort("timestamp")
-        except FileNotFoundError:
-            continue
-        df = df.select(
-            pl.col("timestamp").alias("day"),
-            "close",
-            "volume",
-            (pl.col("close") / pl.col("close").shift(1) - 1.0).alias("ret"),
-        ).with_columns(
-            r7=pl.col("close") / pl.col("close").shift(7) - 1.0,
-            r30=pl.col("close") / pl.col("close").shift(30) - 1.0,
-            r14=pl.col("close") / pl.col("close").shift(14) - 1.0,
-            vol10=pl.col("ret").shift(1).rolling_std(10),
-            ma90=pl.col("close").rolling_mean(90),
-            peak365=pl.col("close").rolling_max(365),
-            v7=pl.col("volume").rolling_mean(7),
-            v30=pl.col("volume").rolling_mean(30),
-            fwd7=pl.col("close").shift(-7) / pl.col("close") - 1.0,
-            fwd30=pl.col("close").shift(-30) / pl.col("close") - 1.0,
-            fwd1=pl.col("close").shift(-1) / pl.col("close") - 1.0,
-        )
-        parts.append(df.with_columns(pl.lit(symbol).alias("symbol")))
-    return pl.concat(parts)
+    return canonical_daily_panel(
+        store,
+        symbols,
+        base_columns=("close", "volume", "ret"),
+        feature_stages=[
+            [
+                momentum(7),
+                momentum(30),
+                momentum(14),
+                vol_excl_current(10, name="vol10"),
+                rolling_mean_close(90, name="ma90"),
+                rolling_max_close(365, name="peak365"),
+                rolling_mean_volume(7, name="v7"),
+                rolling_mean_volume(30, name="v30"),
+                forward_return(7),
+                forward_return(30),
+                forward_return(1),
+            ],
+        ],
+        on_missing_symbol="skip",
+    )
 
 
 def main() -> None:
@@ -169,15 +149,16 @@ def main() -> None:
         ("rank by 30d return (reference)", "r30", 163),
     ]
     for name, col, seed in rankings:
-        spreads = []
-        for _, grp in p16.group_by("day", maintain_order=True):
-            if grp.height < 10:
-                continue
-            g = grp.sort(col)
-            bot = g.head(2)["fwd7"].mean()
-            top = g.tail(2)["fwd7"].mean()
-            if top is not None and bot is not None:
-                spreads.append(top - bot)
+        # drop_nulls_on=None: p16 was already null-dropped at the call site
+        # above, so this script must NOT drop again inside.
+        spreads = ranking_spread_series(
+            p16,
+            col,
+            outcome_column="fwd7",
+            k=2,
+            min_symbols=10,
+            drop_nulls_on=None,
+        )
         point, lo, hi = mean_ci(spreads, seed)
         sig = lo > 0
         print(
@@ -203,15 +184,8 @@ def main() -> None:
     # trailing 365d percentile of stretch, per symbol
     parts = []
     for _, grp in p18.group_by("symbol", maintain_order=True):
-        vals = grp["stretch"].to_list()
-        pct: list[float | None] = []
-        for i, v in enumerate(vals):
-            if i < 365:
-                pct.append(None)
-                continue
-            window = vals[i - 365 : i + 1]
-            pct.append(sum(1 for w in window if w <= v) / len(window))
-        parts.append(grp.with_columns(pl.Series("spct", pct, dtype=pl.Float64)))
+        ranks = trailing_percentile_rank(grp["stretch"].to_list(), window=365, skip_nulls=False)
+        parts.append(grp.with_columns(pl.Series("spct", ranks, dtype=pl.Float64)))
     p18 = pl.concat(parts).drop_nulls(["spct"])
     hot = pl.col("spct") >= 0.95
     for horizon, seed in [("fwd7", 181), ("fwd30", 182)]:

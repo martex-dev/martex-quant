@@ -9,7 +9,6 @@ so re-runs are offline.
 
 from __future__ import annotations
 
-import random
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -17,6 +16,12 @@ import polars as pl
 
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.features.panel import (
+    align_day_to_cache_precision,
+    forward_return,
+    trailing_percentile_rank,
+)
+from trading_bot.stats.bootstrap import two_group_diff_ci
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 FUNDING_DIR = Path("data/funding")
@@ -25,6 +30,7 @@ LOW_PCT, HIGH_PCT = 0.10, 0.90  # bucket thresholds (FIXED)
 HORIZONS = [1, 7, 30]  # 7d is the pre-registered primary
 BLOCK_DAYS = 30
 N_BOOT = 5_000
+SEED = 8
 
 
 def fetch_funding(symbol: str) -> pl.DataFrame:
@@ -67,33 +73,23 @@ def daily_panel(store: ParquetStore) -> pl.DataFrame:
             .group_by("day", maintain_order=True)
             .agg(pl.col("rate").sum().alias("funding"))
         )
-        spot = (
-            store.read(symbol, Interval.D1)
-            .select(pl.col("timestamp").alias("day"), "close")
-            .with_columns(pl.col("day").cast(pl.Datetime("us", "UTC")))
+        # The lake stores day at ms; the funding cache was written at us.
+        # Both sides are aligned to the cache's precision or the join is empty.
+        spot = align_day_to_cache_precision(
+            store.read(symbol, Interval.D1).select(pl.col("timestamp").alias("day"), "close")
         )
-        df = (
-            funding.with_columns(pl.col("day").cast(pl.Datetime("us", "UTC")))
-            .join(spot, on="day", how="inner")
-            .sort("day")
-        )
+        df = align_day_to_cache_precision(funding).join(spot, on="day", how="inner").sort("day")
 
         # Trailing percentile rank of today's funding within the past 90d.
-        values = df["funding"].to_list()
-        pct: list[float | None] = []
-        for i, v in enumerate(values):
-            if i < PCT_WINDOW:
-                pct.append(None)
-                continue
-            window = values[i - PCT_WINDOW : i + 1]
-            rank = sum(1 for w in window if w <= v) / len(window)
-            pct.append(rank)
-        df = df.with_columns(pl.Series("pct", pct, dtype=pl.Float64))
+        # Funding has no nulls, so this copy never filtered them.
+        ranks = trailing_percentile_rank(
+            df["funding"].to_list(), window=PCT_WINDOW, skip_nulls=False
+        )
+        df = df.with_columns(pl.Series("pct", ranks, dtype=pl.Float64))
 
         for h in HORIZONS:
-            df = df.with_columns(
-                (pl.col("close").shift(-h) / pl.col("close") - 1.0).alias(f"fwd{h}")
-            )
+            feature = forward_return(h)
+            df = df.with_columns(**{feature.name: feature.expr})
         parts.append(df.with_columns(pl.lit(symbol).alias("symbol")))
     return pl.concat(parts).drop_nulls(["pct", "fwd7"])
 
@@ -121,37 +117,22 @@ def pooled_diff_ci(panel: pl.DataFrame, horizon: int) -> tuple[float, float, flo
         .sort("day")
         .fill_null(0.0)
     )
-    low_sum = by_day["low_sum"].to_list()
-    low_n = by_day["low_n"].to_list()
-    high_sum = by_day["high_sum"].to_list()
-    high_n = by_day["high_n"].to_list()
-    n = len(low_sum)
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + x)
-        return out
-
-    p_ls, p_ln, p_hs, p_hn = prefix(low_sum), prefix(low_n), prefix(high_sum), prefix(high_n)
-    point = (p_ls[n] / p_ln[n]) - (p_hs[n] / p_hn[n])
-
-    rng = random.Random(8)
-    n_blocks = n // BLOCK_DAYS + 1
-    diffs = []
-    for _ in range(N_BOOT):
-        ls = ln = hs = hn = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            e = s + BLOCK_DAYS
-            ls += p_ls[e] - p_ls[s]
-            ln += p_ln[e] - p_ln[s]
-            hs += p_hs[e] - p_hs[s]
-            hn += p_hn[e] - p_hn[s]
-        if ln > 0 and hn > 0:
-            diffs.append(ls / ln - hs / hn)
-    diffs.sort()
-    return point, diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs))]
+    # empty_denominator="divide": this script divides the point estimate
+    # directly where every other Shape-A caller guards with max(den, 1.0).
+    # Identical on this data (both buckets are always populated); preserved
+    # rather than normalised.
+    ci = two_group_diff_ci(
+        by_day["low_sum"].to_list(),
+        by_day["low_n"].to_list(),
+        by_day["high_sum"].to_list(),
+        by_day["high_n"].to_list(),
+        block=BLOCK_DAYS,
+        seed=SEED,
+        n_boot=N_BOOT,
+        empty_denominator="divide",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
 
 def main() -> None:

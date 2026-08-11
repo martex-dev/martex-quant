@@ -7,7 +7,6 @@ Perp daily closes fetched once and cached to data/perp/<sym>.parquet.
 
 from __future__ import annotations
 
-import random
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -15,6 +14,12 @@ import polars as pl
 
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.features.panel import (
+    align_day_to_cache_precision,
+    forward_return,
+    trailing_percentile_rank,
+)
+from trading_bot.stats.bootstrap import two_group_diff_ci
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 PERP_DIR = Path("data/perp")
@@ -23,6 +28,7 @@ LOW_PCT, HIGH_PCT = 0.10, 0.90
 HORIZONS = [1, 7, 30]
 BLOCK_DAYS = 30
 N_BOOT = 5_000
+SEED = 10
 
 
 def fetch_perp_daily(symbol: str) -> pl.DataFrame:
@@ -57,30 +63,21 @@ def fetch_perp_daily(symbol: str) -> pl.DataFrame:
 def build_panel(store: ParquetStore) -> pl.DataFrame:
     parts = []
     for symbol in SYMBOLS:
-        perp = fetch_perp_daily(symbol).with_columns(pl.col("day").cast(pl.Datetime("us", "UTC")))
-        spot = (
-            store.read(symbol, Interval.D1)
-            .select(pl.col("timestamp").alias("day"), "close")
-            .with_columns(pl.col("day").cast(pl.Datetime("us", "UTC")))
+        # Lake is ms, perp cache is us; align both to the cache's precision.
+        perp = align_day_to_cache_precision(fetch_perp_daily(symbol))
+        spot = align_day_to_cache_precision(
+            store.read(symbol, Interval.D1).select(pl.col("timestamp").alias("day"), "close")
         )
         df = (
             perp.join(spot, on="day", how="inner")
             .sort("day")
             .with_columns(basis=pl.col("perp_close") / pl.col("close") - 1.0)
         )
-        values = df["basis"].to_list()
-        pct: list[float | None] = []
-        for i, v in enumerate(values):
-            if i < PCT_WINDOW:
-                pct.append(None)
-                continue
-            window = values[i - PCT_WINDOW : i + 1]
-            pct.append(sum(1 for w in window if w <= v) / len(window))
-        df = df.with_columns(pl.Series("pct", pct, dtype=pl.Float64))
+        ranks = trailing_percentile_rank(df["basis"].to_list(), window=PCT_WINDOW, skip_nulls=False)
+        df = df.with_columns(pl.Series("pct", ranks, dtype=pl.Float64))
         for h in HORIZONS:
-            df = df.with_columns(
-                (pl.col("close").shift(-h) / pl.col("close") - 1.0).alias(f"fwd{h}")
-            )
+            feature = forward_return(h)
+            df = df.with_columns(**{feature.name: feature.expr})
         parts.append(df.with_columns(pl.lit(symbol).alias("symbol")))
     return pl.concat(parts).drop_nulls(["pct", "fwd7"])
 
@@ -99,33 +96,21 @@ def pooled_diff_ci(panel: pl.DataFrame, horizon: int) -> tuple[float, float, flo
         .sort("day")
         .fill_null(0.0)
     )
-    arrays = [by_day[c].to_list() for c in ("low_sum", "low_n", "high_sum", "high_n")]
-    n = by_day.height
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + float(x))
-        return out
-
-    p_ls, p_ln, p_hs, p_hn = (prefix(a) for a in arrays)
-    point = p_ls[n] / max(p_ln[n], 1.0) - p_hs[n] / max(p_hn[n], 1.0)
-    rng = random.Random(10)
-    n_blocks = n // BLOCK_DAYS + 1
-    diffs = []
-    for _ in range(N_BOOT):
-        ls = ln = hs = hn = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            e = s + BLOCK_DAYS
-            ls += p_ls[e] - p_ls[s]
-            ln += p_ln[e] - p_ln[s]
-            hs += p_hs[e] - p_hs[s]
-            hn += p_hn[e] - p_hn[s]
-        if ln > 0 and hn > 0:
-            diffs.append(ls / ln - hs / hn)
-    diffs.sort()
-    return point, diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs))]
+    low_sum, low_n, high_sum, high_n = (
+        by_day[c].to_list() for c in ("low_sum", "low_n", "high_sum", "high_n")
+    )
+    ci = two_group_diff_ci(
+        low_sum,
+        low_n,
+        high_sum,
+        high_n,
+        block=BLOCK_DAYS,
+        seed=SEED,
+        n_boot=N_BOOT,
+        empty_denominator="guard",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
 
 def main() -> None:

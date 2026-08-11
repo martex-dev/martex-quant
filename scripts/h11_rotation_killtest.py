@@ -5,13 +5,13 @@
 
 from __future__ import annotations
 
-import random
 from pathlib import Path
 
 import polars as pl
 
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.stats.bootstrap import daily_mean_ci
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 LOOKBACKS = [30, 90]
@@ -22,30 +22,21 @@ BLOCK_DAYS = 30
 N_BOOT = 5_000
 
 
+SEED = 11
+
+
 def bootstrap_mean(values: list[float]) -> tuple[float, float, float]:
-    n = len(values)
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + x)
-        return out
-
-    p = prefix(values)
-    point = p[n] / n
-    rng = random.Random(11)
-    n_blocks = n // BLOCK_DAYS + 1
-    means = []
-    for _ in range(N_BOOT):
-        total = 0.0
-        count = 0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            total += p[s + BLOCK_DAYS] - p[s]
-            count += BLOCK_DAYS
-        means.append(total / count)
-    means.sort()
-    return point, means[int(0.025 * len(means))], means[int(0.975 * len(means))]
+    """Unweighted daily mean: one spread value per day, so each draw
+    contributes exactly BLOCK_DAYS to the denominator."""
+    ci = daily_mean_ci(
+        values,
+        block=BLOCK_DAYS,
+        seed=SEED,
+        n_boot=N_BOOT,
+        accumulation="prefix_delta",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
 
 def main() -> None:
