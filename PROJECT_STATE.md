@@ -254,6 +254,38 @@ next step.
 
 ---
 
+## Meme layer — new, 2026-08-11 (running)
+
+`OBSERVATION` — two collectors started 2026-08-11 ~16:05 UTC, both free and
+keyless, both holding an atomic PID lock so a duplicate launch cannot double
+the request rate or interleave writes:
+
+| Job | Cadence | Writes |
+|---|---|---|
+| `scripts/meme_record.py` | 10 pages / 150s | `data/meme/launches/*.jsonl` |
+| `scripts/meme_panel.py` | full cohort / 300s | `data/meme/panel/*.jsonl` |
+
+`OBSERVATION` — capture rate ~2,000 Solana launches/hour. First 1,535
+launches, panel span 0.2h: 14.4% report any liquidity at entry; median depth
+among those is **$6**; a $50 ticket clears a 15% round-trip cost ceiling in
+**5.6%** of the cohort; **7.8%** ever traded above entry.
+
+`INTERPRETATION` (low confidence, 10 minutes of panel) — the binding
+constraint on a cohort strategy looks like the *number of tradable tickets*,
+not the hit rate. Not to be cited until the panel has ≥12h.
+
+H60 is registered (docs/hypotheses/60-meme-launch-cohort.md) with verdict bars
+and a pre-committed expectation of KILLED. Ledger 125 → 134 (+1 descriptive).
+The layer produces signals only; no order path, no keys, no funds.
+
+`OBSERVATION` — **pre-existing test failure, not caused by this work:**
+`test_frozen_fingerprint_categories[research_graph_report]` fails because
+`docs/hypotheses/59-live-drawdown-consistency.md` was edited after the golden
+baseline was frozen (14,101 → 14,165 bytes). Verified by stashing the meme
+layer and re-running. Needs a deliberate re-freeze.
+
+---
+
 ## Guardrail for MI work (new, 2026-08-10)
 
 The rotation/rotation-stop drawdown described above is an open,
