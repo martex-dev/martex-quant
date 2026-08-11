@@ -27,6 +27,7 @@ from trading_bot.features.panel import (
 from trading_bot.features.panel import daily_panel as canonical_daily_panel
 from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
 from trading_bot.stats.bootstrap import two_group_diff_ci
+from trading_bot.stats.significance import ci_excludes_zero
 
 LEGACY8 = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 PERP_DIR = Path("data/perp")
@@ -69,7 +70,7 @@ def diff_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float]:
 def report(name: str, panel: pl.DataFrame, seed: int) -> bool:
     n_a = panel["a"].drop_nulls().len()
     point, lo, hi = diff_ci(panel, seed)
-    sig = lo > 0 or hi < 0
+    sig = ci_excludes_zero(lo, hi)
     print(
         f"  {name:<56} n={n_a:>6}  diff {point:+.2%}  CI [{lo:+.2%}, {hi:+.2%}]  "
         f"{'SIGNAL' if sig else 'noise'}"
@@ -198,7 +199,7 @@ def main() -> None:
         event_parts.append(events.select("day", "v"))
     p35 = pl.concat(event_parts)
     pt, lo, hi = event_mean_ci(p35, 3510)
-    sig = lo > 0 or hi < 0
+    sig = ci_excludes_zero(lo, hi)
     print(
         f"  signed fwd7 ratio return on |z|>=1.5 (reversion claim >0)      "
         f"n={p35.height:>6}  mean {pt:+.2%}  CI [{lo:+.2%}, {hi:+.2%}]  "

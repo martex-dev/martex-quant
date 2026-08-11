@@ -12,6 +12,7 @@ import polars as pl
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
 from trading_bot.stats.bootstrap import two_group_diff_ci
+from trading_bot.stats.significance import ci_above_zero, ci_excludes_zero
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 BLOCK_DAYS = 30
@@ -82,17 +83,21 @@ def main() -> None:
     month_len = pl.col("day").dt.month_end().dt.day()
     tom = (dom <= 2) | (dom >= month_len - 1)
     point, lo, hi = bootstrap_diff(day_split(daily.with_columns(pl.col("day")), tom))
-    results.append(("09a turn-of-month (daily, one-sided >0)", point, lo, hi, lo > 0))
+    results.append(("09a turn-of-month (daily, one-sided >0)", point, lo, hi, ci_above_zero(lo)))
 
     # 09b weekend vs weekdays (two-sided)
     weekend = pl.col("day").dt.weekday() >= 6  # polars: Mon=1..Sun=7
     point, lo, hi = bootstrap_diff(day_split(daily, weekend))
-    results.append(("09b weekend minus weekday (two-sided)", point, lo, hi, lo > 0 or hi < 0))
+    results.append(
+        ("09b weekend minus weekday (two-sided)", point, lo, hi, ci_excludes_zero(lo, hi))
+    )
 
     # 09c funding-settlement hours 00/08/16 UTC (hourly, two-sided)
     fh = pl.col("timestamp").dt.hour().is_in([0, 8, 16])
     point, lo, hi = bootstrap_diff(day_split(hourly, fh))
-    results.append(("09c funding hours minus others (two-sided)", point, lo, hi, lo > 0 or hi < 0))
+    results.append(
+        ("09c funding hours minus others (two-sided)", point, lo, hi, ci_excludes_zero(lo, hi))
+    )
 
     print(f"daily panel: {daily.height} rows; hourly panel: {hourly.height} rows\n")
     for name, point, lo, hi, ok in results:

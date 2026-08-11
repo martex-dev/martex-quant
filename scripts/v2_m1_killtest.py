@@ -26,6 +26,7 @@ from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
 from trading_bot.features.panel import forward_return, relative_forward_return_difference
 from trading_bot.stats.bootstrap import flag_split_ci
+from trading_bot.stats.significance import ci_above_zero
 
 ALTS = ["ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 LOOKBACKS = [14, 30, 60]
@@ -95,7 +96,7 @@ def main() -> None:
         point, lo, hi = block_bootstrap_ci(values, flags)
         mean_r = statistics.fmean([v for v, f in zip(values, flags, strict=True) if f])
         mean_f = statistics.fmean([v for v, f in zip(values, flags, strict=True) if not f])
-        ok = lo > 0.0
+        ok = ci_above_zero(lo)
         passes += ok
         print(
             f"{lookback:>4} {len(values):>6} {mean_r:>13.2%} {mean_f:>14.2%} "

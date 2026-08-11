@@ -20,6 +20,7 @@ from trading_bot.features.panel import (
     trailing_percentile_rank,
 )
 from trading_bot.stats.bootstrap import two_group_diff_ci
+from trading_bot.stats.significance import ci_above_zero
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 PERP_DIR = Path("data/perp")
@@ -129,7 +130,7 @@ def main() -> None:
         col = f"fwd{h}"
         point, lo, hi = pooled_diff_ci(panel.drop_nulls(col), h)
         if h == 7:
-            primary_pass = lo > 0.0
+            primary_pass = ci_above_zero(lo)
         print(
             f"{h:>7}d {low[col].mean():>10.2%} {high[col].mean():>11.2%} {point:>8.2%} "
             f"{'[' + f'{lo:+.2%}, {hi:+.2%}' + ']':>20}{' <- PRIMARY' if h == 7 else ''}"

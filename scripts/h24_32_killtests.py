@@ -28,6 +28,7 @@ from trading_bot.features.panel import (
 )
 from trading_bot.features.panel import daily_panel as canonical_daily_panel
 from trading_bot.stats.bootstrap import daily_mean_ci
+from trading_bot.stats.significance import ci_excludes_zero
 
 BLOCK_DAYS = 30
 N_BOOT = 5_000
@@ -131,7 +132,7 @@ def ranking_spread(
 
 
 def show(name: str, point: float, lo: float, hi: float, n: int, claim: str) -> None:
-    sig = lo > 0 or hi < 0
+    sig = ci_excludes_zero(lo, hi)
     print(
         f"  {name:<50} n={n:>5}  spread {point:+.3%}  CI [{lo:+.3%}, {hi:+.3%}]  "
         f"{'SIGNAL' if sig else 'noise'}  ({claim})"

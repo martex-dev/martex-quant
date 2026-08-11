@@ -26,6 +26,7 @@ from trading_bot.backtesting.metrics import (
 from trading_bot.backtesting.research import walk_forward_backtest
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.stats.significance import per_period_sharpe
 from trading_bot.strategies.benchmark import BuyAndHold
 from trading_bot.strategies.momentum import TimeSeriesMomentum
 
@@ -35,14 +36,6 @@ TRAIN = 8766  # 1 year of 1h bars
 TEST = 2160  # 90 days
 INTERVAL = Interval.H1
 CONFIG = BacktestConfig(initial_cash=10_000.0)
-
-
-def per_period_sharpe(equity: pl.Series) -> float:
-    returns = equity.pct_change().drop_nulls()
-    mean, std = returns.mean(), returns.std()
-    if not isinstance(mean, float) or not isinstance(std, float) or std == 0.0:
-        return 0.0
-    return mean / std
 
 
 def main() -> None:

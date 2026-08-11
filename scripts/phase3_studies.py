@@ -27,6 +27,7 @@ from trading_bot.backtesting.metrics import (
 from trading_bot.backtesting.research import walk_forward_backtest
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.stats.significance import per_period_sharpe
 from trading_bot.strategies.base import Strategy
 from trading_bot.strategies.benchmark import BuyAndHold
 from trading_bot.strategies.breakout import DonchianBreakout
@@ -38,14 +39,6 @@ from trading_bot.strategies.vol_target import VolTargetMomentum
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 CONFIG = BacktestConfig(initial_cash=10_000.0)
 STORE = ParquetStore(Path("data/lake"))
-
-
-def per_period_sharpe(equity: pl.Series) -> float:
-    returns = equity.pct_change().drop_nulls()
-    mean, std = returns.mean(), returns.std()
-    if not isinstance(mean, float) or not isinstance(std, float) or std == 0.0:
-        return 0.0
-    return mean / std
 
 
 def run_wf_study(
