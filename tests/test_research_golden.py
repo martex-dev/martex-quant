@@ -70,6 +70,14 @@ NON_RESEARCH_SCRIPTS = {
     "pull_intraday",
     "dashboard_service",
     "freeze_research_baseline",
+    # Meme layer: live data collectors and a report over data that is still
+    # accruing. They read the network and the wall clock, so they have no
+    # deterministic output to freeze; the layer's regression cover is the unit
+    # tests over economics/panel/outcomes instead.
+    "meme_record",
+    "meme_panel",
+    "meme_cohort_report",
+    "meme_base_rate",
 }
 
 
