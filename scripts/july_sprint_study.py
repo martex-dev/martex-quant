@@ -28,6 +28,7 @@ from pathlib import Path
 import polars as pl
 
 from trading_bot.data.models import Interval
+from trading_bot.data.series.store import SeriesKind, SeriesStore
 from trading_bot.data.store.parquet_store import ParquetStore
 
 FEE = 51.80
@@ -42,12 +43,13 @@ SCALES = [0.5, 1.0, 1.5, 2.0, 3.0, 4.0]
 MAX_ATTEMPTS = 3
 BOUNCE_COST_RT = 0.0022
 CACHE_DIR = Path("data/tmp/h4x_streams")
+SERIES = SeriesStore(Path("."))
 
 
 def build_streams() -> dict[str, list[float]]:
     store = ParquetStore(Path("data/lake"))
     universe = json.loads(Path("config/universe.json").read_text(encoding="utf-8"))["symbols"]
-    rot_stop = pl.read_parquet(CACHE_DIR / "rot_stop_stream.parquet")
+    rot_stop = SERIES.read(SeriesKind.EQUITY_STREAM, "rot_stop_stream")
     ts_dtype = rot_stop.schema["timestamp"]
     frames = {}
     for symbol in universe:

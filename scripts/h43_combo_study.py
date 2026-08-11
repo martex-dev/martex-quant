@@ -22,6 +22,7 @@ from trading_bot.backtesting.metrics import (
     probabilistic_sharpe_ratio,
 )
 from trading_bot.data.models import Interval
+from trading_bot.data.series.store import SeriesKind, SeriesStore
 from trading_bot.data.store.parquet_store import ParquetStore
 from trading_bot.risk_management.prop_sim import PropFirmRules, simulate_evaluation
 
@@ -32,6 +33,7 @@ FIRM_RULES = PropFirmRules(
     "1step-5k-static", 5_000.0, 0.10, None, 0.03, None, 51.80, static_max_loss_pct=0.06
 )
 CACHE_DIR = Path("data/tmp/h4x_streams")
+SERIES = SeriesStore(Path("."))
 
 
 def summarize(name: str, rets: pl.DataFrame, scale: float = 0.5) -> dict[str, float]:
@@ -83,9 +85,9 @@ def main() -> None:
     store = ParquetStore(Path("data/lake"))
     universe = json.loads(Path("config/universe.json").read_text(encoding="utf-8"))["symbols"]
 
-    v1 = pl.read_parquet(CACHE_DIR / "v1_stream.parquet")
-    rot = pl.read_parquet(CACHE_DIR / "rot_champion_stream.parquet")
-    rot_stop = pl.read_parquet(CACHE_DIR / "rot_stop_stream.parquet")
+    v1 = SERIES.read(SeriesKind.RETURN_STREAM, "v1_stream")
+    rot = SERIES.read(SeriesKind.EQUITY_STREAM, "rot_champion_stream")
+    rot_stop = SERIES.read(SeriesKind.EQUITY_STREAM, "rot_stop_stream")
     rot_rets = rot.select("timestamp", pl.col("equity").pct_change().fill_null(0.0).alias("ret"))
     ts_dtype = rot_stop.schema["timestamp"]
 
