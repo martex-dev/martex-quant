@@ -458,6 +458,51 @@ SPECS: tuple[ScriptSpec, ...] = (
         seed_note="Imports build_streams from july_sprint_study; same inputs.",
     ),
     ScriptSpec(
+        name="dsr_recheck",
+        hypotheses="Re-deflation of the momentum books at the current ledger total",
+        seeds=(),
+        uses_universe=True,
+        data_files=(
+            "data/tmp/h4x_streams/rot_stop_stream.parquet",
+            "data/tmp/h4x_streams/rot_champion_stream.parquet",
+        ),
+        reproducibility="time_dependent",
+        external_dependencies=(
+            "docs/research/ledger/trials.toml — the ledger total, which changes "
+            "by design whenever research is registered",
+        ),
+        seed_note=(
+            "Classified time_dependent for the honest reason rather than the "
+            "literal one: its output moves with the LEDGER, not the calendar. "
+            "A golden would have to be re-frozen every time the ledger grows, "
+            "and a fixture regenerated on every ledger change is not a golden. "
+            "Its estimator reconstructions are themselves exact and are guarded "
+            "by the script's own reproduce-first check, which refuses to report "
+            "a recomputed figure when the published one cannot be reproduced."
+        ),
+    ),
+    ScriptSpec(
+        name="h59_drawdown_consistency",
+        hypotheses="H59 live-vs-backtest drawdown consistency (ledger +0, diagnostic)",
+        seeds=(5901, 5902, 5903),
+        uses_universe=True,
+        data_files=(
+            "data/tmp/h4x_streams/rot_stop_stream.parquet",
+            "data/tmp/h4x_streams/rot_champion_stream.parquet",
+            "data/tmp/h4x_streams/v1_stream.parquet",
+        ),
+        reproducibility="time_dependent",
+        external_dependencies=(
+            "data/paper/*/equity.jsonl — the live paper record, which grows daily",
+        ),
+        seed_note=(
+            "Genuinely time-dependent: it reads a live record that gains a mark "
+            "every day, so both the live figure and the window length K move. "
+            "Re-running it later answers a different question by design — the "
+            "registration schedules exactly that at 60 and 90 days."
+        ),
+    ),
+    ScriptSpec(
         name="h58_ensemble_study",
         hypotheses="H58 learned indicator ensemble (killed: equal weights won)",
         seeds=(5801, 5802, 5803, 5804, 5805, 5806),
