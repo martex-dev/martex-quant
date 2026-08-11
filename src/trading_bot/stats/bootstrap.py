@@ -163,6 +163,39 @@ def two_group_diff_ci(
     h15_21 (diff_ci), h22_h23 (day_diff_ci, block=30), h33_40 (diff_ci),
     h44_50 (diff_ci, short_series="clamp").
     """
+    point, diffs, n_a = _two_group_diff_draws(
+        a_sum,
+        a_n,
+        b_sum,
+        b_n,
+        block=block,
+        seed=seed,
+        n_boot=n_boot,
+        empty_denominator=empty_denominator,
+        short_series=short_series,
+    )
+    low, high = _bounds(diffs)
+    return CI(point, low, high, n_a)
+
+
+def _two_group_diff_draws(
+    a_sum: Sequence[float],
+    a_n: Sequence[float],
+    b_sum: Sequence[float],
+    b_n: Sequence[float],
+    *,
+    block: int,
+    seed: int,
+    n_boot: int,
+    empty_denominator: EmptyDenominator,
+    short_series: ShortSeries,
+) -> tuple[float, list[float], int]:
+    """The shared draw loop: point estimate, accepted draws, and a's count.
+
+    Extracted so ``two_group_diff_ci`` and ``two_group_diff_pvalue`` share
+    ONE implementation of the RNG contract. The loop body, draw order and
+    acceptance guard are byte-for-byte what they were — the goldens verify it.
+    """
     pa, pan, pb, pbn = (_prefix(x) for x in (a_sum, a_n, b_sum, b_n))
     n = len(a_sum)
     if empty_denominator == "guard":
@@ -185,8 +218,49 @@ def two_group_diff_ci(
             nb += pbn[e] - pbn[s]
         if na > 0 and nb > 0:
             diffs.append(sa / na - sb / nb)
-    low, high = _bounds(diffs)
-    return CI(point, low, high, int(pan[n]))
+    return point, diffs, int(pan[n])
+
+
+def two_group_diff_pvalue(
+    a_sum: Sequence[float],
+    a_n: Sequence[float],
+    b_sum: Sequence[float],
+    b_n: Sequence[float],
+    *,
+    block: int,
+    seed: int,
+    n_boot: int,
+    empty_denominator: EmptyDenominator,
+    short_series: ShortSeries,
+) -> tuple[float, float]:
+    """Two-sided bootstrap p-value alongside the point estimate.
+
+    NEW machinery for NEW trials only. The historical corpus decided
+    significance by "does the 95% CI exclude zero", which yields no p-value —
+    and an FDR procedure needs one. This does NOT change any historical
+    decision; it is what future relationship tests feed to
+    ``stats.multiple_testing``.
+
+    The p-value is the doubled tail mass on the far side of zero, floored at
+    ``1 / n_boot`` because a bootstrap cannot resolve a probability finer
+    than one draw. Reported as a bound, never as "p = 0".
+    """
+    point, diffs, _ = _two_group_diff_draws(
+        a_sum,
+        a_n,
+        b_sum,
+        b_n,
+        block=block,
+        seed=seed,
+        n_boot=n_boot,
+        empty_denominator=empty_denominator,
+        short_series=short_series,
+    )
+    if not diffs:
+        return point, 1.0
+    below = sum(1 for d in diffs if d <= 0.0)
+    tail = min(below, len(diffs) - below) / len(diffs)
+    return point, max(2.0 * tail, 1.0 / n_boot)
 
 
 def daily_mean_ci(
