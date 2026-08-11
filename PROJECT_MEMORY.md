@@ -3,7 +3,7 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 120 registered (119 run, 1 data-blocked: H54). Every new
+## Trial ledger: 125 registered (124 run, 1 data-blocked: H54). Every new
 ## spec raises the DSR bar. Do not test without a numbered doc FIRST.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
@@ -49,6 +49,7 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 | 43 | Combo batch on rot-stop base | screen: only bounce admits; **43a KILLED (eval bars)** | rot-stop x V1 corr 0.521, x rotation 0.821 (blends dead); rot-stop+bounce Sharpe 1.55, +79%/yr, DSR 1.000 but prop 47.5%<73%, MDD worse -> replaces H41 as own-capital archive |
 | 44-50 | Retail intraday batch (maker regime, 15m Bybit) | ALL 7 claims KILLED; **H44 ORB + H45 first-hour INVERTED (significant)** | fade earns 0.16-0.20%/event = 4-5x maker toll; sessions/funding/levels/bursts/VWAP noise -> H51 |
 | 51 | Intraday fade strategies (51a fade-ORB, 51b fade-1st-hour) | BOTH KILLED (taker floor) | 51a Sharpe 0.14; 51b 0.44 < 0.7 bar; maker-PROXY 51b 0.90 corr +0.01 (most independent stream ever measured) — true maker-fill model = possible H52, queued behind sprint |
+| 58 | Learnable weighted indicator ensemble (logit over 6 indicators, purged walk-forward) | **KILLED at info stage — equal weights beat learned weights** | B equal-weight acc 0.5213, fwd7 spread **+2.79% CI [+0.83%,+4.90%] SIGNAL**; C learned 0.5062, −0.56% noise; L1/L2/rolling-retrain all noise. Stability bar PASSED 6/6 (four at 85-92%) and ablation degraded — weights stable and reproducible, just worse. Poison test refused to report on its first run (leak detector measured against a binary target, could not have caught a perfect leak) |
 | 52-57 | Intraday frontier (true maker fill, order-flow, OI, lead-lag, ratio, POC) | 5 run ALL CLOSED; H54 data-blocked | H52 killed 0.69 vs 0.70 bar (near-miss stays closed); H53 contrarian SIGNAL 1.9bp + H57 bounce SIGNAL 2.8bp both SUB-TOLL; H55/H56 noise. Intraday family CLOSED absent new data dimension |
 
 ## Prop-firm simulation results (real CFD rules, 20k paths, EOD approx)
@@ -80,7 +81,17 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 4. **Info-signal ≠ strategy improvement.** 7d ranking was real at info
    level but degraded the walk-forward (selector chases noise); shock
    signal was real but fully absorbed by deployed momentum. Incremental
-   bars (beat the deployed system, not zero) killed both.
+   bars (beat the deployed system, not zero) killed both. **H58 sharpens
+   it: fitting is not free.** An equal-weighted 6-indicator composite
+   was a clear signal (+2.79%, CI clear); learning the weights on the
+   same features, same windows, destroyed it (−0.56%, noise). The
+   learned weights were STABLE (6/6 signs held), so this is not
+   ordinary overfitting — logistic regression maximises likelihood on
+   binary DIRECTION while the payoff is the return SPREAD, and
+   optimising the wrong objective is worse than optimising nothing.
+   Standing consequence: **an equal-weight baseline is mandatory in
+   every future model-based hypothesis.** It is not a formality; it has
+   now won.
 5. **Diversification claims need timestamp-joined correlation on the
    common window** — tail-count alignment produced a false 0.35 (true:
    0.77) and nearly justified a bad combined book.

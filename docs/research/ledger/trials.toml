@@ -19,8 +19,8 @@
 # distributed by guess.
 
 period = "2026"
-ledger_total_claimed = 120
-ledger_run_claimed = 119
+ledger_total_claimed = 125
+ledger_run_claimed = 124
 ledger_data_blocked_claimed = 1
 
 [[entries]]
@@ -269,8 +269,20 @@ source = "docs/hypotheses/52-57-intraday-frontier.md"
 evidence = "Ledger: +6 -> 120; H54 DATA-BLOCKED, not run (119 run + 1 blocked)"
 notes = "H54 is the single registered-but-unrun trial in the corpus."
 
+[[entries]]
+hypothesis = "H58"
+family = "info.ensemble.learned_weights"
+trial_count = 5
+grade = "info"
+protocol = "confirmatory"
+verdict = "killed"
+maturity = "L3"
+source = "docs/hypotheses/58-learned-indicator-ensemble.md"
+evidence = "Ledger: +5 -> 125. BAR 1 FAIL: learned weights (C, acc 0.5062, spread -0.56% noise) lose to equal weights (B, acc 0.5213, spread +2.79% CI [+0.83%,+4.90%]). L1/L2/rolling-retrain do not rescue it."
+notes = "Stability bar PASSED (6/6 features >=2/3, four at 85-92%) and ablation degraded — the weights are stable and reproducible, just worse. Second independent confirmation of meta-finding 4. Reference cell (not a trial): r90 alone gave a significant NEGATIVE fwd7 spread -2.11%, CI [-4.28%,-0.17%]. Registered and committed (71ad882) before the run."
+
 # The remainder the committed documents do not allocate. Carried explicitly
 # rather than distributed by guess: assigning it would be fabrication, and
 # adjusting a documented delta to close it would alter the research record.
 [unallocated]
-reason = "Documented per-hypothesis deltas do not sum to the ledger's stated 120. The gap is reported, not absorbed."
+reason = "Documented per-hypothesis deltas do not sum to the ledger's stated total (120 before H58, 125 after). The gap is reported, not absorbed."

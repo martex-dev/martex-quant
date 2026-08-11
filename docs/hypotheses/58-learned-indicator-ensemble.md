@@ -133,3 +133,96 @@ The ledger stands at 120. These 5 trials take it to **125**, which raises the
 deflated-Sharpe hurdle for every future strategy claim, including the
 already-borderline rotation-stop. That cost is accepted deliberately and
 recorded here so it is not discovered later.
+
+---
+
+## VERDICT — 2026-08-11, `scripts/h58_ensemble_study.py`
+
+**H58 KILLED at the information stage. Ledger 120 -> 125.**
+
+Panel: 64,484 symbol-days over 3,250 dates. 13 purged walk-forward windows
+(2y train / 7d purge / 6m test), scaler fitted on train only.
+
+**Poison test passed first, and it earned its keep.** The first run REFUSED
+to report any result, because the leak alarm could not demonstrate
+sensitivity: it was measuring correlation against the binary target, and a
+variable correlates with its own sign at only ~0.8, so even a perfect leak
+would not have tripped a 0.95 alarm. Fixed to measure against the continuous
+outcome; `fwd7` injected as a predictor is now caught twice (by name, and at
+|r|=1.000), and the declared feature set is clean.
+
+| Cell | Accuracy | fwd7 spread | 95% CI | |
+|---|---|---|---|---|
+| B equal-weighted | **0.5213** | **+2.79%** | [+0.83%, +4.90%] | **SIGNAL** |
+| C learned weights | 0.5062 | −0.56% | [−2.06%, +0.82%] | noise |
+| D1 learned + L2 | 0.5062 | −0.57% | [−2.05%, +0.79%] | noise |
+| D2 learned + L1 | 0.5063 | −0.54% | [−2.02%, +0.89%] | noise |
+| E rolling retrain | 0.5109 | +0.38% | [−1.02%, +1.85%] | noise |
+
+**BAR 1 — C must beat B: FAIL, and not narrowly.** Equal weighting scores
+0.5213 against learned 0.5062, and more decisively the equal-weighted
+composite's forward-return spread is a clear SIGNAL (+2.79%, CI above zero)
+while every learned variant is indistinguishable from noise. Regularisation
+(D1, D2) and rolling retraining (E) did not rescue it.
+
+The registered claim was specifically that *learning* the weights helps. It
+does not. **The hypothesis is false as stated.**
+
+**BAR 2 — stability: PASSED, which makes the kill more interesting.** 6/6
+features held their weight sign in at least 2/3 of windows, four of them at
+85–92%. The learned weights are *stable*; they are simply worse. This is not
+an overfitting story in the usual sense — the model converged on a
+consistent, reproducible answer that trades badly.
+
+**BAR 3 — ablation: passed.** Dropping the top-weighted feature (`ma90_dev`,
+mean weight −0.376) degrades accuracy 0.5062 -> 0.4983, so the model was
+genuinely using it.
+
+### Why it failed, stated as a lead rather than a conclusion
+
+Logistic regression maximises likelihood on the binary **direction** target.
+The trading outcome is the **return spread**. Those are not the same
+objective, and the results separate them cleanly: the learned model is a
+marginally better direction classifier that selects materially worse trades.
+Equal weighting, which optimises nothing, produced the tradeable signal.
+
+This is a lead for a future registration, not a finding here.
+
+### Ledger context
+
+This is the **second independent confirmation of meta-finding 4**
+(info-signal ≠ strategy improvement), and it now has a sharper form: a
+composite that is significant unweighted can be destroyed by fitting weights
+to the wrong objective. H33 died going from info to strategy grade; H58 dies
+one step earlier, at the weighting itself.
+
+**Reference, not a trial:** `r90` alone produced a significant NEGATIVE 7-day
+spread (−2.11%, CI [−4.28%, −0.17%]). At the 7-day horizon, 90-day momentum
+was contrarian over this sample. That contradicts nothing — the deployed book
+trades r90 cross-sectionally at longer horizons — but it is recorded because
+it was measured.
+
+### What is NOT concluded
+
+Equal weighting is **not** hereby a validated strategy. B's +2.79% spread is
+an information-level result on a reference cell; turning it into a strategy
+requires its own registration, the event-driven engine, full costs, an
+incremental bar against the deployed system, and DSR against a ledger that is
+now 125.
+
+### Post-run change to the harness, and its verification
+
+After the result was recorded, two changes were made to `research/ensemble.py`:
+a mypy-strict fix to the accuracy accessor, and replacing a deprecated polars
+`is_in` call with the `.implode()` spelling. Neither is allowed to be taken on
+trust after publication, so the study was re-run end to end and reproduced
+**every figure above digit for digit** — all six references, all five cells,
+all three bars, all six stability shares.
+
+`tests/test_ensemble.py` was added at the same time and tests the harness on
+its safety properties rather than its outputs: the purge gap, non-overlapping
+test slices, refusal of forward-named features, leak-alarm sensitivity to a
+near-copy of the outcome, and — the decisive pair — a **null control** that
+must find no skill in pure noise and a **positive control** that must recover
+a planted signal. A harness failing the first is leaking; one failing the
+second would make every kill it produces meaningless.

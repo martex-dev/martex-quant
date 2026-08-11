@@ -1,0 +1,35 @@
+H58 panel: 64484 symbol-days over 3250 dates
+
+=== POISON TEST: a forward-derived column must be refused ===
+  caught: ['fwd7'] name forward-derived outcomes and cannot be predictors — a feature must be computable f...
+  leak alarm on the poisoned set: ['fwd7 (IS the outcome, |r|=1.000)']
+  leak alarm on the declared features: clean
+
+=== references (NOT trials): each indicator alone ===
+  A: r30 alone                 acc 0.5194  fwd7 spread +0.547%  CI [-2.236%, +3.434%]  noise  (13 windows)
+  A: r90 alone                 acc 0.4901  fwd7 spread -2.108%  CI [-4.279%, -0.174%]  SIGNAL (13 windows)
+  A: vol30 alone               acc 0.5010  fwd7 spread -0.185%  CI [-2.257%, +2.092%]  noise  (13 windows)
+  A: ma90_dev alone            acc 0.4952  fwd7 spread -1.517%  CI [-3.584%, +0.502%]  noise  (13 windows)
+  A: v_ratio alone             acc 0.5118  fwd7 spread +1.233%  CI [-0.950%, +3.439%]  noise  (13 windows)
+  A: upshare90 alone           acc 0.5039  fwd7 spread +1.160%  CI [-1.153%, +3.601%]  noise  (13 windows)
+
+=== declared cells ===
+  B: equal-weighted            acc 0.5213  fwd7 spread +2.789%  CI [+0.825%, +4.901%]  SIGNAL (13 windows)
+  C: learned weights           acc 0.5062  fwd7 spread -0.564%  CI [-2.062%, +0.822%]  noise  (13 windows)
+  D1: learned + L2             acc 0.5062  fwd7 spread -0.567%  CI [-2.051%, +0.794%]  noise  (13 windows)
+  D2: learned + L1             acc 0.5063  fwd7 spread -0.543%  CI [-2.016%, +0.885%]  noise  (13 windows)
+  E: rolling retrain (1y/3m)   acc 0.5109  fwd7 spread +0.375%  CI [-1.018%, +1.853%]  noise  (30 windows)
+
+=== VERDICT BARS (pre-registered) ===
+  BAR 1 — C must beat B: 0.5062 vs 0.5213 -> FAIL
+  BAR 2 — weight sign stability >=2/3 of windows: 6/6 features
+      r30          mean weight +0.2475   sign stable 92%
+      r90          mean weight +0.1223   sign stable 92%
+      ma90_dev     mean weight -0.3764   sign stable 92%
+      v_ratio      mean weight +0.0709   sign stable 85%
+      vol30        mean weight -0.0989   sign stable 69%
+      upshare90    mean weight +0.0687   sign stable 69%
+  BAR 3 — ablation: drop the highest-|weight| indicator
+      dropping 'ma90_dev': acc 0.4983 vs full 0.5062 (degrades)
+
+VERDICT: bar1 FAIL; any cell with CI clear of zero: yes -> H58 KILLED at the info stage
