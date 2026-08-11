@@ -206,6 +206,32 @@ recorded in the H58 registration before the test ran.
 
 ---
 
+## BLOCKER — the research lake is stale (found 2026-08-11)
+
+`OBSERVATION` — `data/lake` BTCUSDT daily ends **2026-07-09**. The paper
+record starts **2026-07-10**. There is ZERO overlap. Verified directly by
+reading the lake, not inferred from a failed query.
+
+`OBSERVATION` — consequence, hit immediately: H59's pre-registered
+descriptive context (what did the market do over the live window?) could
+not be computed at all.
+
+`INTERPRETATION` — this blocks the divergence hunt that H59 just opened.
+The most obvious alternative explanation for the drawdown — "the whole
+market fell" — is currently **untestable in this repository**. It is
+neither supported nor excluded.
+
+**Next action: refresh the lake before any divergence-hunt work.** Note the
+trade-off that must be handled deliberately, not silently: the golden
+baseline's `inputs` fingerprint is computed over lake files frozen since
+2026-07-11. Refreshing the lake WILL change that fingerprint for every
+deterministic script. That is an expected input change, not a code
+regression — but it must be recorded as such when it happens, and the
+stdout goldens must be re-verified against the OLD lake first so a genuine
+regression cannot hide inside the refresh.
+
+---
+
 ## Guardrail for MI work (new, 2026-08-10)
 
 The rotation/rotation-stop drawdown described above is an open,

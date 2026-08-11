@@ -49,6 +49,7 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 | 43 | Combo batch on rot-stop base | screen: only bounce admits; **43a KILLED (eval bars)** | rot-stop x V1 corr 0.521, x rotation 0.821 (blends dead); rot-stop+bounce Sharpe 1.55, +79%/yr, DSR 1.000 but prop 47.5%<73%, MDD worse -> replaces H41 as own-capital archive |
 | 44-50 | Retail intraday batch (maker regime, 15m Bybit) | ALL 7 claims KILLED; **H44 ORB + H45 first-hour INVERTED (significant)** | fade earns 0.16-0.20%/event = 4-5x maker toll; sessions/funding/levels/bursts/VWAP noise -> H51 |
 | 51 | Intraday fade strategies (51a fade-ORB, 51b fade-1st-hour) | BOTH KILLED (taker floor) | 51a Sharpe 0.14; 51b 0.44 < 0.7 bar; maker-PROXY 51b 0.90 corr +0.01 (most independent stream ever measured) — true maker-fill model = possible H52, queued behind sprint |
+| 59 | Live paper drawdown vs each strategy's OWN backtest distribution (ledger +0, diagnostic) | **DEPLOYED SPEC INCONSISTENT — divergence hunt open** | rotation-stop live −13.06%/29d sits at p=0.0081 (block bootstrap) / 0.0060 (overlapping) of its own backtest window distribution; rotation −15.90% at p=0.0060/0.0032; **control vol-target CONSISTENT p=0.49**, so the method is not self-flagging. Worst backtest 29d window −17.53%, so the live month is RARE, not unprecedented. Cells 1+2 correlate 0.821 — ONE event seen twice, not two confirmations. Market-context check was **impossible**: lake ends 2026-07-09, paper starts 07-10, zero overlap |
 | 58 | Learnable weighted indicator ensemble (logit over 6 indicators, purged walk-forward) | **KILLED at info stage — equal weights beat learned weights** | B equal-weight acc 0.5213, fwd7 spread **+2.79% CI [+0.83%,+4.90%] SIGNAL**; C learned 0.5062, −0.56% noise; L1/L2/rolling-retrain all noise. Stability bar PASSED 6/6 (four at 85-92%) and ablation degraded — weights stable and reproducible, just worse. Poison test refused to report on its first run (leak detector measured against a binary target, could not have caught a perfect leak) |
 | 52-57 | Intraday frontier (true maker fill, order-flow, OI, lead-lag, ratio, POC) | 5 run ALL CLOSED; H54 data-blocked | H52 killed 0.69 vs 0.70 bar (near-miss stays closed); H53 contrarian SIGNAL 1.9bp + H57 bounce SIGNAL 2.8bp both SUB-TOLL; H55/H56 noise. Intraday family CLOSED absent new data dimension |
 
@@ -127,6 +128,35 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
    the eval bars because its variance lands on post-crash days that
    trip the 3% daily rule. Eval-fit and own-capital-fit are different
    objectives; H41's book is archived for the own-capital stage.
+
+## DSR re-check at 125 trials (2026-08-11, scripts/dsr_recheck.py)
+
+Correction candidate 7 CLOSED. Reproduce-first guard passed on both books
+before any recomputation was reported:
+
+| Book | Published | Reproduced | DSR @ 125 | Bar 0.95 |
+|---|---|---|---|---|
+| rotation-stop (deployed) | 0.992 @104 | 0.9921 (drift 0.0001) | **0.9909** | CLEARS |
+| rotation | 0.990 @65 | 0.9905 (drift 0.0005) | **0.9881** | CLEARS |
+
+Growing the ledger 104 -> 125 cost rotation-stop only **−0.0011**. The
+benchmark `expected_max_sharpe` scales as sqrt(2 ln N) x sd, and the trial
+Sharpe variance is tiny (0.000183), so the hurdle barely moves. Practical
+lesson: **the DSR bar is far less sensitive to ledger growth than feared** —
+the earlier worry that new trials would retroactively disqualify the
+deployed book was wrong, and worth recording as wrong.
+
+The two reproduction defects that the earlier provisional attempt hit, both
+now fixed: rotation-stop deflates the candidate over the CANDIDATE-CHAMPION
+common window with variance over exactly two pp-Sharpes and
+`fill_null(0.0)`; rotation deflates its WALK-FORWARD OOS stream with
+variance over the GRID sliced to OOS start, and passes `n_obs=oos.height`
+while the return series is one shorter — an off-by-one REPRODUCED on
+purpose, because the published number is a function of it.
+
+NOT re-checked: H41 (0.995@104) and H43a (1.000@107), archived own-capital
+books, not deployed. Claiming a re-check that was not run would be worse
+than the gap.
 
 ## Validated/deployed specs (exact)
 

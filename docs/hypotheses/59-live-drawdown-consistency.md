@@ -1,6 +1,8 @@
 # Hypothesis 59 — Is the live paper drawdown consistent with the backtest?
 
-Status: **PRE-REGISTERED, NOT RUN.** Committed before the window is examined.
+Status: **RUN 2026-08-11 — verdict at the bottom.** The design and bars
+above were committed before the window was examined; git history is the
+proof, not this line.
 
 This document exists because of the guardrail in PROJECT_STATE: the paper
 drawdown of 2026-07-12..present is exactly the kind of material that invites
@@ -149,3 +151,83 @@ reported as what it is.
    about this month, not about the strategy in general.
 4. **No spec changes off this result**, whatever it says. See the ledger
    boundary above.
+
+---
+
+## VERDICT — 2026-08-11, `scripts/h59_drawdown_consistency.py`
+
+**Cell 1 (the deployed spec): INCONSISTENT. The divergence hunt is open.**
+
+| Cell | Live | p (overlapping) | p (bootstrap) | Verdict |
+|---|---|---|---|---|
+| 1 rotation-stop (deployed) | −13.06% / 29d | 0.0060 | 0.0081 | **INCONSISTENT** |
+| 2 rotation | −15.90% / 30d | 0.0032 | 0.0060 | **INCONSISTENT** |
+| 3 vol-target (control) | +0.17% / 31d | 0.6387 | 0.4895 | CONSISTENT |
+
+**The control passed**, so the run is not void: a method that flags a flat
+account would be measuring itself, and this one does not. Both reference
+distributions agree on every cell, so no disagreement clause is triggered
+and the p-values are quotable.
+
+Read plainly: **the deployed strategy's first out-of-sample month is worse
+than roughly 99.2% of comparable windows in its own backtest.**
+
+### What makes this stronger than it looks
+
+The registration pre-committed the reason: the null here is the same
+backtest that *selected* this strategy, so it is optimistic by construction.
+An optimistic null makes INCONSISTENT **harder** to reach. Reaching it
+anyway is the informative direction.
+
+### What makes it weaker than it looks — three things, all load-bearing
+
+1. **Cells 1 and 2 are not two confirmations.** The ledger records
+   rotation-stop × rotation correlation at **0.821**. They are one event
+   observed twice. Treating them as independent evidence would be exactly
+   the error meta-finding 5 was written about.
+2. **−13.06% is not unprecedented, only rare.** The worst 29-day window in
+   the backtest is **−17.53%**, materially worse than the live month. The
+   claim is about frequency, not about a magnitude the strategy never
+   produced.
+3. **n = 1 window.** This says the first month was a bad draw at the ~0.8%
+   level. It does not establish that the strategy is broken, and nothing
+   here licenses that word.
+
+### The descriptive context could NOT be computed — an operational finding
+
+The registration required reporting what the market did over the same
+window, on the grounds that a long-only momentum book falling in a falling
+market is the least surprising outcome in finance.
+
+**That could not be done.** The research lake ends **2026-07-09**; the paper
+record starts **2026-07-10**. There is *zero overlap*. Verified directly, not
+inferred from a failed filter.
+
+Two consequences, and the second matters more:
+
+* The verdict above stands on its own terms — the comparison is live record
+  versus backtest distribution, and needs no market data. But the single
+  most obvious alternative explanation ("the whole market fell") is
+  **currently untestable**, so it is neither supported nor excluded.
+* **The research lake has not been updated in over a month.** No research in
+  this repository can currently examine the live paper period at all. That
+  is an operational gap, not a research result, and it blocks the first step
+  of the divergence hunt this verdict just opened.
+
+One incidental benefit: the backtest streams end 2026-07-05 and the live
+record starts 2026-07-12, so the two are cleanly non-overlapping. The null
+contains no part of the period being tested.
+
+### What happens next — and what explicitly does not
+
+The pre-registered action is a divergence hunt: costs, fills, universe
+composition, and whether the backtest window contained the regime the live
+period is in. Its first step is refreshing the lake, because without it the
+market-context question cannot be asked.
+
+**No spec change follows from this document.** That boundary was registered
+before the test ran and is not renegotiated by the result. Any change to a
+deployed spec is a new strategy: its own registration, its own ledger cost,
+the event-driven engine, and the standing incremental bar.
+
+**Ledger: +0, total remains 125**, as registered.
