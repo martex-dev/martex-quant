@@ -12,6 +12,7 @@ import polars as pl
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
 from trading_bot.stats.bootstrap import daily_mean_ci
+from trading_bot.stats.significance import ci_above_zero
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 LOOKBACKS = [30, 90]
@@ -69,7 +70,7 @@ def main() -> None:
             top = [f for _, f in scored[-TOP_K:]]
             spreads.append(sum(top) / TOP_K - sum(bottom) / TOP_K)
         point, lo, hi = bootstrap_mean(spreads)
-        ok = lo > 0.0
+        ok = ci_above_zero(lo)
         passes += ok
         points.append(point)
         print(

@@ -26,6 +26,7 @@ from trading_bot.features.panel import (
     vol_excl_current,
 )
 from trading_bot.stats.bootstrap import daily_mean_ci, two_group_diff_ci
+from trading_bot.stats.significance import ci_above_zero, ci_excludes_zero
 
 LEGACY8 = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 BLOCK_DAYS = 30
@@ -66,7 +67,7 @@ def diff_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float]:
 def report(name: str, panel: pl.DataFrame, seed: int) -> bool:
     n_a = panel["a"].drop_nulls().len()
     point, lo, hi = diff_ci(panel, seed)
-    sig = lo > 0 or hi < 0
+    sig = ci_excludes_zero(lo, hi)
     print(
         f"  {name:<52} n={n_a:>6}  diff {point:+.2%}  CI [{lo:+.2%}, {hi:+.2%}]  "
         f"{'SIGNAL' if sig else 'noise'}"
@@ -160,7 +161,7 @@ def main() -> None:
             drop_nulls_on=None,
         )
         point, lo, hi = mean_ci(spreads, seed)
-        sig = lo > 0
+        sig = ci_above_zero(lo)
         print(
             f"  {name:<52} n={len(spreads):>6}  spread {point:+.3%}  "
             f"CI [{lo:+.3%}, {hi:+.3%}]  {'SIGNAL' if sig else 'noise'}"

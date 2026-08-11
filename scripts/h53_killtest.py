@@ -15,6 +15,7 @@ import polars as pl
 
 from trading_bot.features.panel import forward_return
 from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
+from trading_bot.stats.significance import ci_excludes_zero
 
 SYMBOLS = [
     "BTCUSDT",
@@ -78,7 +79,7 @@ def main() -> None:
         )
     panel = pl.concat(parts)
     point, lo, hi, n = event_mean_ci(panel, 5310)
-    sig = lo > 0 or hi < 0
+    sig = ci_excludes_zero(lo, hi)
     print(
         f"H53 aggressor imbalance |z|>2 -> next 1h signed: n={n}  {point:+.4%}  "
         f"CI [{lo:+.4%}, {hi:+.4%}]  {'SIGNAL' if sig else 'noise'} "

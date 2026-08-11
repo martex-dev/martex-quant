@@ -19,6 +19,7 @@ from trading_bot.features.panel import (
     vol_excl_current,
 )
 from trading_bot.stats.bootstrap import event_mean_ci, two_group_diff_ci
+from trading_bot.stats.significance import ci_above_zero, ci_excludes_zero
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 BLOCK_DAYS = 30
@@ -101,7 +102,7 @@ def h13(panel: pl.DataFrame) -> None:
         )
         n_a = p["a"].drop_nulls().len()
         point, lo, hi = diff_ci(p, "a", "b", seed=13 + i)
-        sig = lo > 0 or hi < 0
+        sig = ci_excludes_zero(lo, hi)
         passes += sig
         print(
             f"  {name:<22} n={n_a:>5}  diff {point:+.2%}  CI [{lo:+.2%}, {hi:+.2%}]  "
@@ -137,7 +138,7 @@ def h14(panel: pl.DataFrame) -> None:
         nan_below=BLOCK_DAYS,
     )
     point, lo1, hi1 = ci.point, ci.low, ci.high
-    bar1 = lo1 > 0
+    bar1 = ci_above_zero(lo1)
     print(
         f"  compression+trigger days: {signal.height}  directional fwd7 {point:+.2%}  "
         f"CI [{lo1:+.2%}, {hi1:+.2%}]  {'PASS' if bar1 else 'fail'}"
@@ -149,7 +150,7 @@ def h14(panel: pl.DataFrame) -> None:
         b=pl.when(trigger & ~compressed).then(pl.col("dir_fwd7")),
     )
     point2, lo2, hi2 = diff_ci(p, "a", "b", seed=141)
-    bar2 = lo2 > 0
+    bar2 = ci_above_zero(lo2)
     print(
         f"  increment vs trigger-without-compression: {point2:+.2%}  "
         f"CI [{lo2:+.2%}, {hi2:+.2%}]  {'PASS' if bar2 else 'fail'}"

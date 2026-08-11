@@ -24,6 +24,7 @@ from trading_bot.features.panel import (
     vol_excl_current,
 )
 from trading_bot.stats.bootstrap import daily_mean_ci, two_group_diff_ci
+from trading_bot.stats.significance import ci_above_zero
 from trading_bot.strategies.event import CrashBounce
 
 LEGACY8 = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
@@ -100,7 +101,7 @@ def h22(store: ParquetStore) -> None:
     print(f"  {curve.height} days, {len(event_returns)} held days, {len(result.fills)} fills")
     print(f"  mean net held-day return {point:+.3%}  CI [{lo:+.3%}, {hi:+.3%}]")
     print(f"  annualized net {ann:+.2%}/yr  Sharpe {m.sharpe:.2f}  MDD {m.max_drawdown_pct:.1f}%")
-    bar1 = lo > 0
+    bar1 = ci_above_zero(lo)
     bar2 = ann >= 0.03
     print(
         f"  bar1 (CI>0) {'PASS' if bar1 else 'fail'}; bar2 (ann>=3%) "

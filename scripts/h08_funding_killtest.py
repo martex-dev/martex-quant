@@ -22,6 +22,7 @@ from trading_bot.features.panel import (
     trailing_percentile_rank,
 )
 from trading_bot.stats.bootstrap import two_group_diff_ci
+from trading_bot.stats.significance import ci_above_zero
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 FUNDING_DIR = Path("data/funding")
@@ -158,7 +159,7 @@ def main() -> None:
         point, lo, hi = pooled_diff_ci(panel.drop_nulls(col), h)
         marker = " <- PRIMARY" if h == 7 else ""
         if h == 7:
-            primary_pass = lo > 0.0
+            primary_pass = ci_above_zero(lo)
         print(
             f"{h:>7}d {low[col].mean():>10.2%} {mid[col].mean():>10.2%} "
             f"{high[col].mean():>11.2%} {point:>8.2%} "

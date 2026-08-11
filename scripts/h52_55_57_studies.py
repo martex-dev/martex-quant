@@ -18,6 +18,7 @@ from trading_bot.data.models import Interval
 from trading_bot.features.intraday import load_15m_bars
 from trading_bot.features.panel import forward_return, relative_forward_return_ratio
 from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
+from trading_bot.stats.significance import ci_excludes_zero
 
 SYMBOLS = [
     "BTCUSDT",
@@ -61,7 +62,7 @@ def event_mean_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float, 
 
 
 def show(name: str, point: float, lo: float, hi: float, n: int, claim: str) -> None:
-    sig = lo > 0 or hi < 0
+    sig = ci_excludes_zero(lo, hi)
     print(
         f"  {name:<52} n={n:>6}  {point:+.4%}  CI [{lo:+.4%}, {hi:+.4%}]  "
         f"{'SIGNAL' if sig else 'noise'}  ({claim})"
