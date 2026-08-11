@@ -1,0 +1,20 @@
+candidate OOS daily returns: 1710 days, mean +0.037%/d, ann.vol 20.1%
+
+=== GENERIC-A 50k: target +6%, trailing 4% (EOD), daily 2%, max days None, fee $170 ===
+  GENERIC-A 50k @ scale 0.10: pass 6.6% (95% CI 6.2%-6.9%), bust 4.2%, timeout 89.3%, median days to pass: 279
+  GENERIC-A 50k @ scale 0.25: pass 38.5% (95% CI 37.8%-39.2%), bust 53.5%, timeout 8.0%, median days to pass: 154
+  GENERIC-A 50k @ scale 0.50: pass 35.7% (95% CI 35.0%-36.3%), bust 64.3%, timeout 0.0%, median days to pass: 49
+  GENERIC-A 50k @ scale 1.00: pass 28.7% (95% CI 28.1%-29.3%), bust 71.3%, timeout 0.0%, median days to pass: 15
+  GENERIC-A 50k @ scale 2.00: pass 27.0% (95% CI 26.4%-27.6%), bust 73.0%, timeout 0.0%, median days to pass: 5
+  best scale 0.25: pass 38.5% (CI 37.8%-39.2%)
+  EV per attempt at assumed funded value $2,000->EV $+600, $5,000->EV $+1,756, $10,000->EV $+3,682
+
+=== GENERIC-B 50k (strict): target +8%, trailing 3% (EOD), daily 2%, max days 90, fee $100 ===
+  GENERIC-B 50k (strict) @ scale 0.10: pass 0.0% (95% CI 0.0%-0.0%), bust 0.1%, timeout 99.9%, median days to pass: n/a
+  GENERIC-B 50k (strict) @ scale 0.25: pass 3.9% (95% CI 3.6%-4.1%), bust 30.2%, timeout 66.0%, median days to pass: 65
+  GENERIC-B 50k (strict) @ scale 0.50: pass 16.0% (95% CI 15.5%-16.6%), bust 76.0%, timeout 8.0%, median days to pass: 43
+  GENERIC-B 50k (strict) @ scale 1.00: pass 17.9% (95% CI 17.4%-18.4%), bust 82.1%, timeout 0.0%, median days to pass: 15
+  GENERIC-B 50k (strict) @ scale 2.00: pass 20.7% (95% CI 20.1%-21.3%), bust 79.3%, timeout 0.0%, median days to pass: 6
+  best scale 2.00: pass 20.7% (CI 20.1%-21.3%)
+  EV per attempt at assumed funded value $2,000->EV $+314, $5,000->EV $+935, $10,000->EV $+1,970
+

@@ -8,15 +8,25 @@ Pre-registered in docs/hypotheses/33-40-timeseries-batch.md.
 from __future__ import annotations
 
 import json
-import random
 import statistics
 from itertools import combinations
 from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.features.panel import (
+    align_day_to_cache_precision,
+    forward_return,
+    momentum,
+    relative_forward_return_ratio,
+    rolling_max_close,
+    rolling_mean_of,
+    true_range,
+)
+from trading_bot.features.panel import daily_panel as canonical_daily_panel
+from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
+from trading_bot.stats.bootstrap import two_group_diff_ci
 
 LEGACY8 = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 PERP_DIR = Path("data/perp")
@@ -41,33 +51,19 @@ def diff_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float]:
         .sort("day")
         .fill_null(0.0)
     )
-    arrays = [by_day[c].to_list() for c in ("a_sum", "a_n", "b_sum", "b_n")]
-    n = by_day.height
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + float(x))
-        return out
-
-    pa, pan, pb, pbn = (prefix(x) for x in arrays)
-    point = pa[n] / max(pan[n], 1.0) - pb[n] / max(pbn[n], 1.0)
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    diffs = []
-    for _ in range(N_BOOT):
-        sa = na = sb = nb = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            e = s + BLOCK_DAYS
-            sa += pa[e] - pa[s]
-            na += pan[e] - pan[s]
-            sb += pb[e] - pb[s]
-            nb += pbn[e] - pbn[s]
-        if na > 0 and nb > 0:
-            diffs.append(sa / na - sb / nb)
-    diffs.sort()
-    return point, diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs))]
+    a_sum, a_n, b_sum, b_n = (by_day[c].to_list() for c in ("a_sum", "a_n", "b_sum", "b_n"))
+    ci = two_group_diff_ci(
+        a_sum,
+        a_n,
+        b_sum,
+        b_n,
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        empty_denominator="guard",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
 
 def report(name: str, panel: pl.DataFrame, seed: int) -> bool:
@@ -82,73 +78,53 @@ def report(name: str, panel: pl.DataFrame, seed: int) -> bool:
 
 
 def event_mean_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float]:
-    """Mean of an event-day value column with block bootstrap over calendar days."""
+    """Count-weighted mean of an event-day value column.
+
+    Unlike h44_50's copy this one does NOT clamp the block start, and it
+    counts non-nulls explicitly rather than via ``count()``. Both are kept
+    as this call site's history.
+    """
     by_day = (
         panel.group_by("day")
         .agg(v_sum=pl.col("v").sum(), v_n=pl.col("v").is_not_null().sum())
         .sort("day")
         .fill_null(0.0)
     )
-    sums = by_day["v_sum"].to_list()
-    counts = by_day["v_n"].to_list()
-    n = by_day.height
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + float(x))
-        return out
-
-    ps, pn = prefix(sums), prefix(counts)
-    point = ps[n] / max(pn[n], 1.0)
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    means = []
-    for _ in range(N_BOOT):
-        total = cnt = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            e = s + BLOCK_DAYS
-            total += ps[e] - ps[s]
-            cnt += pn[e] - pn[s]
-        if cnt > 0:
-            means.append(total / cnt)
-    means.sort()
-    return point, means[int(0.025 * len(means))], means[int(0.975 * len(means))]
+    ci = _event_mean_ci(
+        by_day["v_sum"].to_list(),
+        by_day["v_n"].to_list(),
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        accumulation="prefix_delta",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
 
 # --- panel -------------------------------------------------------------------------
 
 
 def daily_panel(store: ParquetStore, symbols: list[str]) -> pl.DataFrame:
-    parts = []
-    for symbol in symbols:
-        try:
-            df = store.read(symbol, Interval.D1).sort("timestamp")
-        except FileNotFoundError:
-            continue
-        df = df.select(
-            pl.col("timestamp").alias("day"),
-            "close",
-            "high",
-            "low",
-            (pl.col("close") / pl.col("close").shift(1) - 1.0).alias("ret"),
-        ).with_columns(
-            r30=pl.col("close") / pl.col("close").shift(30) - 1.0,
-            r90=pl.col("close") / pl.col("close").shift(90) - 1.0,
-            r180=pl.col("close") / pl.col("close").shift(180) - 1.0,
-            hi30=pl.col("close").rolling_max(30),
-            tr=pl.max_horizontal(
-                pl.col("high") - pl.col("low"),
-                (pl.col("high") - pl.col("close").shift(1)).abs(),
-                (pl.col("low") - pl.col("close").shift(1)).abs(),
-            ),
-            fwd7=pl.col("close").shift(-7) / pl.col("close") - 1.0,
-            fwd30=pl.col("close").shift(-30) / pl.col("close") - 1.0,
-        )
-        df = df.with_columns(atr14=pl.col("tr").rolling_mean(14))
-        parts.append(df.with_columns(pl.lit(symbol).alias("symbol")))
-    return pl.concat(parts)
+    """Two stages: atr14 reads the tr column the first stage produces."""
+    return canonical_daily_panel(
+        store,
+        symbols,
+        base_columns=("close", "high", "low", "ret"),
+        feature_stages=[
+            [
+                momentum(30),
+                momentum(90),
+                momentum(180),
+                rolling_max_close(30, name="hi30"),
+                true_range(),
+                forward_return(7),
+                forward_return(30),
+            ],
+            [rolling_mean_of("tr", 14, name="atr14")],
+        ],
+        on_missing_symbol="skip",
+    )
 
 
 def main() -> None:
@@ -180,10 +156,8 @@ def main() -> None:
         cache = PERP_DIR / f"{symbol}.parquet"
         if not cache.exists():
             continue
-        perp = pl.read_parquet(cache).with_columns(pl.col("day").cast(pl.Datetime("us", "UTC")))
-        spot = wide.filter(pl.col("symbol") == symbol).with_columns(
-            pl.col("day").cast(pl.Datetime("us", "UTC"))
-        )
+        perp = align_day_to_cache_precision(pl.read_parquet(cache))
+        spot = align_day_to_cache_precision(wide.filter(pl.col("symbol") == symbol))
         df = (
             perp.join(spot, on="day", how="inner")
             .sort("day")
@@ -209,11 +183,14 @@ def main() -> None:
             .sort("day")
             .with_columns(lr=(pl.col("close") / pl.col("close_b")).log())
         )
+        # RATIO of forward returns — what the pairs trade earns. Distinct from
+        # the difference form used by v2_m1; the two are not interchangeable.
+        fwd_ratio = relative_forward_return_ratio(
+            7, numerator="close", denominator="close_b", name="fwd_ratio"
+        )
         df = df.with_columns(
             z=(pl.col("lr") - pl.col("lr").rolling_mean(90)) / pl.col("lr").rolling_std(90),
-            fwd_ratio=(pl.col("close").shift(-7) / pl.col("close"))
-            / (pl.col("close_b").shift(-7) / pl.col("close_b"))
-            - 1.0,
+            **{fwd_ratio.name: fwd_ratio.expr},
         ).drop_nulls(["z", "fwd_ratio"])
         events = df.filter(pl.col("z").abs() >= 1.5).with_columns(
             v=pl.when(pl.col("z") > 0).then(-pl.col("fwd_ratio")).otherwise(pl.col("fwd_ratio"))

@@ -1,0 +1,16 @@
+maker toll context: ~0.04% per round trip
+
+=== H44 opening-range breakout (signed to day close) ===
+  ORB break in h1-5 -> day close                       n= 19739  -0.1625%  CI [-0.2914%, -0.0377%]  SIGNAL  (PASS if CI>0)
+=== H45 first-hour momentum ===
+  sign(00-01h) x rest-of-day                           n= 21111  -0.2010%  CI [-0.3398%, -0.0526%]  SIGNAL  (PASS if CI>0)
+=== H46 US-open session momentum ===
+  sign(13:30-16:00) x 16:00-24:00                      n= 21158  +0.0349%  CI [-0.0456%, +0.1218%]  noise  (PASS if CI>0)
+=== H47 funding-window drift (7 majors, two-sided) ===
+  30m after stamp: funding>=90th pct vs rest           n=  5914  +0.0403%  CI [-0.0030%, +0.0850%]  noise  (two-sided)
+=== H48 previous-day high/low break before 12:00 ===
+  signed break -> day close                            n= 11161  -0.0866%  CI [-0.2387%, +0.0589%]  noise  (PASS if CI>0)
+=== H49 vol-burst continuation (two-sided) ===
+  |ret|>4 sigma -> next 2h signed                      n= 14112  -0.0069%  CI [-0.0837%, +0.0778%]  noise  (cont>0 / reversion<0)
+=== H50 VWAP stretch (reversion-signed, two-sided) ===
+  |stretch|>2 sigma -> next 2h reversion               n=250454  +0.0109%  CI [-0.0142%, +0.0320%]  noise  (reversion>0 / cont<0)

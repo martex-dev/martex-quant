@@ -1,0 +1,19 @@
+financing assumption: 0.050%/day on borrowed notional (~18%/yr); daily-rebalanced leverage; ruin = 90% drawdown
+
+=== 43a own-capital book (rotation-stop + bounce) (2880d, 7.9y) ===
+ lev      CAGR     MDD  ruined  mean 30d  30d>=+20%  30d<=-20%  worst 30d
+ 1.0     +79%    -38%      no     +5.7%        11%         0%       -20%
+ 1.5    +104%    -54%      no     +7.8%        20%         3%       -30%
+ 2.0    +122%    -69%      no    +10.0%        28%        10%       -39%
+ 3.0    +127%    -88%      no    +14.6%        35%        20%       -56%
+ 4.0         —   -90%+  RUINED  (account effectively dead)
+ 5.0         —   -90%+  RUINED  (account effectively dead)
+
+=== rotation-stop alone (2880d, 7.9y) ===
+ lev      CAGR     MDD  ruined  mean 30d  30d>=+20%  30d<=-20%  worst 30d
+ 1.0     +43%    -29%      no     +3.3%         5%         0%       -17%
+ 1.5     +52%    -44%      no     +4.4%        13%         1%       -26%
+ 2.0     +59%    -56%      no     +5.4%        19%         2%       -33%
+ 3.0     +65%    -78%      no     +7.8%        25%        11%       -47%
+ 4.0         —   -90%+  RUINED  (account effectively dead)
+ 5.0         —   -90%+  RUINED  (account effectively dead)

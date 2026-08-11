@@ -1,0 +1,18 @@
+panel: 17899 symbol-days, 2019-12-07 .. 2026-07-02; median |basis| 0.0514%
+
+ horizon  E[fwd|LOW]  E[fwd|HIGH]  LOW-HIGH               95% CI
+      1d      0.37%       0.36%    0.01%     [-0.37%, +0.42%]
+      7d      1.59%       4.20%   -2.61%     [-4.88%, -0.12%] <- PRIMARY
+     30d      6.14%      14.80%   -8.66%    [-17.95%, -0.02%]
+
+per-symbol LOW-minus-HIGH at 7d (need >=5/8 positive):
+  BTCUSDT   +0.10%
+  ETHUSDT   -0.55%
+  BNBUSDT   +0.49%
+  SOLUSDT   -5.69%
+  XRPUSDT   -7.50%
+  ADAUSDT   -4.52%
+  DOGEUSDT  -2.67%
+  LTCUSDT   -1.27%
+
+VERDICT: CI>0 NO; consistency 2/8 -> H10 FAILS

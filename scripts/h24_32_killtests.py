@@ -8,13 +8,26 @@ Pre-registered in docs/hypotheses/24-32-ranking-batch.md.
 from __future__ import annotations
 
 import json
-import random
 from pathlib import Path
 
 import polars as pl
 
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.features.cross_section import ranking_spread_series
+from trading_bot.features.panel import (
+    amihud_illiquidity,
+    forward_return,
+    momentum,
+    momentum_skip,
+    rolling_max_close,
+    rolling_max_return,
+    up_day_share,
+    vol_incl_current,
+    volume_shock,
+)
+from trading_bot.features.panel import daily_panel as canonical_daily_panel
+from trading_bot.stats.bootstrap import daily_mean_ci
 
 BLOCK_DAYS = 30
 N_BOOT = 5_000
@@ -22,34 +35,41 @@ MIN_COINS = 10
 
 
 def mean_ci(values: list[float], seed: int) -> tuple[float, float, float]:
-    """Block-bootstrap CI for the mean of a daily series (H15-21 machinery)."""
-    n = len(values)
+    """Unweighted block-bootstrap CI for the mean of a daily series
+    (one top2-minus-bottom2 spread per day)."""
+    ci = daily_mean_ci(
+        values,
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        accumulation="prefix_delta",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + x)
-        return out
 
-    p = prefix(values)
-    point = p[n] / n
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    means = []
-    for _ in range(N_BOOT):
-        total = 0.0
-        cnt = 0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            total += p[s + BLOCK_DAYS] - p[s]
-            cnt += BLOCK_DAYS
-        means.append(total / cnt)
-    means.sort()
-    return point, means[int(0.025 * len(means))], means[int(0.975 * len(means))]
+def _residual_momentum(df: pl.DataFrame, btc: pl.DataFrame) -> pl.DataFrame:
+    """Cross-symbol stage: join BTC's return, then beta and residual momentum.
+
+    A left join plus four dependent with_columns calls — not a per-symbol
+    expression, so it stays here as a hook rather than becoming a Feature.
+    """
+    df = df.join(btc, on="day", how="left")
+    # residual momentum: beta from trailing 90d cov/var, all data <= t
+    df = df.with_columns(
+        cov90=(pl.col("ret") * pl.col("btc_ret")).rolling_mean(90)
+        - pl.col("ret").rolling_mean(90) * pl.col("btc_ret").rolling_mean(90),
+        bvar90=(pl.col("btc_ret") ** 2).rolling_mean(90) - pl.col("btc_ret").rolling_mean(90) ** 2,
+    ).with_columns(beta=pl.col("cov90") / pl.col("bvar90"))
+    return df.with_columns(
+        resmom90=(pl.col("ret") - pl.col("beta") * pl.col("btc_ret")).rolling_sum(90)
+    ).with_columns(
+        hi52=pl.col("close") / pl.col("max365"),
+        riskadj=pl.col("r90") / pl.col("vol90"),
+    )
 
 
 def daily_panel(store: ParquetStore, symbols: list[str]) -> pl.DataFrame:
-    parts = []
     btc = (
         store.read("BTCUSDT", Interval.D1)
         .sort("timestamp")
@@ -58,44 +78,30 @@ def daily_panel(store: ParquetStore, symbols: list[str]) -> pl.DataFrame:
             (pl.col("close") / pl.col("close").shift(1) - 1.0).alias("btc_ret"),
         )
     )
-    for symbol in symbols:
-        try:
-            df = store.read(symbol, Interval.D1).sort("timestamp")
-        except FileNotFoundError:
-            continue
-        df = df.select(
-            pl.col("timestamp").alias("day"),
-            "close",
-            "volume",
-            (pl.col("close") / pl.col("close").shift(1) - 1.0).alias("ret"),
-        ).with_columns(
-            r30=pl.col("close") / pl.col("close").shift(30) - 1.0,
-            r90=pl.col("close") / pl.col("close").shift(90) - 1.0,
-            r90skip7=pl.col("close").shift(7) / pl.col("close").shift(90) - 1.0,
-            vol90=pl.col("ret").rolling_std(90),
-            max365=pl.col("close").rolling_max(365),
-            maxret30=pl.col("ret").rolling_max(30),
-            illiq30=(pl.col("ret").abs() / (pl.col("close") * pl.col("volume"))).rolling_mean(30),
-            vshock=pl.col("volume") / pl.col("volume").rolling_mean(30),
-            upshare90=(pl.col("ret") > 0).cast(pl.Float64).rolling_mean(90),
-            fwd7=pl.col("close").shift(-7) / pl.col("close") - 1.0,
-        )
-        df = df.join(btc, on="day", how="left")
-        # residual momentum: beta from trailing 90d cov/var, all data <= t
-        df = df.with_columns(
-            cov90=(pl.col("ret") * pl.col("btc_ret")).rolling_mean(90)
-            - pl.col("ret").rolling_mean(90) * pl.col("btc_ret").rolling_mean(90),
-            bvar90=(pl.col("btc_ret") ** 2).rolling_mean(90)
-            - pl.col("btc_ret").rolling_mean(90) ** 2,
-        ).with_columns(beta=pl.col("cov90") / pl.col("bvar90"))
-        df = df.with_columns(
-            resmom90=(pl.col("ret") - pl.col("beta") * pl.col("btc_ret")).rolling_sum(90)
-        ).with_columns(
-            hi52=pl.col("close") / pl.col("max365"),
-            riskadj=pl.col("r90") / pl.col("vol90"),
-        )
-        parts.append(df.with_columns(pl.lit(symbol).alias("symbol")))
-    return pl.concat(parts)
+    return canonical_daily_panel(
+        store,
+        symbols,
+        base_columns=("close", "volume", "ret"),
+        feature_stages=[
+            [
+                momentum(30),
+                momentum(90),
+                momentum_skip(90, 7),
+                # INCLUDING the current bar — this script's convention, and
+                # the only one in the corpus that does so. riskadj (H24) and
+                # the low-vol ranking (H27) both depend on it.
+                vol_incl_current(90, name="vol90"),
+                rolling_max_close(365, name="max365"),
+                rolling_max_return(30, name="maxret30"),
+                amihud_illiquidity(30, name="illiq30"),
+                volume_shock(30, name="vshock"),
+                up_day_share(90, name="upshare90"),
+                forward_return(7),
+            ],
+        ],
+        on_missing_symbol="skip",
+        per_symbol_hook=lambda df: _residual_momentum(df, btc),
+    )
 
 
 def ranking_spread(
@@ -106,19 +112,20 @@ def ranking_spread(
     gate: pl.Expr | None = None,
     min_coins: int = MIN_COINS,
 ) -> tuple[float, float, float, int]:
-    """Top-2-minus-bottom-2 fwd7 spread of a daily ranking, block-bootstrap CI."""
-    p = panel.drop_nulls([col, "fwd7"])
-    if gate is not None:
-        p = p.filter(gate)
-    spreads = []
-    for _, grp in p.group_by("day", maintain_order=True):
-        if grp.height < min_coins:
-            continue
-        g = grp.sort(col)
-        bot = g.head(2)["fwd7"].mean()
-        top = g.tail(2)["fwd7"].mean()
-        if top is not None and bot is not None:
-            spreads.append(top - bot)
+    """Top-2-minus-bottom-2 fwd7 spread of a daily ranking, block-bootstrap CI.
+
+    Nulls are dropped INSIDE, before the min-symbols gate — this script's
+    placement, which can drop a whole thin day rather than just a row.
+    """
+    spreads = ranking_spread_series(
+        panel,
+        col,
+        outcome_column="fwd7",
+        k=2,
+        min_symbols=min_coins,
+        gate=gate,
+        drop_nulls_on=(col, "fwd7"),
+    )
     point, lo, hi = mean_ci(spreads, seed)
     return point, lo, hi, len(spreads)
 

@@ -1,0 +1,34 @@
+universe: 40 symbols; legacy 8 loaded
+
+=== FU-B1: multi-horizon blend vs V1 (identical protocol) ===
+  (cached: v1_stream)
+  (cached: blend_stream)
+  V1 (deployed)            1710d  Sharpe 0.53  CAGR +7.5%  MDD -25.1%  prop@1.5x 27.9% (median 28d)
+  blend-V1                 1710d  Sharpe 0.60  CAGR +8.6%  MDD -22.0%  prop@1.5x 28.0% (median 31d)
+  blend DSR(104): 0.857
+  FU-B1 VERDICT: bar1 Sharpe>0.53 PASS; bar2 prop@1.5x>50.0% fail -> KILLED
+
+=== H42a: V1 + stop vs V1 (identical protocol) ===
+  (cached: v1_stop_stream)
+  V1 (deployed)            1710d  Sharpe 0.53  CAGR +7.5%  MDD -25.1%  prop@1.5x 27.9% (median 28d)
+  V1 + stop                1710d  Sharpe 0.84  CAGR +9.1%  MDD -13.3%  prop@1.5x 31.1% (median 53d)
+  V1+stop DSR(104): 0.744
+  H42a VERDICT: bar1 Sharpe PASS; bar2 prop@1.5x PASS -> CANDIDATE
+
+=== champion rotation stream (wide, walk-forward) ===
+  (cached: rot_champion_stream)
+  rotation (champion)      2880d  Sharpe 1.10  CAGR +31.2%  MDD -58.0%  prop@0.5x 62.8% (median 101d)
+
+=== H42b: rotation + stop vs champion ===
+  (cached: rot_stop_stream)
+  rotation (common win)    2880d  Sharpe 1.10  CAGR +31.2%  MDD -58.0%  prop@0.5x 62.8% (median 101d)
+  rotation + stop          2880d  Sharpe 1.47  CAGR +42.9%  MDD -29.0%  prop@0.5x 73.0% (median 106d)
+  rotation+stop DSR(104): 0.992
+  H42b VERDICT: bar1 Sharpe PASS; bar2 prop@0.5x PASS -> CANDIDATE
+
+=== H41: rotation + crash-bounce combined book ===
+  bounce days in OOS window: 317; mean idle cash deployed 77%; corr(rotation, overlay) 0.188
+  rotation alone           2880d  Sharpe 1.10  CAGR +31.2%  MDD -58.0%  prop@0.5x 62.8% (median 101d)
+  combined book            2880d  Sharpe 1.36  CAGR +66.2%  MDD -55.3%  prop@0.5x 45.3% (median 46d)
+  combined DSR(104): 0.995
+  H41 VERDICT: bar1 Sharpe PASS; bar2 prop@0.5x fail; bar3 MDD within 5pts PASS -> NOT eligible

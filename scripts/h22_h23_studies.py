@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import contextlib
 import json
-import random
 from pathlib import Path
 
 import polars as pl
@@ -16,6 +15,15 @@ from trading_bot.backtesting.metrics import compute_metrics
 from trading_bot.backtesting.multi import MultiBacktestConfig, run_multi_backtest
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.features.panel import (
+    align_day_to_cache_precision,
+    daily_panel,
+    forward_return,
+    momentum,
+    trailing_percentile_rank,
+    vol_excl_current,
+)
+from trading_bot.stats.bootstrap import daily_mean_ci, two_group_diff_ci
 from trading_bot.strategies.event import CrashBounce
 
 LEGACY8 = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
@@ -23,23 +31,23 @@ N_BOOT = 5_000
 
 
 def block_mean_ci(values: list[float], block: int, seed: int) -> tuple[float, float, float]:
-    n = len(values)
-    point = sum(values) / n
-    if n <= block * 2:
-        return point, float("nan"), float("nan")
-    rng = random.Random(seed)
-    n_blocks = n // block + 1
-    means = []
-    for _ in range(N_BOOT):
-        total = 0.0
-        cnt = 0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - block)
-            total += sum(values[s : s + block])
-            cnt += block
-        means.append(total / cnt)
-    means.sort()
-    return point, means[int(0.025 * len(means))], means[int(0.975 * len(means))]
+    """Unweighted daily mean over held-day returns.
+
+    This is the only caller with a 10-day block (H22 events are short) and
+    the only one that returns NaN bounds on a series shorter than two
+    blocks. Slice-summed rather than prefix-delta — preserved for its
+    floating-point ordering.
+    """
+    ci = daily_mean_ci(
+        values,
+        block=block,
+        seed=seed,
+        n_boot=N_BOOT,
+        accumulation="slice_sum",
+        short_series="error",
+        nan_below=block * 2,
+    )
+    return ci.point, ci.low, ci.high
 
 
 def day_diff_ci(panel: pl.DataFrame, seed: int, block: int = 30) -> tuple[float, float, float]:
@@ -54,33 +62,19 @@ def day_diff_ci(panel: pl.DataFrame, seed: int, block: int = 30) -> tuple[float,
         .sort("day")
         .fill_null(0.0)
     )
-    arrays = [by_day[c].to_list() for c in ("a_sum", "a_n", "b_sum", "b_n")]
-    n = by_day.height
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + float(x))
-        return out
-
-    pa, pan, pb, pbn = (prefix(x) for x in arrays)
-    point = pa[n] / max(pan[n], 1.0) - pb[n] / max(pbn[n], 1.0)
-    rng = random.Random(seed)
-    n_blocks = n // block + 1
-    diffs = []
-    for _ in range(N_BOOT):
-        sa = na = sb = nb = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - block)
-            e = s + block
-            sa += pa[e] - pa[s]
-            na += pan[e] - pan[s]
-            sb += pb[e] - pb[s]
-            nb += pbn[e] - pbn[s]
-        if na > 0 and nb > 0:
-            diffs.append(sa / na - sb / nb)
-    diffs.sort()
-    return point, diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs))]
+    a_sum, a_n, b_sum, b_n = (by_day[c].to_list() for c in ("a_sum", "a_n", "b_sum", "b_n"))
+    ci = two_group_diff_ci(
+        a_sum,
+        a_n,
+        b_sum,
+        b_n,
+        block=block,
+        seed=seed,
+        n_boot=N_BOOT,
+        empty_denominator="guard",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
 
 def h22(store: ParquetStore) -> None:
@@ -118,23 +112,16 @@ def h22(store: ParquetStore) -> None:
 def h23(store: ParquetStore) -> None:
     print("=== H23 incremental feature tests ===")
     universe = json.loads(Path("config/universe.json").read_text(encoding="utf-8"))["symbols"]
-    parts = []
-    for symbol in universe:
-        try:
-            df = store.read(symbol, Interval.D1).sort("timestamp")
-        except FileNotFoundError:
-            continue
-        df = df.select(
-            pl.col("timestamp").alias("day"),
-            "close",
-            (pl.col("close") / pl.col("close").shift(1) - 1.0).alias("ret"),
-        ).with_columns(
-            r90=pl.col("close") / pl.col("close").shift(90) - 1.0,
-            vol30=pl.col("ret").shift(1).rolling_std(30),
-            fwd7=pl.col("close").shift(-7) / pl.col("close") - 1.0,
-        )
-        parts.append(df.with_columns(pl.lit(symbol).alias("symbol")))
-    wide = pl.concat(parts).drop_nulls(["r90", "vol30", "fwd7"])
+    wide = daily_panel(
+        store,
+        universe,
+        base_columns=("close", "ret"),
+        feature_stages=[
+            [momentum(90), vol_excl_current(30, name="vol30"), forward_return(7)],
+        ],
+        on_missing_symbol="skip",
+        drop_nulls=("r90", "vol30", "fwd7"),
+    )
 
     # 23a: shocks within momentum-flat subset
     flat = wide.filter(pl.col("r90") <= 0).with_columns(z=pl.col("ret") / pl.col("vol30"))
@@ -159,22 +146,16 @@ def h23(store: ParquetStore) -> None:
             .agg(pl.col("rate").sum().alias("funding"))
             .sort("day")
         )
-        values = fdf["funding"].to_list()
-        pct: list[float | None] = []
-        for i, v in enumerate(values):
-            if i < 90:
-                pct.append(None)
-                continue
-            window = values[i - 90 : i + 1]
-            pct.append(sum(1 for w in window if w <= v) / len(window))
-        fdf = fdf.with_columns(pl.Series("fpct", pct, dtype=pl.Float64)).with_columns(
+        ranks = trailing_percentile_rank(fdf["funding"].to_list(), window=90, skip_nulls=False)
+        fdf = fdf.with_columns(pl.Series("fpct", ranks, dtype=pl.Float64)).with_columns(
             pl.col("day").cast(pl.Datetime("us", "UTC")), pl.lit(symbol).alias("symbol")
         )
         fparts.append(fdf.select("day", "symbol", "fpct"))
     funding = pl.concat(fparts)
     long_days = (
-        wide.filter((pl.col("r90") > 0) & pl.col("symbol").is_in(LEGACY8))
-        .with_columns(pl.col("day").cast(pl.Datetime("us", "UTC")))
+        align_day_to_cache_precision(
+            wide.filter((pl.col("r90") > 0) & pl.col("symbol").is_in(LEGACY8))
+        )
         .join(funding, on=["day", "symbol"], how="inner")
         .drop_nulls(["fpct"])
     )

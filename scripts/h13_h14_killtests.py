@@ -7,13 +7,18 @@ Specs pre-registered in docs/hypotheses/13-*.md and 14-*.md.
 
 from __future__ import annotations
 
-import random
 from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.features.panel import daily_panel as canonical_daily_panel
+from trading_bot.features.panel import (
+    forward_return,
+    trailing_percentile_rank,
+    vol_excl_current,
+)
+from trading_bot.stats.bootstrap import event_mean_ci, two_group_diff_ci
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 BLOCK_DAYS = 30
@@ -36,64 +41,46 @@ def diff_ci(panel: pl.DataFrame, col_a: str, col_b: str, seed: int) -> tuple[flo
         .sort("day")
         .fill_null(0.0)
     )
-    arrays = [by_day[c].to_list() for c in ("a_sum", "a_n", "b_sum", "b_n")]
-    n = by_day.height
+    a_sum, a_n, b_sum, b_n = (by_day[c].to_list() for c in ("a_sum", "a_n", "b_sum", "b_n"))
+    ci = two_group_diff_ci(
+        a_sum,
+        a_n,
+        b_sum,
+        b_n,
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        empty_denominator="guard",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + float(x))
-        return out
 
-    pa, pan, pb, pbn = (prefix(a) for a in arrays)
-    point = pa[n] / max(pan[n], 1.0) - pb[n] / max(pbn[n], 1.0)
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    diffs = []
-    for _ in range(N_BOOT):
-        sa = na = sb = nb = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            e = s + BLOCK_DAYS
-            sa += pa[e] - pa[s]
-            na += pan[e] - pan[s]
-            sb += pb[e] - pb[s]
-            nb += pbn[e] - pbn[s]
-        if na > 0 and nb > 0:
-            diffs.append(sa / na - sb / nb)
-    diffs.sort()
-    return point, diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs))]
+def _vol10_percentile(df: pl.DataFrame) -> pl.DataFrame:
+    """Trailing-365d percentile of vol10 (for compression detection).
+
+    ``skip_nulls=True``: this is the one historical copy that drops nulls
+    out of the ranking window — vol10 has 10 leading nulls — which changes
+    the denominator, and returns None when the current value is null.
+    """
+    ranks = trailing_percentile_rank(df["vol10"].to_list(), window=365, skip_nulls=True)
+    return df.with_columns(pl.Series("vol10_pct", ranks, dtype=pl.Float64))
 
 
 def build_panel(store: ParquetStore) -> pl.DataFrame:
-    parts = []
-    for symbol in SYMBOLS:
-        df = store.read(symbol, Interval.D1).sort("timestamp")
-        df = df.select(
-            pl.col("timestamp").alias("day"),
-            (pl.col("close") / pl.col("close").shift(1) - 1.0).alias("ret"),
-            pl.col("close"),
-        )
-        df = df.with_columns(
-            vol30=pl.col("ret").shift(1).rolling_std(30),
-            vol10=pl.col("ret").shift(1).rolling_std(10),
-        )
-        # Trailing-365d percentile of vol10 (for compression detection).
-        vols = df["vol10"].to_list()
-        pct: list[float | None] = []
-        for i, v in enumerate(vols):
-            if v is None or i < 365:
-                pct.append(None)
-                continue
-            window = [w for w in vols[i - 365 : i + 1] if w is not None]
-            pct.append(sum(1 for w in window if w <= v) / len(window))
-        df = df.with_columns(pl.Series("vol10_pct", pct, dtype=pl.Float64))
-        for h in (1, 3, 7):
-            df = df.with_columns(
-                (pl.col("close").shift(-h) / pl.col("close") - 1.0).alias(f"fwd{h}")
-            )
-        parts.append(df.with_columns(pl.lit(symbol).alias("symbol")))
-    return pl.concat(parts).drop_nulls(["ret", "vol30", "fwd7"])
+    return canonical_daily_panel(
+        store,
+        SYMBOLS,
+        base_columns=("ret", "close"),  # ret BEFORE close: this script's order
+        feature_stages=[
+            [vol_excl_current(30, name="vol30"), vol_excl_current(10, name="vol10")],
+        ],
+        on_missing_symbol="raise",
+        per_symbol_hook=lambda df: _vol10_percentile(df).with_columns(
+            **{f.name: f.expr for f in (forward_return(1), forward_return(3), forward_return(7))}
+        ),
+        drop_nulls=("ret", "vol30", "fwd7"),
+    )
 
 
 def h13(panel: pl.DataFrame) -> None:
@@ -136,25 +123,20 @@ def h14(panel: pl.DataFrame) -> None:
     # test mean>0 via bootstrap of the signal-day series itself).
     signal = panel.filter(trigger & compressed)
     values = signal.group_by("day").agg(s=pl.col("dir_fwd7").sum(), n=pl.len()).sort("day")
-    sums, ns = values["s"].to_list(), values["n"].to_list()
-    n = len(sums)
-    rng = random.Random(14)
-    point = sum(sums) / max(sum(ns), 1)
-    boots = []
-    if n > BLOCK_DAYS:
-        n_blocks = n // BLOCK_DAYS + 1
-        for _ in range(N_BOOT):
-            ts = tn = 0.0
-            for _ in range(n_blocks):
-                s = rng.randint(0, n - BLOCK_DAYS)
-                ts += sum(sums[s : s + BLOCK_DAYS])
-                tn += sum(ns[s : s + BLOCK_DAYS])
-            if tn > 0:
-                boots.append(ts / tn)
-        boots.sort()
-        lo1, hi1 = boots[int(0.025 * len(boots))], boots[int(0.975 * len(boots))]
-    else:
-        lo1, hi1 = float("nan"), float("nan")
+    # Count-weighted (several trigger events can share a day), summed by
+    # slice rather than prefix delta, and NaN bounds when the event series is
+    # shorter than one block — all three are this call site's history.
+    ci = event_mean_ci(
+        values["s"].to_list(),
+        values["n"].to_list(),
+        block=BLOCK_DAYS,
+        seed=14,
+        n_boot=N_BOOT,
+        accumulation="slice_sum",
+        short_series="error",
+        nan_below=BLOCK_DAYS,
+    )
+    point, lo1, hi1 = ci.point, ci.low, ci.high
     bar1 = lo1 > 0
     print(
         f"  compression+trigger days: {signal.height}  directional fwd7 {point:+.2%}  "

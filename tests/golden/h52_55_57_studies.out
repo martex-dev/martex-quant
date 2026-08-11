@@ -1,0 +1,11 @@
+=== H52 first-hour fade, TRUE maker fill (one-bar window) ===
+  1988d  Sharpe 0.69  CAGR +19.0%  MDD -45.6%  corr(rot-stop) +0.015  fill rate 100%
+  H52 VERDICT: KILLED
+
+=== H55 BTC -> alt intraday lead-lag (|z|>2) ===
+  alt next-15m signed follow                           n=104145  +0.0095%  CI [-0.0015%, +0.0218%]  noise  (two-sided)
+  alt next-1h signed follow                            n=104145  -0.0017%  CI [-0.0260%, +0.0231%]  noise  (two-sided)
+=== H56 intraday ETH/BTC ratio reversion (|z|>2) ===
+  ratio 2h reversion (signed)                          n= 29297  -0.0167%  CI [-0.0366%, +0.0002%]  noise  (two-sided)
+=== H57 prior-day POC first touch ===
+  1h after first POC touch (bounce>0/magnet<0)         n= 11647  +0.0280%  CI [+0.0002%, +0.0560%]  SIGNAL  (two-sided)

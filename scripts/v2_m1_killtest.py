@@ -16,7 +16,6 @@ Trial ledger: +3 (total across program: 41).
 
 from __future__ import annotations
 
-import random
 import statistics
 from pathlib import Path
 
@@ -25,12 +24,15 @@ import polars as pl
 from trading_bot.data.indices import dominance_series, equal_weight_index
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.features.panel import forward_return, relative_forward_return_difference
+from trading_bot.stats.bootstrap import flag_split_ci
 
 ALTS = ["ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 LOOKBACKS = [14, 30, 60]
 HORIZON = 30  # forward days of relative return
 BLOCK = 60  # bootstrap block length (days) — covers signal+horizon autocorrelation
 N_BOOT = 5_000
+SEED = 11
 TREND_LOOKBACK = 90  # descriptive quadrant split only (not part of the pass bar)
 
 
@@ -38,25 +40,14 @@ def block_bootstrap_ci(
     values: list[float], flags: list[bool], n_boot: int = N_BOOT, block: int = BLOCK
 ) -> tuple[float, float, float]:
     """95% CI for mean(values[flags]) - mean(values[~flags]) under a moving-
-    block bootstrap (preserves serial correlation of overlapping windows)."""
-    n = len(values)
-    rng = random.Random(11)
-    diffs = []
-    n_blocks = (n // block) + 1
-    for _ in range(n_boot):
-        rising: list[float] = []
-        falling: list[float] = []
-        for _ in range(n_blocks):
-            start = rng.randint(0, n - block)
-            for i in range(start, start + block):
-                (rising if flags[i] else falling).append(values[i])
-        if rising and falling:
-            diffs.append(statistics.fmean(rising) - statistics.fmean(falling))
-    diffs.sort()
-    point = statistics.fmean(
-        [v for v, f in zip(values, flags, strict=True) if f]
-    ) - statistics.fmean([v for v, f in zip(values, flags, strict=True) if not f])
-    return point, diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs))]
+    block bootstrap (preserves serial correlation of overlapping windows).
+
+    The only 60-day-block caller in the corpus, and the only estimator that
+    re-partitions raw observations per draw instead of accumulating
+    pre-aggregated sums.
+    """
+    ci = flag_split_ci(values, flags, block=block, seed=SEED, n_boot=n_boot)
+    return ci.point, ci.low, ci.high
 
 
 def main() -> None:
@@ -80,9 +71,13 @@ def main() -> None:
     )
 
     # Forward 30d relative return (BTC minus alt basket), decision at t.
+    # DIFFERENCE of the two forward returns, not their ratio — at a 30-day
+    # crypto horizon the two are materially different quantities.
+    fwd_rel = relative_forward_return_difference(
+        HORIZON, minuend="btc", subtrahend="alt", name="fwd_rel"
+    )
     df = df.with_columns(
-        fwd_rel=(pl.col("btc").shift(-HORIZON) / pl.col("btc") - 1.0)
-        - (pl.col("alt").shift(-HORIZON) / pl.col("alt") - 1.0),
+        **{fwd_rel.name: fwd_rel.expr},
         trend_up=pl.col("market") > pl.col("market").shift(TREND_LOOKBACK),
     )
 
@@ -110,10 +105,13 @@ def main() -> None:
 
     # Descriptive quadrant table (Ld=30), NOT part of the pass bar.
     print("\ndescriptive quadrant means of forward 30d returns (Ld=30, trend=90d):")
+    legs = (
+        forward_return(HORIZON, price_column="btc", name="btc_fwd"),
+        forward_return(HORIZON, price_column="alt", name="alt_fwd"),
+    )
     sub = df.with_columns(
         rising=pl.col("dominance") > pl.col("dominance").shift(30),
-        btc_fwd=pl.col("btc").shift(-HORIZON) / pl.col("btc") - 1.0,
-        alt_fwd=pl.col("alt").shift(-HORIZON) / pl.col("alt") - 1.0,
+        **{f.name: f.expr for f in legs},
     ).drop_nulls(["btc_fwd", "alt_fwd", "rising", "trend_up"])
     for trend_up in (True, False):
         for rising in (True, False):

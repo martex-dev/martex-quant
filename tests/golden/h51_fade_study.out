@@ -1,0 +1,36 @@
+=== 51a fade-ORB (taker floor) ===
+  built 51a fade-ORB: 1989 days
+  51a fade-ORB                 1989d  Sharpe 0.14  CAGR -0.8%  MDD -43.2%  corr(rot-stop) +0.021
+    prop@0.5x: pass 33.3% (median 79d)
+    prop@1.0x: pass 25.5% (median 21d)
+    prop@2.0x: pass 24.9% (median 7d)
+    prop@4.0x: pass 30.3% (median 3d)
+  VERDICT 51a fade-ORB: Sharpe 0.14, corr +0.02 -> KILLED
+
+=== 51a fade-ORB (maker-entry sensitivity) ===
+  built 51a fade-ORB: 1989 days
+  51a fade-ORB maker           1989d  Sharpe 0.59  CAGR +15.1%  MDD -36.6%  corr(rot-stop) +0.022
+    prop@0.5x: pass 42.2% (median 76d)
+    prop@1.0x: pass 29.9% (median 21d)
+    prop@2.0x: pass 27.6% (median 7d)
+    prop@4.0x: pass 32.5% (median 3d)
+  VERDICT 51a fade-ORB maker: Sharpe 0.59, corr +0.02 -> KILLED
+
+=== 51b fade-first-hour (taker floor) ===
+  built 51b fade-first-hour: 1989 days
+  51b fade-first-hour          1989d  Sharpe 0.44  CAGR +9.5%  MDD -48.6%  corr(rot-stop) +0.014
+    prop@0.5x: pass 43.0% (median 77d)
+    prop@1.0x: pass 25.6% (median 19d)
+    prop@2.0x: pass 25.0% (median 7d)
+    prop@4.0x: pass 30.3% (median 3d)
+  VERDICT 51b fade-first-hour: Sharpe 0.44, corr +0.01 -> KILLED
+
+=== 51b fade-first-hour (maker-entry sensitivity) ===
+  built 51b fade-first-hour: 1989 days
+  51b fade-first-hour maker    1989d  Sharpe 0.90  CAGR +27.5%  MDD -42.2%  corr(rot-stop) +0.014
+    prop@0.5x: pass 54.0% (median 76d)
+    prop@1.0x: pass 29.2% (median 19d)
+    prop@2.0x: pass 27.7% (median 7d)
+    prop@4.0x: pass 32.2% (median 3d)
+  VERDICT 51b fade-first-hour maker: Sharpe 0.90, corr +0.01 -> CANDIDATE (diversifier)
+

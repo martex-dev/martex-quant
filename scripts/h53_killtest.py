@@ -9,10 +9,12 @@ history; deep positioning history is paid data. Recorded as blocked.
 
 from __future__ import annotations
 
-import random
 from pathlib import Path
 
 import polars as pl
+
+from trading_bot.features.panel import forward_return
+from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
 
 SYMBOLS = [
     "BTCUSDT",
@@ -33,31 +35,19 @@ N_BOOT = 5_000
 
 
 def event_mean_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float, int]:
+    """Count-weighted: many imbalance events land on the same day, so days
+    with more events must weigh more."""
     by_day = panel.group_by("day").agg(v_sum=pl.col("v").sum(), v_n=pl.col("v").count()).sort("day")
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + float(x))
-        return out
-
-    ps, pn = prefix(by_day["v_sum"].to_list()), prefix(by_day["v_n"].to_list())
-    n = by_day.height
-    point = ps[n] / max(pn[n], 1.0)
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    means = []
-    for _ in range(N_BOOT):
-        total = cnt = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, max(n - BLOCK_DAYS, 0))
-            e = s + BLOCK_DAYS
-            total += ps[e] - ps[s]
-            cnt += pn[e] - pn[s]
-        if cnt > 0:
-            means.append(total / cnt)
-    means.sort()
-    return point, means[int(0.025 * len(means))], means[int(0.975 * len(means))], int(pn[n])
+    ci = _event_mean_ci(
+        by_day["v_sum"].to_list(),
+        by_day["v_n"].to_list(),
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        accumulation="prefix_delta",
+        short_series="clamp",
+    )
+    return ci.point, ci.low, ci.high, ci.n
 
 
 def main() -> None:
@@ -71,10 +61,12 @@ def main() -> None:
         df = df.filter(pl.col("volume") > 0).with_columns(
             imb=(pl.col("taker_buy") / pl.col("volume") - 0.5).rolling_mean(4)
         )
+        # 4 bars of 15m = 1 hour; the name is by duration, not by bar count.
+        fwd = forward_return(4, name="fwd1h")
         df = df.with_columns(
             mu=pl.col("imb").rolling_mean(96).shift(1),
             sd=pl.col("imb").rolling_std(96).shift(1),
-            fwd1h=pl.col("close").shift(-4) / pl.col("close") - 1.0,
+            **{fwd.name: fwd.expr},
         ).drop_nulls(["mu", "sd", "fwd1h"])
         df = df.with_columns(z=(pl.col("imb") - pl.col("mu")) / pl.col("sd"))
         events = df.filter(pl.col("z").abs() > 2.0)

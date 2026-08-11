@@ -1,0 +1,5 @@
+   L   days  mean top2-bot2 fwd7d                 95% CI verdict
+  30   2952               0.823%     [+0.082%, +1.548%] PASS
+  90   2892               1.021%     [+0.154%, +2.049%] PASS
+
+VERDICT (>=1 CI>0 AND all point estimates >0): H11 PASSES — graduates to strategy-grade

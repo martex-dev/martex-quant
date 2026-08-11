@@ -5,48 +5,37 @@
 
 from __future__ import annotations
 
-import random
 from pathlib import Path
 
 import polars as pl
 
 from trading_bot.data.models import Interval
 from trading_bot.data.store.parquet_store import ParquetStore
+from trading_bot.stats.bootstrap import two_group_diff_ci
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 BLOCK_DAYS = 30
 N_BOOT = 5_000
+SEED = 9
 
 
 def bootstrap_diff(by_day: pl.DataFrame) -> tuple[float, float, float]:
     """by_day: (day, in_sum, in_n, out_sum, out_n) -> point diff + 95% CI."""
-    cols = [by_day[c].to_list() for c in ("in_sum", "in_n", "out_sum", "out_n")]
-    n = by_day.height
-
-    def prefix(xs: list[float]) -> list[float]:
-        out = [0.0]
-        for x in xs:
-            out.append(out[-1] + float(x))
-        return out
-
-    p_is, p_in, p_os, p_on = (prefix(c) for c in cols)
-    point = p_is[n] / max(p_in[n], 1.0) - p_os[n] / max(p_on[n], 1.0)
-    rng = random.Random(9)
-    n_blocks = n // BLOCK_DAYS + 1
-    diffs = []
-    for _ in range(N_BOOT):
-        a = b = c = d = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, n - BLOCK_DAYS)
-            e = s + BLOCK_DAYS
-            a += p_is[e] - p_is[s]
-            b += p_in[e] - p_in[s]
-            c += p_os[e] - p_os[s]
-            d += p_on[e] - p_on[s]
-        if b > 0 and d > 0:
-            diffs.append(a / b - c / d)
-    diffs.sort()
-    return point, diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs))]
+    in_sum, in_n, out_sum, out_n = (
+        by_day[c].to_list() for c in ("in_sum", "in_n", "out_sum", "out_n")
+    )
+    ci = two_group_diff_ci(
+        in_sum,
+        in_n,
+        out_sum,
+        out_n,
+        block=BLOCK_DAYS,
+        seed=SEED,
+        n_boot=N_BOOT,
+        empty_denominator="guard",
+        short_series="error",
+    )
+    return ci.point, ci.low, ci.high
 
 
 def day_split(panel: pl.DataFrame, flag: pl.Expr) -> pl.DataFrame:

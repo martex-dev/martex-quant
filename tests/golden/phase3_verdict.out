@@ -1,0 +1,19 @@
+Fixed-lookback OOS annualized Sharpe (daily TSMOM, OOS = last 12x90d)
+
+   L      BTC     ETH     BNB     SOL     XRP     ADA    DOGE     LTC  median
+   7     0.33    0.36    0.10    0.94    0.63    0.02    0.52   -0.22    0.35
+  14     1.14    0.53    0.81    1.12    0.66    0.44    0.81   -0.38    0.73
+  30     0.73    0.84    0.83    1.06    0.34   -0.27    0.56   -0.44    0.64
+  60     0.86    0.89    0.90    0.39    0.58    0.60    0.55    0.21    0.59
+  90     0.99    0.63    0.91    0.81    0.05    0.74    0.48    0.54    0.69
+ 180     1.00   -0.35    0.59    0.87    0.41    0.44    0.39   -0.21    0.42
+
+Equal-weight 8-symbol portfolio of hypothesis-02 walk-forward OOS:
+
+bars: 1710   round trips: 0
+total return: +71.09%   CAGR: +12.16%
+sharpe (ann.): 0.67   max drawdown: -39.00%
+win rate: n/a   profit factor: n/a
+time in market: 100.0%   fees paid: 0.00
+portfolio DSR (n_trials=6, grid only): 0.844
+portfolio DSR (n_trials=23, ALL Phase 3 specs): 0.780

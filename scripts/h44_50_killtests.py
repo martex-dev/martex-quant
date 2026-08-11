@@ -10,11 +10,15 @@ per-trade effect must plausibly clear.
 
 from __future__ import annotations
 
-import random
 from datetime import date
 from pathlib import Path
 
 import polars as pl
+
+from trading_bot.features.intraday import load_15m_bars
+from trading_bot.features.panel import forward_return, trailing_percentile_rank
+from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
+from trading_bot.stats.bootstrap import two_group_diff_ci
 
 SYMBOLS = [
     "BTCUSDT",
@@ -37,38 +41,31 @@ N_BOOT = 5_000
 MIN_BARS_DAY = 90
 MAKER_RT = 0.0004
 
+# 8 bars of 15m = 2 hours. Named by bar count here; h52/h53 name the same
+# horizon by duration instead (fwd2h / fwd1h).
+FWD8 = forward_return(8, name="fwd8")
+
 
 # --- bootstrap machinery (day blocks; H15-21 lineage) ------------------------------
 
 
-def _prefix(xs: list[float]) -> list[float]:
-    out = [0.0]
-    for x in xs:
-        out.append(out[-1] + float(x))
-    return out
-
-
 def event_mean_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float, int]:
-    """Mean of event values pooled by day, block bootstrap over calendar days."""
+    """Count-weighted mean of event values pooled by day.
+
+    Intraday events cluster heavily within a day, which is exactly why this
+    is count-weighted rather than an unweighted daily mean.
+    """
     by_day = panel.group_by("day").agg(v_sum=pl.col("v").sum(), v_n=pl.col("v").count()).sort("day")
-    ps, pn = _prefix(by_day["v_sum"].to_list()), _prefix(by_day["v_n"].to_list())
-    n = by_day.height
-    n_events = int(pn[n])
-    point = ps[n] / max(pn[n], 1.0)
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    means = []
-    for _ in range(N_BOOT):
-        total = cnt = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, max(n - BLOCK_DAYS, 0))
-            e = s + BLOCK_DAYS
-            total += ps[e] - ps[s]
-            cnt += pn[e] - pn[s]
-        if cnt > 0:
-            means.append(total / cnt)
-    means.sort()
-    return point, means[int(0.025 * len(means))], means[int(0.975 * len(means))], n_events
+    ci = _event_mean_ci(
+        by_day["v_sum"].to_list(),
+        by_day["v_n"].to_list(),
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        accumulation="prefix_delta",
+        short_series="clamp",
+    )
+    return ci.point, ci.low, ci.high, ci.n
 
 
 def diff_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float, int]:
@@ -84,28 +81,19 @@ def diff_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float, int]:
         .sort("day")
         .fill_null(0.0)
     )
-    pa = _prefix(by_day["a_sum"].to_list())
-    pan = _prefix(by_day["a_n"].to_list())
-    pb = _prefix(by_day["b_sum"].to_list())
-    pbn = _prefix(by_day["b_n"].to_list())
-    n = by_day.height
-    point = pa[n] / max(pan[n], 1.0) - pb[n] / max(pbn[n], 1.0)
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    diffs = []
-    for _ in range(N_BOOT):
-        sa = na = sb = nb = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, max(n - BLOCK_DAYS, 0))
-            e = s + BLOCK_DAYS
-            sa += pa[e] - pa[s]
-            na += pan[e] - pan[s]
-            sb += pb[e] - pb[s]
-            nb += pbn[e] - pbn[s]
-        if na > 0 and nb > 0:
-            diffs.append(sa / na - sb / nb)
-    diffs.sort()
-    return point, diffs[int(0.025 * len(diffs))], diffs[int(0.975 * len(diffs))], int(pan[n])
+    a_sum, a_n, b_sum, b_n = (by_day[c].to_list() for c in ("a_sum", "a_n", "b_sum", "b_n"))
+    ci = two_group_diff_ci(
+        a_sum,
+        a_n,
+        b_sum,
+        b_n,
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        empty_denominator="guard",
+        short_series="clamp",
+    )
+    return ci.point, ci.low, ci.high, ci.n
 
 
 def show(name: str, point: float, lo: float, hi: float, n: int, claim: str) -> None:
@@ -117,15 +105,6 @@ def show(name: str, point: float, lo: float, hi: float, n: int, claim: str) -> N
 
 
 # --- per-day event extraction -------------------------------------------------------
-
-
-def load(symbol: str) -> pl.DataFrame:
-    df = pl.read_parquet(DATA / f"{symbol}_15m.parquet").sort("ts")
-    return df.with_columns(
-        day=pl.col("ts").dt.date(),
-        hh=pl.col("ts").dt.hour(),
-        mm=pl.col("ts").dt.minute(),
-    )
 
 
 def day_events(symbol: str, df: pl.DataFrame) -> dict[str, list[tuple[date, float]]]:
@@ -198,7 +177,7 @@ def main() -> None:
     pooled: dict[str, list[tuple[date, float]]] = {"h44": [], "h45": [], "h46": [], "h48": []}
     h49_parts, h50_parts = [], []
     for symbol in SYMBOLS:
-        df = load(symbol)
+        df = load_15m_bars(DATA, symbol)
         ev = day_events(symbol, df)
         for k in pooled:
             pooled[k].extend(ev[k])
@@ -206,9 +185,7 @@ def main() -> None:
         # H49 vol-burst continuation (vectorized).
         d = df.with_columns(ret=pl.col("close") / pl.col("close").shift(1) - 1.0)
         d = d.with_columns(sigma=pl.col("ret").rolling_std(96).shift(1))
-        d = d.with_columns(
-            fwd8=pl.col("close").shift(-8) / pl.col("close") - 1.0,
-        ).drop_nulls(["ret", "sigma", "fwd8"])
+        d = d.with_columns(**{FWD8.name: FWD8.expr}).drop_nulls(["ret", "sigma", "fwd8"])
         bursts = d.filter(pl.col("ret").abs() > 4.0 * pl.col("sigma"))
         h49_parts.append(
             bursts.select(
@@ -227,7 +204,7 @@ def main() -> None:
         d2 = d2.with_columns(stretch=pl.col("close") / (pl.col("cpv") / pl.col("cv")) - 1.0)
         d2 = d2.with_columns(
             sstd=pl.col("stretch").rolling_std(96).shift(1),
-            fwd8=pl.col("close").shift(-8) / pl.col("close") - 1.0,
+            **{FWD8.name: FWD8.expr},
         ).drop_nulls(["stretch", "sstd", "fwd8"])
         events = d2.filter(pl.col("stretch").abs() > 2.0 * pl.col("sstd"))
         h50_parts.append(
@@ -253,16 +230,9 @@ def main() -> None:
     parts = []
     for symbol in FUNDING_SYMS:
         f = pl.read_parquet(Path("data/funding") / f"{symbol}.parquet").sort("timestamp")
-        vals = f["rate"].to_list()
-        pct: list[float | None] = []
-        for i in range(len(vals)):
-            if i < 270:
-                pct.append(None)
-                continue
-            window = vals[i - 270 : i + 1]
-            pct.append(sum(1 for w in window if w <= vals[i]) / len(window))
-        f = f.with_columns(pl.Series("pct", pct, dtype=pl.Float64)).drop_nulls("pct")
-        px = load(symbol).select("ts", "close", "day")
+        ranks = trailing_percentile_rank(f["rate"].to_list(), window=270, skip_nulls=False)
+        f = f.with_columns(pl.Series("pct", ranks, dtype=pl.Float64)).drop_nulls("pct")
+        px = load_15m_bars(DATA, symbol).select("ts", "close", "day")
         f = (
             f.join(px, left_on="timestamp", right_on="ts", how="inner")
             .join(

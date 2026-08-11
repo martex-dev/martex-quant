@@ -1,0 +1,68 @@
+
+########## DONCHIAN (eval engine): 1710d OOS, ann.vol 16.4% ##########
+
+  == Option 1 (1-step, $300 loss, 3% daily) — STATIC max loss ==
+    0.25x: pass 15.3% (CI 14.8%-15.8%), bust 7.9%, median 241d | EV $250->-14 $500->+24 $1000->+101 | breakeven $340, EV/day@$500 +0.1
+    0.50x: pass 41.8% (CI 41.1%-42.4%), bust 34.4%, median 162d | EV $250->+53 $500->+157 $1000->+366 | breakeven $124, EV/day@$500 +1.0
+    0.75x: pass 46.5% (CI 45.8%-47.1%), bust 48.1%, median 103d | EV $250->+64 $500->+180 $1000->+413 | breakeven $112, EV/day@$500 +1.8
+    1.00x: pass 39.3% (CI 38.6%-39.9%), bust 60.4%, median 61d | EV $250->+46 $500->+145 $1000->+341 | breakeven $132, EV/day@$500 +2.4
+    1.50x: pass 32.0% (CI 31.4%-32.7%), bust 68.0%, median 29d | EV $250->+28 $500->+108 $1000->+268 | breakeven $162, EV/day@$500 +3.7
+    2.00x: pass 27.1% (CI 26.5%-27.7%), bust 72.9%, median 18d | EV $250->+16 $500->+84 $1000->+219 | breakeven $191, EV/day@$500 +4.7
+
+  == Option 2 (2-step, $500 loss, 5% daily) — STATIC max loss ==
+    0.25x: pass 6.7% (CI 6.4%-7.1%), bust 0.5%, median 410d | EV $250->-18 $500->-1 $1000->+32 | breakeven $519, EV/day@$500 -0.0
+    0.50x: pass 30.2% (CI 29.5%-30.8%), bust 18.9%, median 298d | EV $250->+40 $500->+116 $1000->+267 | breakeven $116, EV/day@$500 +0.4
+    0.75x: pass 39.6% (CI 38.9%-40.3%), bust 42.0%, median 217d | EV $250->+64 $500->+163 $1000->+361 | breakeven $88, EV/day@$500 +0.8
+    1.00x: pass 39.7% (CI 39.0%-40.4%), bust 55.4%, median 153d | EV $250->+64 $500->+164 $1000->+362 | breakeven $88, EV/day@$500 +1.1
+    1.50x: pass 30.6% (CI 29.9%-31.2%), bust 69.3%, median 80d | EV $250->+41 $500->+118 $1000->+271 | breakeven $115, EV/day@$500 +1.5
+    2.00x: pass 29.4% (CI 28.8%-30.1%), bust 70.6%, median 53d | EV $250->+39 $500->+112 $1000->+259 | breakeven $119, EV/day@$500 +2.1
+
+  == Option 1 (1-step, $300 loss, 3% daily) — TRAILING max loss ==
+    0.25x: pass 15.3% (CI 14.8%-15.8%), bust 16.0%, median 238d | EV $250->-13 $500->+25 $1000->+102 | breakeven $338, EV/day@$500 +0.1
+    0.50x: pass 35.3% (CI 34.7%-36.0%), bust 58.1%, median 144d | EV $250->+37 $500->+125 $1000->+302 | breakeven $147, EV/day@$500 +0.9
+    0.75x: pass 34.0% (CI 33.3%-34.6%), bust 65.9%, median 78d | EV $250->+33 $500->+118 $1000->+288 | breakeven $153, EV/day@$500 +1.5
+    1.00x: pass 30.3% (CI 29.7%-31.0%), bust 69.7%, median 47d | EV $250->+24 $500->+100 $1000->+252 | breakeven $171, EV/day@$500 +2.1
+    1.50x: pass 26.8% (CI 26.2%-27.4%), bust 73.2%, median 24d | EV $250->+15 $500->+82 $1000->+216 | breakeven $193, EV/day@$500 +3.4
+    2.00x: pass 24.2% (CI 23.7%-24.8%), bust 75.8%, median 16d | EV $250->+9 $500->+69 $1000->+191 | breakeven $214, EV/day@$500 +4.3
+
+  == Option 2 (2-step, $500 loss, 5% daily) — TRAILING max loss ==
+    0.25x: pass 6.8% (CI 6.4%-7.1%), bust 0.9%, median 411d | EV $250->-18 $500->-1 $1000->+32 | breakeven $519, EV/day@$500 -0.0
+    0.50x: pass 29.4% (CI 28.7%-30.0%), bust 31.5%, median 299d | EV $250->+38 $500->+112 $1000->+259 | breakeven $119, EV/day@$500 +0.4
+    0.75x: pass 34.7% (CI 34.1%-35.4%), bust 58.1%, median 198d | EV $250->+52 $500->+139 $1000->+312 | breakeven $101, EV/day@$500 +0.7
+    1.00x: pass 32.4% (CI 31.8%-33.1%), bust 66.8%, median 131d | EV $250->+46 $500->+127 $1000->+289 | breakeven $108, EV/day@$500 +1.0
+    1.50x: pass 25.8% (CI 25.2%-26.4%), bust 74.2%, median 69d | EV $250->+29 $500->+94 $1000->+223 | breakeven $136, EV/day@$500 +1.4
+    2.00x: pass 24.7% (CI 24.1%-25.3%), bust 75.3%, median 46d | EV $250->+27 $500->+88 $1000->+212 | breakeven $142, EV/day@$500 +1.9
+
+########## VOL-TARGET (funded engine): 1710d OOS, ann.vol 9.4% ##########
+
+  == Option 1 (1-step, $300 loss, 3% daily) — STATIC max loss ==
+    0.25x: pass 0.8% (CI 0.7%-1.0%), bust 0.2%, median 316d | EV $250->-50 $500->-48 $1000->-43 | breakeven $6204, EV/day@$500 -0.2
+    0.50x: pass 20.1% (CI 19.5%-20.6%), bust 9.4%, median 251d | EV $250->-2 $500->+48 $1000->+149 | breakeven $258, EV/day@$500 +0.2
+    0.75x: pass 40.3% (CI 39.6%-41.0%), bust 23.6%, median 195d | EV $250->+49 $500->+150 $1000->+351 | breakeven $129, EV/day@$500 +0.8
+    1.00x: pass 49.5% (CI 48.8%-50.2%), bust 34.8%, median 148d | EV $250->+72 $500->+196 $1000->+443 | breakeven $105, EV/day@$500 +1.3
+    1.50x: pass 50.0% (CI 49.3%-50.7%), bust 48.4%, median 80d | EV $250->+73 $500->+198 $1000->+448 | breakeven $104, EV/day@$500 +2.5
+    2.00x: pass 45.6% (CI 44.9%-46.3%), bust 54.3%, median 49d | EV $250->+62 $500->+176 $1000->+404 | breakeven $114, EV/day@$500 +3.6
+
+  == Option 2 (2-step, $500 loss, 5% daily) — STATIC max loss ==
+    0.25x: pass 0.1% (CI 0.1%-0.2%), bust 0.0%, median 597d | EV $250->-35 $500->-34 $1000->-34 | breakeven $25926, EV/day@$500 -0.1
+    0.50x: pass 11.1% (CI 10.7%-11.5%), bust 1.0%, median 414d | EV $250->-7 $500->+21 $1000->+76 | breakeven $315, EV/day@$500 +0.0
+    0.75x: pass 28.7% (CI 28.1%-29.3%), bust 9.0%, median 334d | EV $250->+37 $500->+109 $1000->+252 | breakeven $122, EV/day@$500 +0.3
+    1.00x: pass 40.7% (CI 40.0%-41.4%), bust 21.7%, median 273d | EV $250->+67 $500->+169 $1000->+372 | breakeven $86, EV/day@$500 +0.6
+    1.50x: pass 47.8% (CI 47.1%-48.5%), bust 43.0%, median 178d | EV $250->+85 $500->+204 $1000->+443 | breakeven $73, EV/day@$500 +1.1
+    2.00x: pass 45.4% (CI 44.7%-46.0%), bust 53.0%, median 119d | EV $250->+78 $500->+192 $1000->+419 | breakeven $77, EV/day@$500 +1.6
+
+  == Option 1 (1-step, $300 loss, 3% daily) — TRAILING max loss ==
+    0.25x: pass 0.8% (CI 0.7%-0.9%), bust 0.3%, median 317d | EV $250->-50 $500->-48 $1000->-44 | breakeven $6599, EV/day@$500 -0.2
+    0.50x: pass 20.3% (CI 19.7%-20.8%), bust 22.1%, median 250d | EV $250->-1 $500->+50 $1000->+151 | breakeven $255, EV/day@$500 +0.2
+    0.75x: pass 36.7% (CI 36.0%-37.4%), bust 48.5%, median 183d | EV $250->+40 $500->+132 $1000->+315 | breakeven $141, EV/day@$500 +0.7
+    1.00x: pass 39.1% (CI 38.5%-39.8%), bust 59.0%, median 126d | EV $250->+46 $500->+144 $1000->+339 | breakeven $132, EV/day@$500 +1.1
+    1.50x: pass 35.8% (CI 35.2%-36.5%), bust 64.2%, median 60d | EV $250->+38 $500->+127 $1000->+306 | breakeven $145, EV/day@$500 +2.1
+    2.00x: pass 33.6% (CI 33.0%-34.3%), bust 66.4%, median 37d | EV $250->+32 $500->+116 $1000->+284 | breakeven $154, EV/day@$500 +3.1
+
+  == Option 2 (2-step, $500 loss, 5% daily) — TRAILING max loss ==
+    0.25x: pass 0.1% (CI 0.1%-0.2%), bust 0.0%, median 597d | EV $250->-35 $500->-34 $1000->-34 | breakeven $25926, EV/day@$500 -0.1
+    0.50x: pass 11.1% (CI 10.6%-11.5%), bust 2.1%, median 411d | EV $250->-7 $500->+20 $1000->+76 | breakeven $316, EV/day@$500 +0.0
+    0.75x: pass 28.5% (CI 27.9%-29.1%), bust 17.6%, median 336d | EV $250->+36 $500->+107 $1000->+250 | breakeven $123, EV/day@$500 +0.3
+    1.00x: pass 38.5% (CI 37.8%-39.2%), bust 37.5%, median 263d | EV $250->+61 $500->+157 $1000->+350 | breakeven $91, EV/day@$500 +0.6
+    1.50x: pass 40.2% (CI 39.5%-40.9%), bust 57.7%, median 158d | EV $250->+66 $500->+166 $1000->+367 | breakeven $87, EV/day@$500 +1.1
+    2.00x: pass 36.4% (CI 35.8%-37.1%), bust 63.4%, median 100d | EV $250->+56 $500->+147 $1000->+330 | breakeven $96, EV/day@$500 +1.5

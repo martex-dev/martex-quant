@@ -8,7 +8,6 @@ Pre-registered in docs/hypotheses/52-57-intraday-frontier.md.
 from __future__ import annotations
 
 import math
-import random
 from datetime import date
 from pathlib import Path
 
@@ -16,6 +15,9 @@ import polars as pl
 
 from trading_bot.backtesting.metrics import compute_metrics
 from trading_bot.data.models import Interval
+from trading_bot.features.intraday import load_15m_bars
+from trading_bot.features.panel import forward_return, relative_forward_return_ratio
+from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
 
 SYMBOLS = [
     "BTCUSDT",
@@ -39,33 +41,23 @@ MAKER_FEE = 0.0002
 TAKER_EXIT = 0.00065  # fee 5.5bp + half-spread 0.5 + impact 0.5
 VOL_TARGET = 0.30
 
-
-def _prefix(xs: list[float]) -> list[float]:
-    out = [0.0]
-    for x in xs:
-        out.append(out[-1] + float(x))
-    return out
+# 4 bars of 15m = 1 hour, shared by H55's two follow-through columns.
+FWD1H = forward_return(4, name="fwd1h")
 
 
 def event_mean_ci(panel: pl.DataFrame, seed: int) -> tuple[float, float, float, int]:
+    """Count-weighted mean of intraday events pooled by calendar day."""
     by_day = panel.group_by("day").agg(v_sum=pl.col("v").sum(), v_n=pl.col("v").count()).sort("day")
-    ps, pn = _prefix(by_day["v_sum"].to_list()), _prefix(by_day["v_n"].to_list())
-    n = by_day.height
-    point = ps[n] / max(pn[n], 1.0)
-    rng = random.Random(seed)
-    n_blocks = n // BLOCK_DAYS + 1
-    means = []
-    for _ in range(N_BOOT):
-        total = cnt = 0.0
-        for _ in range(n_blocks):
-            s = rng.randint(0, max(n - BLOCK_DAYS, 0))
-            e = s + BLOCK_DAYS
-            total += ps[e] - ps[s]
-            cnt += pn[e] - pn[s]
-        if cnt > 0:
-            means.append(total / cnt)
-    means.sort()
-    return point, means[int(0.025 * len(means))], means[int(0.975 * len(means))], int(pn[n])
+    ci = _event_mean_ci(
+        by_day["v_sum"].to_list(),
+        by_day["v_n"].to_list(),
+        block=BLOCK_DAYS,
+        seed=seed,
+        n_boot=N_BOOT,
+        accumulation="prefix_delta",
+        short_series="clamp",
+    )
+    return ci.point, ci.low, ci.high, ci.n
 
 
 def show(name: str, point: float, lo: float, hi: float, n: int, claim: str) -> None:
@@ -73,18 +65,6 @@ def show(name: str, point: float, lo: float, hi: float, n: int, claim: str) -> N
     print(
         f"  {name:<52} n={n:>6}  {point:+.4%}  CI [{lo:+.4%}, {hi:+.4%}]  "
         f"{'SIGNAL' if sig else 'noise'}  ({claim})"
-    )
-
-
-def load(symbol: str) -> pl.DataFrame:
-    return (
-        pl.read_parquet(DATA / f"{symbol}_15m.parquet")
-        .sort("ts")
-        .with_columns(
-            day=pl.col("ts").dt.date(),
-            hh=pl.col("ts").dt.hour(),
-            mm=pl.col("ts").dt.minute(),
-        )
     )
 
 
@@ -96,7 +76,7 @@ def h52(rot_daily: pl.DataFrame) -> None:
     daily: dict[date, list[float]] = {}
     signals = fills = 0
     for symbol in SYMBOLS:
-        df = load(symbol)
+        df = load_15m_bars(DATA, symbol)
         for (day,), grp in df.group_by("day", maintain_order=True):
             assert isinstance(day, date)
             if grp.height < 90:
@@ -167,7 +147,7 @@ def main() -> None:
     )
     h52(rot_daily)
 
-    frames = {s: load(s) for s in SYMBOLS}
+    frames = {s: load_15m_bars(DATA, s) for s in SYMBOLS}
 
     print("=== H55 BTC -> alt intraday lead-lag (|z|>2) ===")
     btc = frames["BTCUSDT"].with_columns(ret=pl.col("close") / pl.col("close").shift(1) - 1.0)
@@ -181,9 +161,9 @@ def main() -> None:
     for symbol in SYMBOLS:
         if symbol == "BTCUSDT":
             continue
+        # 1 bar = 15m, 4 bars = 1h; both named by duration, not bar count.
         alt = frames[symbol].with_columns(
-            fwd15=pl.col("close").shift(-1) / pl.col("close") - 1.0,
-            fwd1h=pl.col("close").shift(-4) / pl.col("close") - 1.0,
+            **{f.name: f.expr for f in (forward_return(1, name="fwd15"), FWD1H)}
         )
         joined = events.join(alt.select("ts", "fwd15", "fwd1h"), on="ts", how="inner")
         signed = joined.with_columns(
@@ -203,11 +183,13 @@ def main() -> None:
         .sort("ts")
         .with_columns(lr=(pl.col("eth") / pl.col("btc")).log())
     )
+    # RATIO of forward returns — what an ETH/BTC ratio trade earns. Not the
+    # difference of the two forward returns; see the constructor docstrings.
+    fwd2h = relative_forward_return_ratio(8, numerator="eth", denominator="btc", name="fwd2h")
     pair = pair.with_columns(
         z=(pl.col("lr") - pl.col("lr").rolling_mean(96).shift(1))
         / pl.col("lr").rolling_std(96).shift(1),
-        fwd2h=(pl.col("eth").shift(-8) / pl.col("eth")) / (pl.col("btc").shift(-8) / pl.col("btc"))
-        - 1.0,
+        **{fwd2h.name: fwd2h.expr},
     ).drop_nulls(["z", "fwd2h"])
     ev = pair.filter(pl.col("z").abs() > 2.0).with_columns(
         v=pl.when(pl.col("z") > 0).then(-pl.col("fwd2h")).otherwise(pl.col("fwd2h"))

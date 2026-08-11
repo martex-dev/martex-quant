@@ -1,0 +1,14 @@
+aligned days: 3249  span: 2017-08-17 .. 2026-07-09
+
+  Ld      n  E[rel|rising]  E[rel|falling]     diff               95% CI verdict
+  14   3205        -2.09%         -5.13%   3.04%    [-2.97%, +10.82%] fail
+  30   3189        -3.21%         -4.02%   0.81%     [-5.22%, +6.06%] fail
+  60   3159        -3.14%         -5.22%   2.08%    [-5.45%, +10.81%] fail
+
+descriptive quadrant means of forward 30d returns (Ld=30, trend=90d):
+  trend UP   dom RISING  (n= 695): fwd30 BTC +9.85%  ALT +18.29%
+  trend UP   dom FALLING (n= 938): fwd30 BTC +2.36%  ALT +8.43%
+  trend DOWN dom RISING  (n=1031): fwd30 BTC +3.04%  ALT +4.98%
+  trend DOWN dom FALLING (n= 465): fwd30 BTC -0.84%  ALT -0.49%
+
+VERDICT (pre-registered bar: >=2/3 lookbacks with CI > 0): 0/3 -> V2-H1 FAILS — V2 ends at M1

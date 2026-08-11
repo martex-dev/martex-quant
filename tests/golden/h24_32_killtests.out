@@ -1,0 +1,23 @@
+wide daily panel: 64484 symbol-days
+
+=== references (NOT trials): deployed-family rankings ===
+  reference: rank by r30                             n= 2632  spread +0.869%  CI [-0.352%, +2.300%]  noise  (reference)
+  reference: rank by r90                             n= 2572  spread +0.745%  CI [-0.762%, +2.283%]  noise  (reference)
+=== H24 risk-adjusted momentum (r90/vol90) ===
+  rank by r90/vol90                                  n= 2572  spread +0.768%  CI [-0.431%, +2.225%]  noise  (PASS if CI>0)
+=== H25 52-week-high proximity ===
+  rank by close/max365                               n= 2298  spread +0.977%  CI [-0.354%, +2.362%]  noise  (PASS if CI>0)
+=== H26 residual momentum (BTC beta stripped, BTC excluded) ===
+  rank by 90d residual momentum                      n= 2377  spread +1.076%  CI [-0.812%, +2.170%]  noise  (PASS if CI>0)
+=== H27 low-volatility anomaly (two-sided) ===
+  rank by vol90 (top2=HIGH vol)                      n= 2572  spread +0.822%  CI [-1.074%, +2.381%]  noise  (low-vol claim = CI<0)
+=== H28 MAX / lottery effect (two-sided) ===
+  rank by max 1d ret in 30d (top2=HIGH max)          n= 2632  spread +0.471%  CI [-1.051%, +2.191%]  noise  (lottery claim = CI<0)
+=== H29 illiquidity premium (two-sided) ===
+  rank by Amihud illiq30 (top2=ILLIQUID)             n= 2632  spread +0.761%  CI [-0.616%, +2.394%]  noise  (illiq claim = CI>0)
+=== H30 volume-shock ranking (two-sided) ===
+  rank by volume/30d avg volume                      n= 2633  spread +0.305%  CI [-1.260%, +1.760%]  noise  (two-sided)
+=== H31 trend smoothness among r90>0 coins ===
+  rank by up-day share | r90>0                       n= 1652  spread -0.142%  CI [-2.579%, +1.982%]  noise  (PASS if CI>0)
+=== H32 skip-week momentum ===
+  rank by r(90..7)                                   n= 2572  spread +0.143%  CI [-1.209%, +1.544%]  noise  (PASS if CI>0)

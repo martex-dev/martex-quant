@@ -1,0 +1,14 @@
+panel: 23209 symbol-days
+
+=== H13 shock persistence (fwd 7d minus quiet-day baseline) ===
+  extreme up (z>=2)      n=  924  diff +3.54%  CI [+1.25%, +5.99%]  SIGNAL
+  moderate up (1<=z<2)   n= 2258  diff +0.65%  CI [-0.19%, +1.46%]  noise
+  moderate down          n= 2050  diff +0.08%  CI [-1.01%, +1.15%]  noise
+  extreme down (z<=-2)   n=  672  diff -1.47%  CI [-3.34%, +0.45%]  noise
+  H13: 1/4 buckets carry signal at 7d
+
+=== H14 vol-expansion breakout (directional fwd 7d) ===
+  compression+trigger days: 871  directional fwd7 +1.10%  CI [-0.14%, +1.97%]  fail
+  increment vs trigger-without-compression: -0.76%  CI [-3.49%, +1.60%]  fail
+  H14: FAILS (needs both)
+
