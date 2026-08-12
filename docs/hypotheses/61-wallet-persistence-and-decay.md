@@ -1,10 +1,61 @@
 # Hypothesis 61 — Does winning persist, and is anything left after latency?
 
-Status: **REGISTERED 2026-08-12, NOT YET RUN.** No wallet ranking has been
-computed, no period-2 outcome has been looked at, no decay curve has been
-measured. Bitquery access was verified with a two-row connectivity query
-against `DEXTradeByTokens` (USDC trades, no wallet data) and nothing else.
-Git history is the proof of ordering, not this line.
+Status: **REGISTERED 2026-08-12. H61a ATTEMPTED 2026-08-12 → INCONCLUSIVE
+(quota-blocked). H61b NOT RUN.** The design below was committed before any
+wallet ranking existed; git history is the proof of ordering, not this line.
+
+## Run 1 attempt — 2026-08-12, INCONCLUSIVE
+
+Stopped by the pre-registered bar, not by judgement: **INCONCLUSIVE if fewer
+than 200 wallets clear the round-trip threshold.**
+
+| Quantity | Value |
+|---|---|
+| Wallets pulled by activity rank (P1) | 4,000 |
+| With ≥ 20 distinct tokens traded | 95 |
+| Measured before quota exhaustion | 30 |
+| **Clearing ≥ 20 CLOSED round-trips** | **0** |
+| With any closed round-trip in both periods | 7 |
+
+A Spearman rho of **+0.96** was computed on those 7 wallets. **It is not
+reported as a result and must not be cited.** Seven points, selected by
+whichever wallets happened to be measured before the quota ran out, is exactly
+the shape of a false positive; the registered bars exist to stop it being
+written down as a finding.
+
+### What the attempt taught (all confirmed, none of it a verdict)
+
+1. **The "closed round-trip" rule bites far harder than expected.** 95 wallets
+   touched ≥ 20 distinct tokens in 24h; **none** of the 30 measured closed 20 of
+   them inside the window. Wallets buy many tokens and hold; realized PnL over a
+   24h window is therefore a much thinner measurement than the design assumed.
+   This is a real property of the market, and the round-trip threshold or the
+   window length has to change — but that is a **re-registration**, not an
+   in-flight adjustment, and it must not be tuned after seeing outcomes.
+
+2. **Bitquery free tier is `realtime`-only.** `dataset: archive` returns 403.
+   Per-wallet filtered queries do reach back ≥ 48h, so the two-period design is
+   feasible on retention grounds.
+
+3. **The binding constraint is the points quota, not retention.** ~130
+   wallet-queries exhausted the daily allowance (HTTP 402). The design as
+   implemented costs 2 queries per wallet, so 200 wallets needs 400 queries and
+   cannot fit.
+
+4. **Fix for run 2 (efficiency, not method):** replace the per-wallet loop with
+   a single aggregation grouped by (`Trade.Account`, `Trade.Currency`) over the
+   whole window, paginated. That is ~2–10 queries instead of 400 and changes no
+   registered quantity.
+
+5. **A query bug was found and fixed before any number was believed.**
+   `Trade.Side.Account` is the counterparty/pool account, not the trader;
+   filtering on it matched most of the market and produced a nonsense
+   $272,613,571 "PnL". The trader is `Trade.Account`. The first run's numbers
+   were discarded entirely.
+
+Run 2 is blocked until the quota resets. No verdict is claimed.
+
+---
 
 ---
 
