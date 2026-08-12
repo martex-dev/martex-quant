@@ -30,3 +30,11 @@ Thumbs.db
 
 # Local environment files (API keys must never enter git)
 .env
+
+# Credentials. PROJECT_STATE has expected config/secrets/*.json since the July
+# sprint, but nothing ignored the directory, so the first key written there
+# would have been committed on the next `git add -A`. Ignore the whole tree,
+# not individual filenames, so a new provider cannot reintroduce the hole.
+config/secrets/
+*.key
+*.pem
