@@ -40,6 +40,15 @@ logger = logging.getLogger("meme_base_rate")
 # Upside thresholds, as fractional returns. 9.0 == 10x, 99.0 == 100x.
 UPSIDE = ((0.5, "+50%"), (1.0, "2x"), (3.0, "4x"), (9.0, "10x"), (99.0, "100x"))
 
+# Round-trip friction above which we treat a pool as untradable, matching
+# economics.evaluate_trade's default ceiling.
+COST_CEILING = 0.15
+
+# Peak returns beyond this are almost certainly a price-from-near-zero artifact
+# (a pool initialised at a dust price, then quoted normally) rather than a move
+# anyone could have captured. Counted and reported, never silently dropped.
+ABSURD_PEAK = 1_000.0  # 100,000%, i.e. 1000x
+
 
 def _pct(count: int, total: int) -> str:
     return f"{100.0 * count / total:5.2f}%" if total else "    -"
@@ -135,6 +144,7 @@ def report(frame: pl.DataFrame, notional: float, model: CostModel) -> None:
             f"{_pct(int((series <= -0.9).sum()), series.len()):>8}"
         )
 
+    _inertia_section(live)
     _tradable_universe(live, model)
     _net_section(live, notional, model)
     _tail_section(live)
@@ -178,6 +188,22 @@ def _tradable_universe(live: pl.DataFrame, model: CostModel) -> None:
 
 
 def _net_section(live: pl.DataFrame, notional: float, model: CostModel) -> None:
+    """Net outcomes, computed ONLY over pools the ticket could actually enter.
+
+    Two corrections versus the naive version, both of which changed the
+    headline materially:
+
+    Applying a 204%-friction cost to a pool we would never trade produces a
+    "net return" of -189%, which is not a loss any spot position can take. The
+    universe is therefore restricted to pools inside the cost ceiling first,
+    and net returns are floored at -100%. Reporting the unrestricted number
+    would answer a question nobody can act on.
+
+    Means are reported alongside a trimmed mean because a single 5,600,000x
+    outlier moves the raw mean by thousands of percent. The raw mean is kept
+    visible rather than dropped - in a power-law market the tail IS the
+    result, and hiding it would misrepresent the strategy just as badly.
+    """
     print(f"\n--- what a ${notional:,.0f} ticket actually keeps ---")
     depth = live.get_column("entry_liquidity").drop_nulls()
     if depth.len() == 0:
@@ -187,26 +213,54 @@ def _net_section(live: pl.DataFrame, notional: float, model: CostModel) -> None:
         f"pool depth at entry      : median ${depth.median():,.0f}, "
         f"p10 ${depth.quantile(0.10):,.0f}, p90 ${depth.quantile(0.90):,.0f}"
     )
-    median_cost = model.round_trip_cost_frac(notional, float(depth.median()))
-    print(f"round-trip friction      : {median_cost:.1%} at median depth")
+
+    tradable = live.filter(
+        pl.col("entry_liquidity").is_not_null()
+        & (
+            pl.col("entry_liquidity").map_elements(
+                lambda liq: model.round_trip_cost_frac(notional, float(liq)),
+                return_dtype=pl.Float64,
+            )
+            <= COST_CEILING
+        )
+    )
+    print(
+        f"tradable at ${notional:,.0f}       : {tradable.height}/{live.height} "
+        f"({100.0 * tradable.height / live.height:.1f}% of cohort)"
+    )
+    if tradable.height == 0:
+        print("no pool in this cohort can absorb that ticket -- nothing to report")
+        return
+
+    tradable_depth = tradable.get_column("entry_liquidity")
+    median_cost = model.round_trip_cost_frac(notional, float(tradable_depth.median()))
+    print(f"round-trip friction      : {median_cost:.1%} at median TRADABLE depth")
     print(f"breakeven move needed    : +{median_cost:.1%} before any profit")
 
-    print(f"\n{'horizon':>8} {'n':>6} {'net mean':>10} {'net median':>11} {'net win%':>9}")
+    print(
+        f"\n{'horizon':>8} {'n':>6} {'net med':>9} {'trim mean':>11} {'raw mean':>12} {'win%':>7}"
+    )
     for horizon in HORIZONS_MIN:
-        joined = live.select(
+        joined = tradable.select(
             pl.col(f"ret_{horizon}m").alias("ret"),
             pl.col("entry_liquidity").alias("liq"),
         ).drop_nulls()
         if joined.height == 0:
             continue
         nets = [
-            float(ret) - model.round_trip_cost_frac(notional, float(liq))
+            # Floored at -100%: a spot position cannot lose more than the stake,
+            # however brutal the modelled friction.
+            max(-1.0, float(ret) - model.round_trip_cost_frac(notional, float(liq)))
             for ret, liq in zip(joined.get_column("ret"), joined.get_column("liq"), strict=True)
         ]
         series = pl.Series(nets)
+        ordered = sorted(nets)
+        cut = int(len(ordered) * 0.01)
+        trimmed = ordered[cut : len(ordered) - cut] if len(ordered) > 20 * 2 else ordered
+        trim_mean = sum(trimmed) / len(trimmed) if trimmed else 0.0
         print(
-            f"{horizon:>7}m {series.len():>6} {series.mean():>9.1%} {series.median():>10.1%} "
-            f"{_pct(int((series > 0).sum()), series.len()):>9}"
+            f"{horizon:>7}m {series.len():>6} {series.median():>8.1%} {trim_mean:>10.1%} "
+            f"{series.mean():>11.1%} {_pct(int((series > 0).sum()), series.len()):>7}"
         )
 
 
@@ -218,12 +272,48 @@ def _tail_section(live: pl.DataFrame) -> None:
     print("\n--- concentration of upside (peak return, best first) ---")
     for k in (1, 5, 10, 25, 50):
         if peaks.len() >= k:
-            print(f"  #{k:<3} best peak : {peaks[k - 1]:>10.1%}")
+            print(f"  #{k:<3} best peak : {peaks[k - 1]:>14.1%}")
     positive = peaks.filter(peaks > 0)
     print(
         f"  pools with any positive peak : {positive.len()}/{peaks.len()} "
         f"({100.0 * positive.len() / peaks.len():.1f}%)"
     )
+    absurd = peaks.filter(peaks >= ABSURD_PEAK)
+    print(
+        f"  peaks above 1000x (likely dust-price artifacts, excluded from no "
+        f"statistic below): {absurd.len()}"
+    )
+    credible = peaks.filter(peaks < ABSURD_PEAK)
+    if credible.len() > 0:
+        print(f"  best credible peak (<1000x)  : {credible.max():.1%}")
+
+
+def _inertia_section(live: pl.DataFrame) -> None:
+    """How many launches simply never trade again after we see them?
+
+    This is the modal outcome and it is invisible in return statistics, which
+    report it as a clean 0.0%. A pool that is created and then never touched is
+    not a flat trade - it is an asset with no bid, and it is the single most
+    common thing that happens to a new Solana token.
+    """
+    print("\n--- did the token ever actually trade? ---")
+    for horizon in HORIZONS_MIN:
+        frame = live.select(
+            pl.col(f"ret_{horizon}m").alias("ret"),
+            pl.col(f"mfe_{horizon}m").alias("mfe"),
+            pl.col(f"mae_{horizon}m").alias("mae"),
+        ).drop_nulls()
+        if frame.height == 0:
+            continue
+        frozen = frame.filter(
+            (pl.col("ret").abs() < 1e-9)
+            & (pl.col("mfe").abs() < 1e-9)
+            & (pl.col("mae").abs() < 1e-9)
+        ).height
+        print(
+            f"{horizon:>7}m {frame.height:>6} observed, {frozen:>6} never moved "
+            f"({100.0 * frozen / frame.height:>5.1f}%)"
+        )
 
 
 def main() -> int:
