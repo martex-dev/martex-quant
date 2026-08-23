@@ -114,3 +114,7 @@ committing.
 
 See [`CLAUDE.md`](CLAUDE.md) for the full project charter and engineering
 rules.
+
+
+
+*the project is heavy using Claude Code Fable 5 almost fully vibe-coded with a little human-supervising, just a disclaimer but it's still very successful and smoothly working with perfect tests execution, live and working dashboard updating every day at 8:10 PM EST.* - Martex
