@@ -1,6 +1,16 @@
 # MI Lab Layer 1 — Consolidation Plan & Semantic-Difference Audit
 
-Date: 2026-08-10. Status: **PLAN — for review. No code changed yet.**
+Date: 2026-08-10. Status: **COMPLETE — merged 2026-08-11 in `990ac63`
+("Merge MI Lab Layer 1: frozen research baseline + canonical analytics"),
+Steps 0–5.** The plan below is preserved as written; it was a plan when
+written and is not retconned. Verification of §4's definition of done is
+appended at the end of this document.
+
+**Status reconciled 2026-08-26.** This header read "PLAN — for review. No
+code changed yet." for 15 days after the work merged, and
+PROJECT_STATE's next-action list believed it — carrying Layer 1 as
+pending work that was already done. See the closing section.
+
 Scope: consolidate the duplicated analytical machinery found in the
 repository audit into canonical, regression-tested infrastructure.
 Treated as **research integrity work**, not cleanup: these duplicates are
@@ -418,3 +428,31 @@ changes to any hypothesis document, verdict, or ledger entry. No
 5. Duplicate counts: 6 panel builders → 1; 16 bootstrap definitions → 4;
    11 forward-return definitions → 1.
 6. No hypothesis document, verdict, or ledger entry modified.
+
+---
+
+## 5. Completion verification (added 2026-08-26)
+
+Audited against §4's definition of done. Every item checked against the
+repository rather than against the commit messages.
+
+| # | Definition of done | Verified state |
+|---|---|---|
+| 1 | `tests/golden/` holds byte-exact baselines + input fingerprint | **Met, and exceeded.** 30 specs, not 13 — scope corrected per §1.4(a). `tests/golden/fingerprints.json` + one `.out` per script. |
+| 2 | `stats/bootstrap.py`, `features/panel.py`, `forward_return` exist, unit-tested, strictly typed | **Met.** Four canonical shapes (`two_group_diff_ci`, `daily_mean_ci`, `event_mean_ci`, `flag_split_ci`) plus `two_group_diff_pvalue`. `tests/test_bootstrap.py` = 15 tests including the §Step-1-mandated RNG-contract test (`test_rng_draw_budget_is_exactly_n_blocks_per_iteration`) and a cross-shape draw-order test. `tests/test_features_panel.py` covers the panel layer. mypy strict passes. |
+| 3 | All scripts import canonical implementations; zero golden diffs | **Met.** 13 scripts import `stats.bootstrap`; 12 import the panel layer; 12 use canonical `forward_return`. Suite green apart from the separately-recorded `research_graph_report` fingerprint (doc 59 edited after freeze — a pending deliberate re-freeze, not a Layer 1 regression). |
+| 4 | ruff, format, mypy clean | **Met** (re-verified 2026-08-26). |
+| 5 | 6 panel builders → 1; 16 bootstrap definitions → 4; 11 forward-return → 1 | **Met.** The `def daily_panel` / `def diff_ci` names still present in scripts are **thin wrappers** that delegate to the canonical functions while passing each script's historical parameters — the §2 governing rule "parameterize, never normalize" working as designed, not surviving duplication. Verified by reading the bodies, e.g. `h15_21_killtests.daily_panel` is a call to `canonical_daily_panel` with that study's frozen feature list. |
+| 6 | No hypothesis document, verdict, or ledger entry modified | **Met.** Hypothesis docs changed after 2026-08-10 belong to separate research (H59 findings, H61 registration, the meme layer), not to any Layer 1 commit. |
+
+`OBSERVATION` — Layers 2, 3, 4 and 5 also merged 2026-08-11
+(`d53c5e5`, `909d778`, `92dfab2`, `0fefa50`), along with stages 6, 8, 9
+and 10. **The entire approved MI Lab scope (Layers 1–4) is complete.**
+
+`INTERPRETATION` — the failure here was documentary, not technical. The
+work was done, tested and merged on schedule; three status headers and one
+next-action list were never updated, so the project's own answer to "what
+should I do next" pointed at finished work for two weeks. This is the same
+class of defect as the false CI badge recorded 2026-08-26: a claim in a
+document that no test could contradict. Worth the same treatment — when a
+gate closes, the line that says it is open is part of closing it.

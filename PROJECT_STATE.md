@@ -508,6 +508,28 @@ presented as a discovery.
 
 ## Next actions (in order)
 
+**Read this first (2026-08-26).** Items 1–4 and 7 below are struck
+through: every one was already finished, some for over two weeks. This
+list was written 2026-08-10 — **one day before the entire MI Lab merged**
+— and was never updated, so the project's own answer to "what next"
+pointed at completed work while the real question went unasked.
+
+`INTERPRETATION` — with the MI Lab scope complete, the eval deferred, and
+the contributor proposal declined on feasibility, **there is no large
+piece of infrastructure left to build.** The binding constraint is now
+research, and `docs/research/owncap-sizing.md` §3 already names it:
+
+> "The route to higher sustainable monthly returns is a higher-Sharpe
+> book, not more leverage [...] Every genuinely independent edge added
+> raises the ceiling itself. **This is now a primary research
+> objective.**"
+
+The book tops out near +10%/month average at survivable 2× leverage. More
+leverage cannot fix that — only a genuinely independent edge can. The
+backlog's candidates (Deribit VRP, correlation-spike de-risking, carry
+infrastructure) are the standing shortlist, and each needs a
+pre-registered hypothesis before anything runs.
+
 1. ~~**MI Lab design gate (in progress).**~~ **CLOSED — and it was
    already closed.** docs/research/mi-trial-accounting-design.md §11 has
    recorded "approved with amendments 1–9" since 2026-08-10, but its
@@ -516,12 +538,21 @@ presented as a discovery.
    Header reconciled 2026-08-26. **Layer 1 is unblocked and is now the
    first action.** One new amendment (10, selection vs description) is
    PROPOSED in §2 and needs an owner yes/no; it does not block Layer 1.
-2. **MI Layer 1 — now first.** Consolidate 6 duplicated panel
-   builders, 11 block-bootstrap copies, 11 forward-return definitions
-   into canonical infrastructure with regression tests proving
-   historical behaviour is preserved. Research-integrity work, not
-   cleanup.
-3. **Data availability contract** to be written before Layer 3.
+2. ~~**MI Layer 1.**~~ **DONE — merged 2026-08-11 in `990ac63`**, Steps
+   0–5. Verified against its own definition of done 2026-08-26; the
+   audit table is appended to
+   docs/research/mi-layer1-consolidation-plan.md. Canonical
+   `stats/bootstrap.py` (4 estimator shapes + RNG-contract test),
+   `features/panel.py`, canonical `forward_return`; 13 scripts migrated;
+   30 frozen goldens. The `def daily_panel` / `def diff_ci` names still
+   in scripts are thin wrappers passing historical parameters — the
+   "parameterize, never normalize" rule, not surviving duplication.
+3. ~~**Data availability contract before Layer 3.**~~ **MOOT — Layer 3
+   merged 2026-08-11** (`909d778`), along with Layers 2 (`d53c5e5`), 4
+   (`92dfab2`) and 5 (`0fefa50`) and stages 6, 8, 9, 10. **The entire
+   approved MI Lab scope (Layers 1–4) is complete.** If a data
+   availability contract is still wanted it is now a retrospective
+   document, not a prerequisite.
 4. ~~**Decide the eval question explicitly.**~~ **CLOSED 2026-08-26 —
    deferred by owner decision.** See "DECISION — eval DEFERRED" above.
    Reopening requires a written profitability criterion, registered
