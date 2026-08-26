@@ -17,7 +17,16 @@ killed ideas without a new pre-registered spec and a stated reason.
 - Kill test (cheap information study) BEFORE any strategy build.
   Event-driven engine is the source of truth for strategies; vectorized
   screening only pre-engine.
-- New features must beat the DEPLOYED system incrementally, not zero.
+- New features must beat the DEPLOYED system incrementally, not zero —
+  for DEPLOYMENT decisions. Amended 2026-08-27
+  (docs/research/standalone-viable-amendment.md): a hypothesis that
+  clears the full standalone bar (positive after costs, CI excluding
+  zero, DSR_global >= 0.95, engine-grade) but does NOT beat the
+  incumbent is closed STANDALONE-VIABLE, not KILLED. It is not
+  deployed; it is a live edge on the bench. Existence and deployment
+  are different questions and the incremental bar only answers the
+  second. No retroactive relabelling: old KILLED verdicts stand until
+  re-registered and re-run.
 - Paper accounts run only validated/eligible specs; one spec per record
   (spec change = archive the record, fresh $5,000 start).
 - Live/real-money actions are gated: the runbook
