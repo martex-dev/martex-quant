@@ -530,13 +530,17 @@ presented as a discovery.
    2026-07-10.
 6. **October:** move the paper task 03:10 → 02:10 local (DST) to stay
    near the UTC close.
-7. **New, 2026-08-26 — decide the H43a census.** The contributor
-   proposal response (docs/research/bounded-search-proposal-response.md)
-   makes a descriptive census of H43a's 317 bounce days the precondition
-   for any bounded search. It costs 0 trials by the owncap-sizing
-   precedent, and it cannot be delegated: the lake is never committed,
-   so an outside contributor cannot run it. Either run it or record why
-   not.
+7. ~~**Decide the H43a census.**~~ **DONE 2026-08-26 —
+   docs/research/h43a-bounce-census.md, 0 trials.** Result: the
+   contributor proposal's `f(trailing_vol; k1, k2)` form is **DECLINED on
+   feasibility**. `corr(trailing_vol, breach indicator) = −0.0310` — the
+   relationship the form depends on does not exist, and
+   `corr(trailing_vol, overlay P&L) = +0.1113` means shrinking on high vol
+   cuts the earning days. Breaches by vol quintile are 9/5/6/3/6: no tail
+   to cut. The base book breaches once in 2,880 days; the overlay adds 29.
+   **Nothing further is owed on that proposal** beyond sending the census.
+   A flagged post-hoc observation in §5 must NOT be advanced without its
+   own pre-registration.
 8. **New, 2026-08-26 — watch for further truncated paper runs.** Two are
    on record (08-20, 08-26). The loop reorder protects the deployed spec
    but does not stop truncation. If partial days keep appearing, the

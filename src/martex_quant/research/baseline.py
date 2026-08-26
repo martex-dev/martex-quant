@@ -350,6 +350,18 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h43a_bounce_census",
+        hypotheses="H43a bounce-day census (descriptive, 0 trials)",
+        seeds=(),
+        uses_universe=True,
+        data_files=("data/tmp/h4x_streams/rot_stop_stream.parquet",),
+        seed_note=(
+            "No RNG: pure description over the cached H43a book. Rebuilds it "
+            "with h43_combo_study's construction and refuses to print if the "
+            "published 317 bounce days / 82% mean idle do not reproduce."
+        ),
+    ),
+    ScriptSpec(
         name="h51_fade_study",
         hypotheses="H51a, H51b",
         seeds=(),

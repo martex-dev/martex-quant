@@ -1,0 +1,70 @@
+==============================================================================
+H43a BOUNCE-DAY CENSUS — descriptive, 0 new ledger trials
+==============================================================================
+
+Window: 2880 days, 2018-08-17 00:00:00+00:00 -> 2026-07-05 00:00:00+00:00
+Bounce days: 317 (published 317)
+Mean idle cash deployed: 82% (published 82%)
+Reproduction OK — figures below are sound.
+
+Breach rule: book return <= -6% (3% daily limit at RISK_SCALE 0.5)
+
+--- return distributions ---
+  base, all days             n=2880  mean=+0.0011 min=-0.0687 p05=-0.0189 p50=+0.0000 p95=+0.0233 max=+0.1634
+  combined, all days         n=2880  mean=+0.0019 min=-0.1683 p05=-0.0236 p50=+0.0000 p95=+0.0345 max=+0.2468
+  base, bounce days          n=317   mean=+0.0020 min=-0.0433 p05=-0.0160 p50=+0.0000 p95=+0.0208 max=+0.0554
+  combined, bounce days      n=317   mean=+0.0091 min=-0.1683 p05=-0.0895 p50=+0.0096 p95=+0.0839 max=+0.2468
+  overlay alone, bounce      n=317   mean=+0.0071 min=-0.1610 p05=-0.0733 p50=+0.0076 p95=+0.0795 max=+0.2471
+
+--- breach counts ---
+  base book, all days      : 1
+  combined book, all days  : 30   (overlay adds 29)
+  base book, bounce days   : 0
+  combined, bounce days    : 29   (overlay adds 29)
+  combined, NON-bounce days: 1
+
+  Non-bounce breaches are untouchable by any overlay sizing rule:
+  the overlay is flat on those days. They are the floor a conditional
+  rule cannot get below.
+
+--- vol conditioning (316 bounce days with a 20d trailing vol) ---
+  quintile of trailing vol (low -> high), by breach count and overlay P&L:
+    Q1  vol [0.0000, 0.0064]  n=63   breaches=9   overlay_sum=-0.1518 overlay_mean=-0.00241
+    Q2  vol [0.0065, 0.0103]  n=63   breaches=5   overlay_sum=+0.2321 overlay_mean=+0.00368
+    Q3  vol [0.0103, 0.0128]  n=63   breaches=6   overlay_sum=+0.5925 overlay_mean=+0.00940
+    Q4  vol [0.0129, 0.0170]  n=63   breaches=3   overlay_sum=+0.5283 overlay_mean=+0.00839
+    Q5  vol [0.0170, 0.0388]  n=64   breaches=6   overlay_sum=+1.0017 overlay_mean=+0.01565
+
+--- shrink-threshold curve (DESCRIPTIVE — no threshold is chosen) ---
+  'zero the overlay on the top X% of bounce days by trailing vol':
+     X%  breaches_left  overlay_P&L_kept   % of P&L kept
+      0             29            2.2028          100.0%
+      5             27            2.0431           92.8%
+     10             25            1.9647           89.2%
+     20             23            1.2040           54.7%
+     30             22            0.7417           33.7%
+     40             20            0.6461           29.3%
+     50             16            0.4222           19.2%
+     75             12           -0.2092           -9.5%
+    100              0            0.0000            0.0%
+
+  ...and the SYMMETRIC arm, 'zero the overlay on the BOTTOM X% by vol':
+     X%  breaches_left  overlay_P&L_kept   % of P&L kept
+      0             29            2.2028          100.0%
+      5             26            2.2648          102.8%
+     10             24            2.3661          107.4%
+     20             20            2.3546          106.9%
+     30             16            2.4574          111.6%
+     40             15            2.1224           96.4%
+     50             13            1.7805           80.8%
+     75              6            1.3339           60.6%
+    100              0            0.0000            0.0%
+
+--- the relationship the proposal's f(trailing_vol) depends on ---
+  corr(trailing_vol, breach indicator) = -0.0310
+  corr(trailing_vol, overlay P&L)      = +0.1113
+
+  Read these as trade-off tables, not menus. Picking the row that
+  scores best is a selection over the candidates it beat, and costs
+  that many trials; see mi-trial-accounting-design.md §2 amendment 10.
+==============================================================================
