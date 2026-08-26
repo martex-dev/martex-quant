@@ -508,11 +508,15 @@ presented as a discovery.
 
 ## Next actions (in order)
 
-1. **MI Lab design gate (in progress):** statistical/accounting design
-   for the hierarchical trial framework —
-   docs/research/mi-trial-accounting-design.md. Review required before
-   any Layer 1 code.
-2. **MI Layer 1** after design review: consolidate 6 duplicated panel
+1. ~~**MI Lab design gate (in progress).**~~ **CLOSED — and it was
+   already closed.** docs/research/mi-trial-accounting-design.md §11 has
+   recorded "approved with amendments 1–9" since 2026-08-10, but its
+   status header still read "DESIGN — for review", so this list carried
+   the gate as open work for 16 days when only the header was stale.
+   Header reconciled 2026-08-26. **Layer 1 is unblocked and is now the
+   first action.** One new amendment (10, selection vs description) is
+   PROPOSED in §2 and needs an owner yes/no; it does not block Layer 1.
+2. **MI Layer 1 — now first.** Consolidate 6 duplicated panel
    builders, 11 block-bootstrap copies, 11 forward-return definitions
    into canonical infrastructure with regression tests proving
    historical behaviour is preserved. Research-integrity work, not

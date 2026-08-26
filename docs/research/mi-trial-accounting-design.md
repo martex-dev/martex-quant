@@ -1,6 +1,11 @@
 # Trial Accounting & Multiple-Testing Design (MI Lab Layer 2)
 
-Date: 2026-08-10. Status: **DESIGN — for review. No code written.**
+Date: 2026-08-10. Status: **APPROVED with amendments 1–9 (2026-08-10).
+Gate closed; Layer 1 may proceed.** One later amendment (10, §2) is
+PROPOSED and awaiting an owner decision; it does not block Layer 1.
+Status header reconciled 2026-08-26 — it still read "DESIGN — for review"
+long after §11 recorded the approval, which left PROJECT_STATE listing
+this gate as an open next action it no longer was.
 Prerequisite for: MI Lab Layers 1–4.
 Companion documents: docs/research/market-intelligence-lab-audit.md,
 PROJECT_MEMORY.md (the 120-trial ledger), CLAUDE.md (standing rules).
@@ -78,6 +83,36 @@ conditioning, data window, methodology, data vintage)` whose result was
 trial** — the sweep's selection acts on all cells regardless of whether
 a human read them. This closes the "I only looked at three of them"
 loophole.
+
+**Amendment 10 — PROPOSED 2026-08-26, NOT YET RATIFIED. Description
+versus selection.** Surfaced by an outside contributor proposal (see
+docs/research/bounded-search-proposal-response.md §5), which noted that
+this document's trial rule and `docs/research/owncap-sizing.md` appear to
+contradict each other: owncap-sizing swept five leverage values over the
+43a book, published a metric table per value, and declared **0 new ledger
+trials**. Proposed reconciliation:
+
+> A sweep that publishes its **whole** surface and selects no operating
+> point on statistical grounds costs no trials — it is a published
+> trade-off table, and the choice made from it is a human policy
+> decision. The moment a winner is picked **on a metric** and carried
+> forward as a claim, every cell it beat has entered the selection set
+> and every cell is a trial.
+>
+> **Selection against a metric is what consumes alpha. Description does
+> not.**
+
+This is offered as the *reason* the computed-but-unread rule above is
+correct, not as an exception to it. Guard, if ratified: the exemption
+applies only when the full surface is published and no cell is advanced
+as a claim. "We only meant it descriptively," asserted after seeing which
+cell won, is selection.
+
+**Owner decision required.** Until ratified, the unqualified rule above
+governs and every evaluated cell is a trial. Recorded here rather than
+applied, because a change to what counts as a trial is a methodological
+decision and this document's own §4.2 precedent is that such decisions
+are made deliberately and never inferred.
 
 **Family.** A declared, hierarchical region of hypothesis space with a
 **fixed cell count declared at registration**, e.g.
@@ -486,12 +521,10 @@ Approved implementation scope is Layers 1–4 only. The large-scale
 discovery engine is **not** approved and must not be built. No new MI
 data sources are approved yet.
 
-Layer 1 (consolidating the duplicated panel builders, forward-return
-definitions, and block-bootstrap implementations into canonical,
-regression-tested infrastructure) **does not depend on any remaining
+Layer 1 — consolidating the 6 duplicated panel builders, 11
+block-bootstrap copies, and 11 forward-return definitions into canonical,
+regression-tested infrastructure — **does not depend on any remaining
 open question** and proceeds first.
 
-Layer 1 (consolidating the 6 panel builders, 11 bootstrap copies, and 11
-forward-return definitions into canonical, regression-tested
-infrastructure) **does not depend on any of these answers** and can
-proceed in parallel once approved.
+(This paragraph appeared twice in near-identical wording, an artifact of
+the amendment pass; merged 2026-08-26. No content was dropped.)
