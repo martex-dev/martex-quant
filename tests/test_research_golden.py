@@ -18,15 +18,29 @@ own cause:
 Nothing here writes a golden. Freezing is done deliberately via
 ``scripts/freeze_research_baseline.py --write``.
 
-CI note: ``/data/`` is gitignored, so GitHub Actions has no market data and
-these tests skip there. They are a LOCAL gate. The skip fires only when the
-declared inputs are entirely absent — data that is present but CHANGED is a
-hard failure, never a skip.
+CI note: these are a LOCAL gate and skip on a hosted runner. Two independent
+reasons, both structural rather than incidental:
+
+- ``/data/`` is gitignored, so GitHub Actions has no market data. Most specs
+  skip on that alone.
+- The fingerprint hashes its declared inputs byte for byte, and this
+  repository stores text with CRLF. A Linux checkout has LF, so every
+  markdown input hashes differently and reports a smaller byte count
+  (PROJECT_MEMORY.md: 16,640 -> 16,429). The environment category also
+  records exact interpreter and package versions, which a hosted runner
+  resolves independently. Neither can be satisfied on both platforms from one
+  frozen baseline, so the spec whose inputs are all committed markdown —
+  research_graph_report — would fail in CI forever while proving nothing.
+
+The skip is therefore keyed on the runner, and locally it is keyed only on
+inputs being entirely absent: data that is present but CHANGED is a hard
+failure, never a skip. The local gate is unchanged in strength.
 """
 
 from __future__ import annotations
 
 import json
+import os
 import random
 from pathlib import Path
 from typing import Any
@@ -169,11 +183,24 @@ def test_archived_output_is_preserved_with_an_explanation() -> None:
 # --- golden regression (needs the local data lake) ----------------------------------
 
 
+def _skip_if_unverifiable(spec: ScriptSpec) -> None:
+    """Skip where the baseline cannot be meaningfully compared.
+
+    On a hosted runner that is always: line endings and pinned-by-accident
+    package versions differ from the machine that froze the baseline (see the
+    module docstring). Locally it is only when the declared inputs are absent
+    entirely — a changed input is a failure, which is the whole point.
+    """
+    if os.environ.get("CI"):
+        pytest.skip(f"{spec.name}: frozen baselines are a local gate (CI runner)")
+    if not baseline.inputs_present(spec, ROOT):
+        pytest.skip(f"{spec.name}: declared inputs absent (no local data lake)")
+
+
 @pytest.mark.slow
 @pytest.mark.parametrize("spec", GATED_SPECS, ids=GATED_IDS)
 def test_golden_stdout(spec: ScriptSpec) -> None:
-    if not baseline.inputs_present(spec, ROOT):
-        pytest.skip(f"{spec.name}: declared inputs absent (no local data lake — CI)")
+    _skip_if_unverifiable(spec)
     golden = ROOT / spec.golden_path
     assert golden.exists(), (
         f"no frozen golden for {spec.name}. "
@@ -203,8 +230,7 @@ def test_frozen_fingerprint_categories(spec: ScriptSpec) -> None:
 
     ``code`` is intentionally excluded — Layer 1 changes code on purpose.
     """
-    if not baseline.inputs_present(spec, ROOT):
-        pytest.skip(f"{spec.name}: declared inputs absent (no local data lake — CI)")
+    _skip_if_unverifiable(spec)
     stored = _stored_fingerprints().get(spec.name)
     assert stored is not None, f"no frozen fingerprint for {spec.name}"
 
