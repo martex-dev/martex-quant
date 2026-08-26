@@ -1,6 +1,9 @@
 # Hypothesis 62 — Delta-Neutral Funding Carry (strategy-grade)
 
-Status: **PRE-REGISTERED 2026-08-27, NOT RUN.** Trials: +1 → 126.
+Status: **ALL FIVE BARS PASS (2026-08-27) — strategy-grade, paper-eligible.**
+Trials: +1 → 126. Verdict in §8. **Read §8.1 before sizing anything:** the
+edge is concentrated in 2021 and earns ~0%/yr in the current funding
+regime. §4's pre-registration text is preserved as written.
 
 Builds on `docs/hypotheses/05-carry-funding.md` (FEASIBILITY CONFIRMED
 2026-07-11: gross annualized premium BTC +6.86%, ETH +6.46%, XRP +5.81%,
@@ -121,3 +124,90 @@ independent edge this was built for, whatever its Sharpe.
   not priced anywhere in the backtest.
 - **Funding is taken as realized history**, not forecast. This is a carry
   harvest, not a funding-prediction strategy.
+
+---
+
+## 8. VERDICT (2026-08-27, scripts/h62_carry_study.py, +1 trial → 126)
+
+**ALL FIVE PRE-REGISTERED BARS PASS.** Window: 2,124 common days,
+2020-09-15 → 2026-07-09, 8 symbols, 1× collateralized.
+
+| # | Bar | Measured | Result |
+|---|---|---|---|
+| 1 | mean daily net > 0, CI excludes zero | **+0.868 bp/day**, CI [+0.245, +1.611] | **PASS** |
+| 2 | net CAGR ≥ 2%/yr | **+3.24%** | **PASS** |
+| 3 | Sharpe ≥ 1.0 | **2.29** | **PASS** |
+| 4 | \|corr\| with rotation-stop < 0.30 | **+0.0041** (n=2,120) | **PASS** |
+| 5 | `DSR_global` ≥ 0.95 @ 126 | **0.9754** | **PASS** |
+
+MDD **−5.09%**. Decomposition: funding **+4.717%/yr**, basis drift
+**−0.255%/yr**, costs **−1.291%/yr**, net **+3.171%/yr**.
+
+`OBSERVATION` — **Sharpe 2.29 is the highest in the ledger** (rotation-stop
+1.47, H43a 1.55), and **correlation +0.0041 is effectively zero** against a
+book everything else correlates 0.52–0.82 with (meta-finding 5). Bar 4 —
+the load-bearing one — passes by two orders of magnitude.
+
+### 8.1 Robustness: H05's pre-flagged concern was correct, and it is severe
+
+H05 warned in advance that "the recent regime is much thinner than the 4y
+mean." Checked, and it is worse than thin:
+
+| Year | net %/yr | funding %/yr | Sharpe |
+|---|---|---|---|
+| 2020 (108d) | +4.15 | +6.58 | 3.12 |
+| **2021** | **+15.68** | **+17.83** | 11.18 |
+| 2022 | **−4.83** | −2.52 | −1.71 |
+| 2023 | +1.75 | +2.74 | 5.24 |
+| 2024 | +4.57 | +5.74 | 10.68 |
+| 2025 | **+0.45** | +1.62 | 1.99 |
+| 2026 (190d) | **−0.78** | +0.16 | −3.95 |
+| **last 365d** | **+0.08** | — | **0.34** |
+| last 730d | +0.75 | — | 3.05 |
+
+`OBSERVATION` — the edge is **overwhelmingly concentrated in 2021**
+(+15.68%/yr against a full-sample +3.17%). Over the **last 365 days it
+earns +0.08%/yr at Sharpe 0.34** — indistinguishable from zero.
+
+`INTERPRETATION` — carry is a **regime harvest, not a constant**. It pays
+when leveraged longs are crowded and inverts when shorts are (2022:
+−4.83%). The full-sample verdict is not wrong, and the bars are not
+revised — they were fixed in advance and they passed on the window they
+were set for. But **deploying capital into the current regime would earn
+approximately nothing**, and any expectation built on the +3.24% headline
+is an expectation about 2021.
+
+### 8.2 Disposition
+
+Per §6, all five bars passing makes this **strategy-grade and
+paper-eligible**. That disposition stands as written.
+
+Recorded alongside it, and equally binding on anyone reading this:
+
+- **Do not size this on the full-sample number.** The honest forward
+  expectation at current funding is ~0%/yr, not +3.24%.
+- **1× only.** §7's limitation is unchanged: intraday liquidation is
+  unmodelled, and the 1× specification is what makes that acceptable. A
+  levered version is a **new hypothesis** and inherits no safety from this
+  one.
+- **The obvious next idea is a funding-conditional variant** — hold only
+  when trailing funding is rich. It is NOT tested here and must not be
+  bolted on: it introduces a tunable threshold, which is precisely the
+  dredging risk this project pre-registers against. It requires its own
+  numbered document and its own bars.
+
+### 8.3 What this settles
+
+`OBSERVATION` — this is the first validated edge in the ledger that is
+**not** a long-crypto momentum book, and the first with near-zero
+correlation to the deployed spec.
+
+`INTERPRETATION` — it confirms the structural claim in
+`docs/research/graveyard-audit.md` §5: the ledger's ~3% survival rate was
+a fact about **one family**, not about whether markets are exploitable.
+The first hypothesis tested outside that family passed all five bars on
+its first run. It does not, however, pay enough at 1× in the current
+regime to change the income picture — `owncap-sizing.md`'s conclusion that
+the route runs through *higher Sharpe*, not more leverage, is strengthened
+rather than replaced: carry supplies the Sharpe and the independence, and
+the funding regime supplies the constraint.

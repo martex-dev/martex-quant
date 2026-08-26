@@ -506,6 +506,46 @@ presented as a discovery.
 
 ---
 
+## H62 — carry: first validated edge outside the momentum family (2026-08-27)
+
+`OBSERVATION` — pre-registered 2026-08-27 before any code was written;
+run the same day. **All five bars passed.** 2,124 common days
+(2020-09-15 -> 2026-07-09), 8 symbols, 1x collateralized, costs on both
+legs.
+
+| Metric | H62 carry | rotation-stop (deployed) |
+|---|---|---|
+| Sharpe | **2.29** | 1.47 |
+| CAGR | +3.24% | +42.9% |
+| MDD | **-5.09%** | -29.0% |
+| corr with rotation-stop | **+0.0041** | — |
+| DSR @126 | 0.9754 | 0.9909 |
+
+`OBSERVATION` — **the correlation is the result that matters: +0.0041.**
+Meta-finding 5 records that every long-crypto momentum book measured so
+far correlates 0.52-0.82 with every other one, which is why H43b/H43c
+were screened out without ever running. Carry is the first stream in the
+ledger that is genuinely independent of the deployed spec.
+
+`OBSERVATION` — **and the regime finding is equally load-bearing.** H05
+warned in advance that the recent funding regime is thin. It is worse
+than thin: the edge is concentrated in 2021 (+15.68%/yr), inverted in
+2022 (-4.83%/yr), and over the **last 365 days earns +0.08%/yr at Sharpe
+0.34** — indistinguishable from zero.
+
+`INTERPRETATION` — carry is a **regime harvest, not a constant**. The
+full-sample verdict stands as pre-registered and is not revised, but any
+forward expectation built on +3.24% is an expectation about 2021.
+Deploying capital into today's regime earns approximately nothing.
+Infrastructure now exists (`backtesting/carry.py`, 10 unit tests) and
+that is durable; the premium is not.
+
+**Next question this opens (NOT tested, needs its own numbered doc):** a
+funding-conditional variant — hold only when trailing funding is rich.
+It introduces a tunable threshold and must not be bolted on.
+
+---
+
 ## Next actions (in order)
 
 **Read this first (2026-08-26).** Items 1–4 and 7 below are struck
@@ -513,6 +553,9 @@ through: every one was already finished, some for over two weeks. This
 list was written 2026-08-10 — **one day before the entire MI Lab merged**
 — and was never updated, so the project's own answer to "what next"
 pointed at completed work while the real question went unasked.
+
+**Superseded in part, 2026-08-27.** Carry was built and tested. See
+"H62 — carry" below; the ledger is now **126**.
 
 `INTERPRETATION` — with the MI Lab scope complete, the eval deferred, and
 the contributor proposal declined on feasibility, **there is no large

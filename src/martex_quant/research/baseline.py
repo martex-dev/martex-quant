@@ -350,6 +350,25 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h62_carry_study",
+        hypotheses="H62 delta-neutral funding carry (trial 126)",
+        seeds=(20260827,),
+        uses_universe=False,
+        # Its universe is the 8-symbol list FIXED by the pre-registration,
+        # not config/universe.json. Fingerprinting the three input caches is
+        # what makes a data refresh visible: funding and perp are static
+        # files outside the lake's catalog/validation path.
+        data_files=(
+            "data/funding/BTCUSDT.parquet",
+            "data/perp/BTCUSDT.parquet",
+            "data/tmp/h4x_streams/rot_stop_stream.parquet",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260827 via stats.bootstrap.daily_mean_ci. "
+            "The carry engine itself is deterministic -- no RNG."
+        ),
+    ),
+    ScriptSpec(
         name="h43a_bounce_census",
         hypotheses="H43a bounce-day census (descriptive, 0 trials)",
         seeds=(),

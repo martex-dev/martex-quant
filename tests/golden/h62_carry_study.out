@@ -1,0 +1,38 @@
+==============================================================================
+H62 — DELTA-NEUTRAL FUNDING CARRY (trial 126)
+==============================================================================
+
+Universe: 8 symbols (fixed by pre-registration)
+Common window: 2124 days, 2020-09-15 -> 2026-07-09
+Collateralization: 50% spot / 50% margin (perp leverage 1.0x)
+Costs: 10bp fee + 1bp half-spread, BOTH legs
+
+--- return decomposition (annualized, of deployed capital) ---
+  funding collected      +4.717 %/yr
+  basis drift            -0.255 %/yr
+  costs                  -1.291 %/yr
+  NET                    +3.171 %/yr (simple sum)
+
+--- the five pre-registered bars ---
+  1. mean daily net > 0, CI excludes zero : +0.868bp/day CI [+0.245, +1.611]bp  -> PASS
+  2. net CAGR >= 2%/yr                : +3.24%  -> PASS
+  3. Sharpe >= 1.0                     : 2.29  -> PASS
+  4. |corr| with rotation-stop < 0.30     : +0.0041 (n=2120)  -> PASS
+  5. DSR_global >= 0.95 @ 126 trials   : 0.9754  -> PASS
+
+  MDD -5.09%   (days=2124)
+
+--- robustness: regime concentration (H05's pre-flagged concern) ---
+  2020  n= 108  net=  +4.15%/yr  funding= +6.58%/yr  Sharpe=  3.12
+  2021  n= 365  net= +15.68%/yr  funding=+17.83%/yr  Sharpe= 11.18
+  2022  n= 365  net=  -4.83%/yr  funding= -2.52%/yr  Sharpe= -1.71
+  2023  n= 365  net=  +1.75%/yr  funding= +2.74%/yr  Sharpe=  5.24
+  2024  n= 366  net=  +4.57%/yr  funding= +5.74%/yr  Sharpe= 10.68
+  2025  n= 365  net=  +0.45%/yr  funding= +1.62%/yr  Sharpe=  1.99
+  2026  n= 190  net=  -0.78%/yr  funding= +0.16%/yr  Sharpe= -3.95
+  last 365d: net=  +0.08%/yr  Sharpe=  0.34
+  last 730d: net=  +0.75%/yr  Sharpe=  3.05
+
+==============================================================================
+VERDICT: ALL FIVE BARS PASS -> strategy-grade, paper-eligible.
+==============================================================================

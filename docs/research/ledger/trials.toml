@@ -19,8 +19,8 @@
 # distributed by guess.
 
 period = "2026"
-ledger_total_claimed = 125
-ledger_run_claimed = 124
+ledger_total_claimed = 126
+ledger_run_claimed = 125
 ledger_data_blocked_claimed = 1
 
 [[entries]]
@@ -280,6 +280,20 @@ maturity = "L3"
 source = "docs/hypotheses/58-learned-indicator-ensemble.md"
 evidence = "Ledger: +5 -> 125. BAR 1 FAIL: learned weights (C, acc 0.5062, spread -0.56% noise) lose to equal weights (B, acc 0.5213, spread +2.79% CI [+0.83%,+4.90%]). L1/L2/rolling-retrain do not rescue it."
 notes = "Stability bar PASSED (6/6 features >=2/3, four at 85-92%) and ablation degraded — the weights are stable and reproducible, just worse. Second independent confirmation of meta-finding 4. Reference cell (not a trial): r90 alone gave a significant NEGATIVE fwd7 spread -2.11%, CI [-4.28%,-0.17%]. Registered and committed (71ad882) before the run."
+
+[[entries]]
+hypothesis = "H62"
+family = "strategy.carry.funding_basis"
+trial_count = 1
+grade = "strategy"
+protocol = "confirmatory"
+verdict = "eligible"
+maturity = "L4"
+dsr = 0.9754
+dsr_n_trials = 126
+source = "docs/hypotheses/62-delta-neutral-carry.md"
+evidence = "Ledger: +1 -> 126. ALL FIVE BARS PASS on 2,124 common days (2020-09-15..2026-07-09), 8 symbols, 1x collateralized: mean +0.868bp/day CI [+0.245,+1.611]; CAGR +3.24%; Sharpe 2.29; corr with rotation-stop +0.0041 (n=2,120); DSR 0.9754 @126. MDD -5.09%."
+notes = "First validated edge outside the long-crypto momentum family and the first with near-zero correlation to the deployed spec (everything else measured correlates 0.52-0.82; meta-finding 5). Decomposition: funding +4.717%/yr, basis drift -0.255%/yr, costs -1.291%/yr. REGIME CAVEAT, load-bearing: the edge is concentrated in 2021 (+15.68%/yr), inverted in 2022 (-4.83%/yr), and earns +0.08%/yr at Sharpe 0.34 over the last 365 days. H05 pre-flagged this and was right. Bars were fixed in advance and are not revised, but no forward expectation may be built on the full-sample +3.24%. Pre-registered and committed (4b8d855) before the engine was written."
 
 # The remainder the committed documents do not allocate. Carried explicitly
 # rather than distributed by guess: assigning it would be fabrication, and
