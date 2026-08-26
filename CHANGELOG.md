@@ -4,6 +4,36 @@ All notable changes to this project are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow
 [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] — 2026-08-26
+
+### Changed
+
+- **Renamed the distribution to `martex-quant`** (`pip install martex-quant`),
+  and the command to `martex-quant`. The import package is unchanged: it is
+  still `import trading_bot`, and the repository is still `trading-bot`.
+
+  PyPI rejected `trading-bot` as too similar to the existing `tradingbot`.
+  Checking that the exact name returned 404 was not sufficient — that only
+  proves nobody holds it, not that PyPI will let you register it, because the
+  similarity check collapses separators. `tradingbot`, `trading-bots`, and
+  `tradebot` all already exist.
+
+- Enabled the PyPI publishing job, which now runs on every version tag via
+  trusted publishing (OIDC, no stored API token).
+
+### Fixed
+
+- The v1.0.0 release notes told users to run `tradingbot init my-lab && cd
+  my-lab`. Windows PowerShell has no `&&` operator — it is a parser error, so
+  neither half runs. Every chained command in the README, INSTALL, the
+  `--help` epilog, and the release template is now one per line. The published
+  v1.0.0 notes were corrected in place.
+- The release template interpolated the git tag straight into a pip command,
+  emitting `==v1.0.0` (with the `v`), which pip rejects. The version is now
+  derived by stripping the prefix.
+
+---
+
 ## [1.0.0] — 2026-08-26
 
 First public release. The platform was already complete as research code;

@@ -10,7 +10,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WORKSPACE="${TRADING_BOT_HOME:-$(dirname "$SCRIPT_DIR")}"
 cd "$WORKSPACE"
 
-TB="$WORKSPACE/.venv/bin/tradingbot"
-[ -x "$TB" ] || TB="tradingbot"
+TB="$WORKSPACE/.venv/bin/martex-quant"
+[ -x "$TB" ] || TB="martex-quant"
 
 exec "$TB" dashboard "$@"

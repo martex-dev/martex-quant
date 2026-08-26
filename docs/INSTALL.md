@@ -18,21 +18,21 @@ tick **"Add python.exe to PATH"** in the installer.
 ## Option 1 — install the released version (recommended)
 
 ```bash
-pip install trading-bot
+pip install martex-quant
 ```
 
-That gives you the `tradingbot` command. Verify it:
+That gives you the `martex-quant` command. Verify it:
 
 ```bash
-tradingbot doctor
+martex-quant doctor
 ```
 
-### If `pip` or `tradingbot` is "not found"
+### If `pip` or `martex-quant` is "not found"
 
 Use the module form, which always works:
 
 ```bash
-python -m pip install trading-bot
+python -m pip install martex-quant
 python -m trading_bot.cli doctor
 ```
 
@@ -90,11 +90,11 @@ anything else:
 ```bash
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install trading-bot
+pip install martex-quant
 ```
 
 You must activate that environment (`source .venv/bin/activate`) in each new
-terminal before `tradingbot` is on your PATH.
+terminal before `martex-quant` is on your PATH.
 
 ---
 
@@ -103,8 +103,8 @@ terminal before `tradingbot` is on your PATH.
 The core install deliberately stays small. Two extras exist:
 
 ```bash
-pip install "trading-bot[research]"   # TensorFlow — only for the TSLA CNN study
-pip install "trading-bot[mt5]"        # MetaTrader 5 broker adapter (Windows only)
+pip install "martex-quant[research]"   # TensorFlow — only for the TSLA CNN study
+pip install "martex-quant[mt5]"        # MetaTrader 5 broker adapter (Windows only)
 ```
 
 You do **not** need either to run the data pipeline, backtester, Monte Carlo,
@@ -115,9 +115,9 @@ paper trading, or dashboard.
 ## First run
 
 ```bash
-tradingbot init my-lab
+martex-quant init my-lab
 cd my-lab
-tradingbot quickstart
+martex-quant quickstart
 ```
 
 `init` creates the workspace — where your data lake, paper-trading records,
@@ -130,7 +130,7 @@ Full command reference: [USAGE.md](USAGE.md).
 
 ## Troubleshooting
 
-**`tradingbot: command not found` after installing.**
+**`martex-quant: command not found` after installing.**
 Your virtual environment is not activated, or pip installed to a directory
 that is not on your PATH. `python -m trading_bot.cli` always works as a
 substitute.
@@ -140,7 +140,7 @@ Binance restricts access from some regions and blocks some cloud IP ranges.
 The data pipeline needs it; everything downstream needs data. A VPN or a
 different machine is the usual fix.
 
-**`tradingbot doctor` says the research corpus is missing.**
+**`martex-quant doctor` says the research corpus is missing.**
 You are running from a source tree that was never installed. Run
 `pip install -e .` from the repository root.
 
@@ -149,5 +149,5 @@ Set `PYTHONIOENCODING=utf-8` in your environment. Windows Terminal handles
 this better than the legacy console.
 
 **A command fails and you cannot tell why.**
-Run `tradingbot doctor` first — it checks the install, the dependencies, the
+Run `martex-quant doctor` first — it checks the install, the dependencies, the
 corpus, and the workspace, and tells you the next command to run.

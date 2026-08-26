@@ -21,8 +21,8 @@ if defined TRADING_BOT_HOME (
 cd /d "%WORKSPACE%" || exit /b 1
 
 rem Prefer the project's virtualenv; fall back to whatever is on PATH.
-set "TB=%WORKSPACE%\.venv\Scripts\tradingbot.exe"
-if not exist "%TB%" set "TB=tradingbot"
+set "TB=%WORKSPACE%\.venv\Scripts\martex-quant.exe"
+if not exist "%TB%" set "TB=martex-quant"
 
 if not exist "data\paper" mkdir "data\paper"
 

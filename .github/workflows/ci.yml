@@ -85,7 +85,7 @@ jobs:
           PYTHONIOENCODING: utf-8
         run: |
           cd /tmp
-          /tmp/clean/bin/tradingbot init lab
+          /tmp/clean/bin/martex-quant init lab
           cd lab
-          /tmp/clean/bin/tradingbot doctor
-          /tmp/clean/bin/tradingbot ledger --limit 5
+          /tmp/clean/bin/martex-quant doctor
+          /tmp/clean/bin/martex-quant ledger --limit 5

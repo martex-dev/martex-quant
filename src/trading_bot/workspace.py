@@ -5,7 +5,7 @@ directory — `data/lake`, `data/paper/<strategy>`, `docs/research/ledger/
 trials.toml`, `config/universe.json`. In a git checkout that is simply the
 repo root, which is why it was never a problem.
 
-An installed `tradingbot` has no repo root. Rather than thread an explicit
+An installed `martex-quant` has no repo root. Rather than thread an explicit
 root through every module (a large, risky change to code the ledger already
 depends on), the CLI resolves a *workspace* directory and chdirs into it
 before dispatching. One decision, one place, and every existing relative

@@ -2,7 +2,7 @@
 
 Project metadata lives in `pyproject.toml`; this file exists only to copy
 `docs/` and `config/` into `src/trading_bot/_bundle/` before the wheel is
-built, so that `pip install trading-bot` ships the pre-registered hypotheses,
+built, so that `pip install martex-quant` ships the pre-registered hypotheses,
 the trial ledger, and the universe config — not just the code. See
 `trading_bot/bundle.py` for the runtime half.
 

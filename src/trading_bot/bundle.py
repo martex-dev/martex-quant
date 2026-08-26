@@ -3,8 +3,8 @@
 The dashboard's Lab view, the hypothesis ledger, and the universe config are
 read from paths relative to the *working directory* — `docs/research/ledger/
 trials.toml`, `config/universe.json`. That works in a git checkout, where the
-repo root is the working directory, but a `pip install trading-bot` gets only
-the Python package: no docs, no config, so `tradingbot init` would have
+repo root is the working directory, but a `pip install martex-quant` gets only
+the Python package: no docs, no config, so `martex-quant init` would have
 nothing to copy into a new workspace.
 
 So the wheel carries them. `setup.py` copies `docs/` and `config/` into
@@ -26,7 +26,7 @@ from pathlib import Path
 
 _PACKAGE_ROOT = Path(__file__).resolve().parent
 
-#: Directories copied into a fresh workspace by `tradingbot init`.
+#: Directories copied into a fresh workspace by `martex-quant init`.
 BUNDLED_TREES = ("docs", "config")
 
 

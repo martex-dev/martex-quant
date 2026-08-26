@@ -1,7 +1,7 @@
 """CLI and workspace tests: the surfaces a downloaded copy exposes.
 
 These guard the distribution contract rather than any research result — that
-`tradingbot` parses, that a fresh workspace comes out complete, that secrets
+`martex-quant` parses, that a fresh workspace comes out complete, that secrets
 never travel into one, and that commands fail with an explanation instead of
 a traceback when the lake is empty.
 """
@@ -45,11 +45,11 @@ def test_help_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
 
 def test_bare_invocation_prints_help(capsys: pytest.CaptureFixture[str]) -> None:
     assert main([]) == 0
-    assert "tradingbot" in capsys.readouterr().out
+    assert "martex-quant" in capsys.readouterr().out
 
 
 def test_disclaimer_is_in_the_help_text() -> None:
-    """Anyone typing `tradingbot --help` must see this is not advice."""
+    """Anyone typing `martex-quant --help` must see this is not advice."""
     assert "not financial advice" in build_parser().description.lower()  # type: ignore[union-attr]
 
 
@@ -152,7 +152,7 @@ def test_data_status_on_empty_lake_explains_itself(
 ) -> None:
     ws.initialise(tmp_path)
     assert main(["-w", str(tmp_path), "data", "status"]) == 1
-    assert "tradingbot data pull" in capsys.readouterr().out
+    assert "martex-quant data pull" in capsys.readouterr().out
 
 
 def test_backtest_without_data_explains_itself(
@@ -195,7 +195,7 @@ def test_ledger_without_corpus_points_at_init(
 ) -> None:
     (tmp_path / "data").mkdir()
     assert main(["-w", str(tmp_path), "ledger"]) == 1
-    assert "tradingbot init" in capsys.readouterr().err
+    assert "martex-quant init" in capsys.readouterr().err
 
 
 def test_doctor_reports_an_uninitialised_workspace(
@@ -230,4 +230,4 @@ def test_release_documents_exist() -> None:
 
 def test_entry_point_is_declared() -> None:
     text = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    assert 'tradingbot = "trading_bot.cli:main"' in text
+    assert 'martex-quant = "trading_bot.cli:main"' in text

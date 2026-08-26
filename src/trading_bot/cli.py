@@ -1,4 +1,4 @@
-"""`tradingbot` — the command line entry point for an installed copy.
+"""`martex-quant` — the command line entry point for an installed copy.
 
 Everything the platform can do was already reachable as `python -m
 trading_bot.<something>` or a script under `scripts/`, but only from a git
@@ -6,14 +6,14 @@ checkout with the repo root as the working directory. This module is the
 front door: one command, discoverable subcommands, and a workspace so an
 installed wheel knows where its data lives.
 
-    tradingbot init my-lab        # scaffold a workspace + research corpus
-    tradingbot quickstart         # pull data, backtest it, show the result
-    tradingbot dashboard          # operations dashboard in the browser
+    martex-quant init my-lab        # scaffold a workspace + research corpus
+    martex-quant quickstart         # pull data, backtest it, show the result
+    martex-quant dashboard          # operations dashboard in the browser
 
 Design notes:
 
 - Heavy imports (polars, ccxt, the engine) happen inside the handlers, not at
-  module scope. `tradingbot --help` should be instant, and `doctor` has to be
+  module scope. `martex-quant --help` should be instant, and `doctor` has to be
   able to report a missing dependency rather than die on it.
 - Handlers return a process exit code. Anything that touches the network or
   the lake reports failure by returning nonzero, never by raising a traceback
@@ -62,7 +62,7 @@ BACKTEST_STRATEGIES = {
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="tradingbot",
+        prog="martex-quant",
         description=(
             "Quantitative trading research platform: data, backtesting, "
             "statistical validation, Monte Carlo, paper trading, dashboard. "
@@ -71,9 +71,9 @@ def build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         # One command per line: Windows PowerShell has no `&&`, and chaining
         # there is a parser error that runs neither half.
-        epilog=("first run:\n  tradingbot init my-lab\n  cd my-lab\n  tradingbot quickstart\n"),
+        epilog=("first run:\n  martex-quant init my-lab\n  cd my-lab\n  martex-quant quickstart\n"),
     )
-    parser.add_argument("--version", action="version", version=f"trading-bot {__version__}")
+    parser.add_argument("--version", action="version", version=f"martex-quant {__version__}")
     parser.add_argument(
         "-w",
         "--workspace",
@@ -169,7 +169,7 @@ def cmd_init(args: argparse.Namespace) -> int:
     print("next:")
     if target != Path.cwd().resolve():
         print(f"  cd {_display_path(target)}")
-    print("  tradingbot quickstart")
+    print("  martex-quant quickstart")
     return 0
 
 
@@ -179,7 +179,7 @@ def cmd_doctor(args: argparse.Namespace) -> int:
     target = ws.resolve(args.workspace)
     ok = True
 
-    print(f"trading-bot {__version__}")
+    print(f"martex-quant {__version__}")
     print(f"python      {sys.version.split()[0]} ({sys.executable})")
     print(f"install     {'source checkout' if is_editable_checkout() else 'installed package'}")
     print()
@@ -207,13 +207,13 @@ def cmd_doctor(args: argparse.Namespace) -> int:
 
     print(f"workspace   {target}")
     if not ws.looks_like_workspace(target):
-        print("  not initialised — run: tradingbot init")
+        print("  not initialised — run: martex-quant init")
         ok = False
     else:
         lake = target / "data" / "lake"
         entries = _catalog_entries(lake)
         if entries is None:
-            print("  lake      empty — run: tradingbot data pull --symbol BTCUSDT --interval 1d")
+            print("  lake      empty — run: martex-quant data pull --symbol BTCUSDT --interval 1d")
         else:
             print(f"  lake      {len(entries)} dataset(s)")
         paper = target / "data" / "paper"
@@ -271,10 +271,10 @@ def cmd_quickstart(args: argparse.Namespace) -> int:
         "of them.\n"
     )
     print("Where to go next:")
-    print("  tradingbot ledger              every hypothesis and its verdict")
-    print("  tradingbot montecarlo          pass odds against prop-firm rules")
-    print("  tradingbot paper --strategy rotation-stop     one forward day")
-    print("  tradingbot dashboard           equity curves, journals, diaries")
+    print("  martex-quant ledger              every hypothesis and its verdict")
+    print("  martex-quant montecarlo          pass odds against prop-firm rules")
+    print("  martex-quant paper --strategy rotation-stop     one forward day")
+    print("  martex-quant dashboard           equity curves, journals, diaries")
     return 0
 
 
@@ -294,7 +294,7 @@ def cmd_data_status(args: argparse.Namespace) -> int:
     entries = _catalog_entries(lake)
     if entries is None:
         print(f"no catalog at {lake}/catalog.json — the lake is empty")
-        print("pull some data:  tradingbot data pull --symbol BTCUSDT --interval 1d")
+        print("pull some data:  martex-quant data pull --symbol BTCUSDT --interval 1d")
         return 1
 
     print(f"{len(entries)} dataset(s) in {lake.resolve()}")
@@ -339,7 +339,7 @@ def cmd_backtest(args: argparse.Namespace) -> int:
     except Exception as exc:
         print(f"cannot read {args.symbol} {interval.value} from the lake: {exc}", file=sys.stderr)
         print(
-            f"pull it first:  tradingbot data pull --symbol {args.symbol} "
+            f"pull it first:  martex-quant data pull --symbol {args.symbol} "
             f"--interval {interval.value}",
             file=sys.stderr,
         )
@@ -406,7 +406,7 @@ def cmd_montecarlo(args: argparse.Namespace) -> int:
         print(
             "This needs daily bars for the 8-symbol universe. Pull them with:\n"
             "  for s in BTCUSDT ETHUSDT BNBUSDT SOLUSDT XRPUSDT ADAUSDT DOGEUSDT LTCUSDT; "
-            'do tradingbot data pull --symbol "$s" --interval 1d; done',
+            'do martex-quant data pull --symbol "$s" --interval 1d; done',
             file=sys.stderr,
         )
         return 1
@@ -517,7 +517,7 @@ def cmd_ledger(args: argparse.Namespace) -> int:
     path = Path.cwd() / LEDGER_DIR / TRIALS_FILE
     if not path.is_file():
         print(f"no ledger at {path}", file=sys.stderr)
-        print("Run `tradingbot init` in this directory to copy in the corpus.", file=sys.stderr)
+        print("Run `martex-quant init` in this directory to copy in the corpus.", file=sys.stderr)
         return 1
 
     ledger = load_ledger(Path.cwd())
@@ -601,7 +601,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         target = ws.resolve(args.workspace)
         if not target.is_dir():
             print(f"no such workspace: {target}", file=sys.stderr)
-            print("Create it with:  tradingbot init", file=sys.stderr)
+            print("Create it with:  martex-quant init", file=sys.stderr)
             return 1
         os.chdir(target)
 

@@ -23,13 +23,13 @@ product. The tooling exists to produce more of it.
 ## Install
 
 ```bash
-pip install trading-bot
+pip install martex-quant
 ```
 
 ```bash
-tradingbot init my-lab
+martex-quant init my-lab
 cd my-lab
-tradingbot quickstart
+martex-quant quickstart
 ```
 
 `quickstart` downloads real market data, walk-forward backtests it with fees,
@@ -43,14 +43,14 @@ troubleshooting: [docs/INSTALL.md](docs/INSTALL.md).
 
 | Command | What it does |
 |---|---|
-| `tradingbot doctor` | Check the install, dependencies, corpus, and workspace |
-| `tradingbot quickstart` | Guided first run: pull data, backtest it, read the result |
-| `tradingbot data pull` | Download, **validate**, and store OHLCV history |
-| `tradingbot backtest` | Walk-forward backtest, out of sample, costs included |
-| `tradingbot montecarlo` | Prop-firm evaluation pass odds, with confidence intervals |
-| `tradingbot paper` | One forward-testing day on a simulated $5,000 account |
-| `tradingbot dashboard` | Equity curves, trade journals, daily diaries, the Lab |
-| `tradingbot ledger` | Every trial ever run, and its verdict |
+| `martex-quant doctor` | Check the install, dependencies, corpus, and workspace |
+| `martex-quant quickstart` | Guided first run: pull data, backtest it, read the result |
+| `martex-quant data pull` | Download, **validate**, and store OHLCV history |
+| `martex-quant backtest` | Walk-forward backtest, out of sample, costs included |
+| `martex-quant montecarlo` | Prop-firm evaluation pass odds, with confidence intervals |
+| `martex-quant paper` | One forward-testing day on a simulated $5,000 account |
+| `martex-quant dashboard` | Equity curves, trade journals, daily diaries, the Lab |
+| `martex-quant ledger` | Every trial ever run, and its verdict |
 
 Full reference: [docs/USAGE.md](docs/USAGE.md).
 
@@ -99,7 +99,7 @@ Concretely, that means:
 
 Every hypothesis, verdict, and the reasoning behind it:
 [`PROJECT_MEMORY.md`](PROJECT_MEMORY.md). What is running right now:
-[`PROJECT_STATE.md`](PROJECT_STATE.md). Or just run `tradingbot ledger`.
+[`PROJECT_STATE.md`](PROJECT_STATE.md). Or just run `martex-quant ledger`.
 
 ## Architecture
 
@@ -110,7 +110,7 @@ backtest, died live."
 
 ```
 src/trading_bot/
-  cli.py               the `tradingbot` command
+  cli.py               the `martex-quant` command
   data/
     collectors/        exchange adapters (ccxt) behind a common interface
     processors/        validation — reports problems, never silently repairs

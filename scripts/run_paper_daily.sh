@@ -16,8 +16,8 @@ WORKSPACE="${TRADING_BOT_HOME:-$(dirname "$SCRIPT_DIR")}"
 cd "$WORKSPACE"
 
 # Prefer the project's virtualenv; fall back to whatever is on PATH.
-TB="$WORKSPACE/.venv/bin/tradingbot"
-[ -x "$TB" ] || TB="tradingbot"
+TB="$WORKSPACE/.venv/bin/martex-quant"
+[ -x "$TB" ] || TB="martex-quant"
 
 STRATEGIES=(vol-target rotation crash-bounce rotation-stop)
 

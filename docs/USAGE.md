@@ -1,6 +1,6 @@
 # Using the platform
 
-Every command below is a subcommand of `tradingbot`. Add `--help` to any of
+Every command below is a subcommand of `martex-quant`. Add `--help` to any of
 them for the full list of options.
 
 > This is research software. Nothing here is financial advice, and no
@@ -15,7 +15,7 @@ A **workspace** is a directory holding your data lake, your paper-trading
 records, and a copy of the research corpus. Create one:
 
 ```bash
-tradingbot init my-lab
+martex-quant init my-lab
 cd my-lab
 ```
 
@@ -41,7 +41,7 @@ Commands find the workspace in this order:
 3. the current directory
 
 So `cd my-lab` once and every command just works, or run
-`tradingbot -w ~/my-lab dashboard` from anywhere.
+`martex-quant -w ~/my-lab dashboard` from anywhere.
 
 Re-running `init` on an existing workspace is safe: it creates what is
 missing and never overwrites what is there. Use `--overwrite` to restore
@@ -52,7 +52,7 @@ corpus files you have edited.
 ## `doctor` — check everything
 
 ```bash
-tradingbot doctor
+martex-quant doctor
 ```
 
 Reports your Python version, the install type, each dependency, whether the
@@ -65,7 +65,7 @@ problem, so it is usable in scripts.
 ## `quickstart` — the guided first run
 
 ```bash
-tradingbot quickstart
+martex-quant quickstart
 ```
 
 Downloads three years of daily Bitcoin bars, walk-forward backtests a
@@ -79,8 +79,8 @@ Options: `--symbol ETHUSDT`, `--years 5`.
 ## `data` — the market data lake
 
 ```bash
-tradingbot data pull --symbol BTCUSDT --interval 1d --years 4
-tradingbot data status
+martex-quant data pull --symbol BTCUSDT --interval 1d --years 4
+martex-quant data status
 ```
 
 `pull` collects, **validates**, and stores OHLCV history. Validation is not
@@ -97,7 +97,7 @@ To pull the eight-symbol universe the Monte Carlo simulation needs:
 
 ```bash
 for s in BTCUSDT ETHUSDT BNBUSDT SOLUSDT XRPUSDT ADAUSDT DOGEUSDT LTCUSDT; do
-  tradingbot data pull --symbol "$s" --interval 1d
+  martex-quant data pull --symbol "$s" --interval 1d
 done
 ```
 
@@ -105,7 +105,7 @@ On Windows PowerShell:
 
 ```powershell
 foreach ($s in "BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT","ADAUSDT","DOGEUSDT","LTCUSDT") {
-  tradingbot data pull --symbol $s --interval 1d
+  martex-quant data pull --symbol $s --interval 1d
 }
 ```
 
@@ -114,8 +114,8 @@ foreach ($s in "BTCUSDT","ETHUSDT","BNBUSDT","SOLUSDT","XRPUSDT","ADAUSDT","DOGE
 ## `backtest` — walk-forward, out of sample
 
 ```bash
-tradingbot backtest --symbol BTCUSDT --strategy momentum
-tradingbot backtest --symbol ETHUSDT --strategy donchian --train 500 --test 120
+martex-quant backtest --symbol BTCUSDT --strategy momentum
+martex-quant backtest --symbol ETHUSDT --strategy donchian --train 500 --test 120
 ```
 
 Strategies: `momentum`, `vol-target`, `donchian`.
@@ -140,7 +140,7 @@ Two things to understand about the output:
 ## `montecarlo` — prop-firm evaluation odds
 
 ```bash
-tradingbot montecarlo --paths 5000
+martex-quant montecarlo --paths 5000
 ```
 
 Block-bootstraps the validated candidate's out-of-sample daily returns
@@ -166,7 +166,7 @@ actual rules before paying any evaluation fee.
 ## `paper` — forward testing
 
 ```bash
-tradingbot paper --strategy rotation-stop --cash 5000
+martex-quant paper --strategy rotation-stop --cash 5000
 ```
 
 Runs **one** decision cycle: fetches recent daily bars, re-selects parameters
@@ -186,7 +186,7 @@ own journal, equity curve, and plain-English daily diary.
 **Linux / macOS** — `crontab -e`:
 
 ```
-10 3 * * * cd ~/my-lab && ~/my-lab/.venv/bin/tradingbot paper --strategy rotation-stop >> data/paper/runs.log 2>&1
+10 3 * * * cd ~/my-lab && ~/my-lab/.venv/bin/martex-quant paper --strategy rotation-stop >> data/paper/runs.log 2>&1
 ```
 
 **Windows** — use the bundled launcher with Task Scheduler:
@@ -207,8 +207,8 @@ composite of two different systems and means nothing.
 ## `dashboard` — the operations view
 
 ```bash
-tradingbot dashboard
-tradingbot dashboard --port 8766 --no-open
+martex-quant dashboard
+martex-quant dashboard --port 8766 --no-open
 ```
 
 Serves a local dashboard at `http://127.0.0.1:8765` (opens your browser
@@ -227,9 +227,9 @@ That is deliberate.
 ## `ledger` — the research record
 
 ```bash
-tradingbot ledger
-tradingbot ledger --verdict killed --limit 40
-tradingbot ledger --limit 0
+martex-quant ledger
+martex-quant ledger --verdict killed --limit 40
+martex-quant ledger --limit 0
 ```
 
 Every trial ever run, with its verdict, family, and published deflated Sharpe

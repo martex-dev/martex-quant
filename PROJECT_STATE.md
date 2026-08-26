@@ -282,9 +282,23 @@ venv with no checkout present, then `init` -> `doctor` -> `ledger` ->
 `quickstart` (real Binance pull + walk-forward) -> `paper` all succeeded,
 resolving the corpus from site-packages.
 
-`OBSERVATION` — distribution name `trading-bot` was confirmed unclaimed
-on PyPI at build time. Registering it is a manual step the maintainer
-must take before the PyPI job is enabled.
+`OBSERVATION` — the distribution is named **`martex-quant`**
+(`pip install martex-quant`), and the command is `martex-quant`. The
+import package is unchanged — still `import trading_bot` — and so is the
+repository name.
+
+`OBSERVATION` — the first choice, `trading-bot`, was rejected by PyPI as
+too similar to an existing project. The pre-check was wrong: querying
+`pypi.org/pypi/trading-bot/json` returned 404, which proves only that
+nobody *holds* the exact name. PyPI additionally refuses names that are
+too similar to existing ones, and its similarity check collapses
+separators, so `trading-bot` reads as a duplicate of `tradingbot` (which
+exists, as do `trading-bots` and `tradebot`).
+
+`INTERPRETATION` — availability and registrability are different
+questions on PyPI, and only the second one matters. A 404 is necessary
+but not sufficient; the name is not proven until an upload succeeds, and
+a pending publisher does not reserve it in the meantime.
 
 `INTERPRETATION` — the risk this introduces is reputational, not
 statistical: a public audience may read "validated" as "profitable".

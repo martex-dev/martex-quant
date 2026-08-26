@@ -3,8 +3,8 @@ requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "trading-bot"
-version = "1.0.0"
+name = "martex-quant"
+version = "1.0.1"
 description = "Quantitative trading research platform: data pipeline, event-driven backtesting, statistical validation, Monte Carlo, paper trading."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -63,7 +63,7 @@ Issues = "https://github.com/MartexHACK/trading-bot/issues"
 Changelog = "https://github.com/MartexHACK/trading-bot/blob/main/CHANGELOG.md"
 
 [project.scripts]
-tradingbot = "trading_bot.cli:main"
+martex-quant = "trading_bot.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

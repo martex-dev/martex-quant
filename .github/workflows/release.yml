@@ -1,7 +1,8 @@
 name: Release
 
 # Tag a version to cut a release:
-#   git tag v1.0.0 && git push origin v1.0.0
+#   git tag v1.0.1
+#   git push origin v1.0.1
 #
 # Builds an sdist + wheel, verifies the built wheel actually installs and
 # runs on a clean machine, attaches both to a GitHub Release, and — once
@@ -88,12 +89,12 @@ jobs:
         env:
           PYTHONIOENCODING: utf-8
         run: |
-          tradingbot --version
-          tradingbot doctor || true   # no workspace yet; must not crash
-          tradingbot init lab
+          martex-quant --version
+          martex-quant doctor || true   # no workspace yet; must not crash
+          martex-quant init lab
           cd lab
-          tradingbot doctor
-          tradingbot ledger --limit 5
+          martex-quant doctor
+          martex-quant ledger --limit 5
 
   github-release:
     name: Publish GitHub Release
@@ -109,7 +110,7 @@ jobs:
 
       - name: Derive the package version from the tag
         # The tag is `v1.0.0`; the package version is `1.0.0`. Pasting the tag
-        # into a pip command produces `trading-bot==v1.0.0`, which pip rejects.
+        # into a pip command produces `martex-quant==v1.0.0`, which pip rejects.
         id: version
         run: echo "number=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
 
@@ -129,9 +130,9 @@ jobs:
             Windows PowerShell:
 
             ```
-            tradingbot init my-lab
+            martex-quant init my-lab
             cd my-lab
-            tradingbot quickstart
+            martex-quant quickstart
             ```
 
             `quickstart` downloads real market data, walk-forward backtests it
@@ -147,14 +148,13 @@ jobs:
     name: Publish to PyPI
     needs: smoke
     runs-on: ubuntu-latest
-    # DISABLED until the project is registered on PyPI with a trusted
-    # publisher. To enable: create the project on PyPI, add this repository
-    # and the "pypi" environment as a trusted publisher, create the
-    # environment in repo settings, then delete this `if:` line.
-    if: false
+    # Publishes via PyPI trusted publishing (OIDC). The matching pending
+    # publisher on PyPI must name this repository, `release.yml`, and the
+    # `pypi` environment below — the environment name has to agree exactly or
+    # the upload is refused with a permissions error.
     environment:
       name: pypi
-      url: https://pypi.org/p/trading-bot
+      url: https://pypi.org/p/martex-quant
     permissions:
       id-token: write # trusted publishing; no API token stored in secrets
     steps:
