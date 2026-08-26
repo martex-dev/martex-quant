@@ -6,6 +6,7 @@ on:
 
 jobs:
   checks:
+    name: Lint, types, tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,4 +31,61 @@ jobs:
         run: mypy
 
       - name: Tests
+        # The research-extra modules are skipped here (see tests/conftest.py)
+        # and covered by the `research` job below. Golden regressions skip too:
+        # they need the local data lake, which is never committed.
         run: pytest
+
+  research-extra:
+    name: Research extra (H58 ensemble, TSLA CNN)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install with the research extra
+        # tensorflow-cpu and scikit-learn are deliberately optional at runtime,
+        # so they get their own job rather than slowing every check down.
+        run: |
+          pip install -e ".[research]"
+          pip install -r requirements-dev.txt
+
+      - name: Tests
+        run: pytest tests/test_ensemble.py tests/test_tesla_cnn.py
+
+  cli:
+    name: CLI works from a built wheel
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Build the wheel
+        run: |
+          pip install build
+          python -m build --wheel
+
+      - name: Install it into a clean environment
+        run: |
+          python -m venv /tmp/clean
+          /tmp/clean/bin/pip install dist/*.whl
+
+      - name: Scaffold a workspace and read the ledger
+        # Proves the published artifact carries the research corpus and runs
+        # with no git checkout in sight — the thing a downloading user does.
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          cd /tmp
+          /tmp/clean/bin/tradingbot init lab
+          cd lab
+          /tmp/clean/bin/tradingbot doctor
+          /tmp/clean/bin/tradingbot ledger --limit 5

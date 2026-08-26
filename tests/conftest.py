@@ -1,8 +1,39 @@
-"""Shared test fixtures: a fake ccxt exchange serving a deterministic series."""
+"""Shared test fixtures: a fake ccxt exchange serving a deterministic series.
+
+Also gates the research-extra test modules. `scikit-learn` and `keras` are
+deliberately NOT runtime dependencies — they exist only for the H58 ensemble
+harness and the TSLA CNN study — so a plain `pip install -e .` plus
+requirements-dev.txt has neither. Importing those test modules anyway aborts
+the entire collection with a ModuleNotFoundError, which is what a new
+contributor gets from the exact commands the README gives them.
+
+Skipping the affected modules keeps the suite runnable everywhere. CI installs
+the extra in a separate job, so the coverage is not lost.
+"""
 
 from datetime import UTC, datetime
+from importlib.util import find_spec
 
 import ccxt
+
+
+def _installed(module: str) -> bool:
+    """True when `module` can be imported, without importing it."""
+    try:
+        return find_spec(module) is not None
+    except (ImportError, ValueError):
+        return False
+
+
+# module -> the import that must resolve for it to be collectable
+_RESEARCH_EXTRA_MODULES = {
+    "test_ensemble.py": "sklearn",
+    "test_tesla_cnn.py": "keras",
+}
+
+collect_ignore = [
+    module for module, requirement in _RESEARCH_EXTRA_MODULES.items() if not _installed(requirement)
+]
 
 H1_MS = 3_600_000
 START = datetime(2024, 1, 1, tzinfo=UTC)

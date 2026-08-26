@@ -4,3 +4,10 @@ pytest>=8.2
 pytest-cov>=5.0
 ruff>=0.5
 mypy>=1.10
+
+# numpy is imported by the research modules (H58 ensemble, TSLA CNN study).
+# Those modules are gated behind the `research` extra at runtime, but mypy
+# type-checks them unconditionally and cannot resolve their annotations
+# without numpy's stubs — 128 errors without this line. numpy is small; the
+# rest of the extra (tensorflow, scikit-learn) is not, and stays optional.
+numpy>=1.26
