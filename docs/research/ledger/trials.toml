@@ -19,8 +19,8 @@
 # distributed by guess.
 
 period = "2026"
-ledger_total_claimed = 126
-ledger_run_claimed = 125
+ledger_total_claimed = 129
+ledger_run_claimed = 128
 ledger_data_blocked_claimed = 1
 
 [[entries]]
@@ -294,6 +294,20 @@ dsr_n_trials = 126
 source = "docs/hypotheses/62-delta-neutral-carry.md"
 evidence = "Ledger: +1 -> 126. ALL FIVE BARS PASS on 2,124 common days (2020-09-15..2026-07-09), 8 symbols, 1x collateralized: mean +0.868bp/day CI [+0.245,+1.611]; CAGR +3.24%; Sharpe 2.29; corr with rotation-stop +0.0041 (n=2,120); DSR 0.9754 @126. MDD -5.09%."
 notes = "First validated edge outside the long-crypto momentum family and the first with near-zero correlation to the deployed spec (everything else measured correlates 0.52-0.82; meta-finding 5). Decomposition: funding +4.717%/yr, basis drift -0.255%/yr, costs -1.291%/yr. REGIME CAVEAT, load-bearing: the edge is concentrated in 2021 (+15.68%/yr), inverted in 2022 (-4.83%/yr), and earns +0.08%/yr at Sharpe 0.34 over the last 365 days. H05 pre-flagged this and was right. Bars were fixed in advance and are not revised, but no forward expectation may be built on the full-sample +3.24%. Pre-registered and committed (4b8d855) before the engine was written."
+
+[[entries]]
+hypothesis = "H63"
+family = "strategy.carry.funding_conditional"
+trial_count = 3
+grade = "strategy"
+protocol = "confirmatory"
+verdict = "eligible"
+maturity = "L4"
+dsr = 1.0
+dsr_n_trials = 129
+source = "docs/hypotheses/63-funding-conditional-carry.md"
+evidence = "Ledger: +3 -> 129 (declared 3-cell grid L in {7,30,90}, ALL cells reported). Primary L=30 on H62's identical 2,124-day window: Sharpe 6.00 vs incumbent 2.29, CAGR +4.51% vs +3.24%, MDD -0.51% vs -5.09%, 2022 net -0.01%/yr vs -4.83%/yr, mean +1.205bp/day CI [+0.697,+1.867], DSR 1.0000 @129. Gate A and Gate B both pass. Grid cells: L=7 Sharpe 5.00, L=30 Sharpe 6.00, L=90 Sharpe 5.89."
+notes = "Replaces H62 as the carry spec. Believed rather than merely passed because all three cells agree across a 13x lookback range (a plateau, not a spike) and the filter improves all 7 years monotonically, with deployment at 79.2% of symbol-days so the Sharpe is not an idle-capital artifact. LOAD-BEARING CAVEAT: it does NOT fix the dead recent regime -- last 365 days move only +0.08%/yr to +0.15%/yr. A filter cannot create a premium nobody is paying; forward expectation at current funding is ~0%/yr. FIRST DOCUMENTED EXCEPTION TO META-FINDING 2 (sizing beats switching), with the mechanism stated in the pre-registration BEFORE the run: this switch conditions on the revenue itself, not on a proxy for it. Proposed refinement: switches fail when they condition on a predictor of the payoff, and can succeed when they condition on the payoff itself. Pre-registered and committed (0e87191) before the engine filter existed."
 
 # The remainder the committed documents do not allocate. Carried explicitly
 # rather than distributed by guess: assigning it would be fabrication, and

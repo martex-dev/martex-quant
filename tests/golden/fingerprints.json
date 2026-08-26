@@ -48878,6 +48878,71 @@
       20260827
     ]
   },
+  "h63_conditional_carry_study": {
+    "code": {
+      "git_rev": "0e87191",
+      "package_sha256": "0a51fc098fcd814574371c34748717808d85f814764150364c3f1b4e8002f6b7",
+      "script_sha256": "1853199df3014501d83341f4aac133d1fb6c4cf02a36a9195f96a7edbfb0a35a"
+    },
+    "config": {
+      "config/universe.json": {
+        "n_symbols": 40,
+        "present": true,
+        "read_by_script": false,
+        "rule": "top40 by 24h quote volume, 2026-07-12, union legacy 8, stables/leveraged excluded",
+        "sha256": "87364003919c6a3dc3dff52f3e2be579e88044fa9b9402fd0959e33cc47e3bb0"
+      }
+    },
+    "environment": {
+      "implementation": "CPython",
+      "packages": {
+        "ccxt": "4.5.64",
+        "numpy": "2.5.1",
+        "polars": "1.42.1",
+        "pyarrow": "25.0.0",
+        "pydantic": "2.13.4"
+      },
+      "python": "3.12.10",
+      "python_hash_seed": "0"
+    },
+    "external_dependencies": [],
+    "hypotheses": "H63 funding-conditional carry, 3-cell grid (trials 127-129)",
+    "inputs": {
+      "data/funding/BTCUSDT.parquet": {
+        "bytes": 73821,
+        "present": true,
+        "rows": 7490,
+        "schema": {
+          "rate": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "9268f7727c8f918b6f11fc0c554dccf3b1f0e018c0cba1be8e5ddfa2a1bf264f"
+      },
+      "data/perp/BTCUSDT.parquet": {
+        "bytes": 20027,
+        "present": true,
+        "rows": 2499,
+        "schema": {
+          "day": "Datetime(time_unit='us', time_zone='UTC')",
+          "perp_close": "Float64"
+        },
+        "sha256": "af18a08e92d77eec4fc20c491cc98f999eee3823c975da34c85886537ebe33cd"
+      }
+    },
+    "reproducibility": "deterministic",
+    "reproducibility_defect": "",
+    "rng": {
+      "n_draws": 512,
+      "probe_seed": 20260810,
+      "sha256": "b76b24ee69e7e28c51266e2bab73cf87a793674294488e5ff6411df288f1a62b",
+      "upper_bound": 9999
+    },
+    "script": "h63_conditional_carry_study",
+    "seed_note": "Block bootstrap seeded 20260827. The carry engine is deterministic. Recomputes the H62 incumbent in the same run rather than importing its published figures.",
+    "seeds": [
+      20260827
+    ]
+  },
   "july_sprint_study": {
     "code": {
       "git_rev": "b587923",

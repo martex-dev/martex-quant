@@ -160,9 +160,17 @@ def run_carry(
     if len(timeline) < 2:
         raise ValueError("symbols share fewer than 2 common days")
 
+    # An optional boolean ``hold`` column gates each symbol each day (H63).
+    # Absent means always-hold, so H62's stream is bit-for-bit unchanged by
+    # the existence of this feature.
     lookup = {
         s: {
-            row["day"]: (row["r_spot"], row["r_perp"], row["funding"])
+            row["day"]: (
+                row["r_spot"],
+                row["r_perp"],
+                row["funding"],
+                bool(row.get("hold", True)),
+            )
             for row in frames[s].iter_rows(named=True)
         }
         for s in symbols
@@ -183,13 +191,18 @@ def run_carry(
         basis_pnl = 0.0
         cost = 0.0
         for s in symbols:
-            r_spot, r_perp, funding = lookup[s][day]
+            r_spot, r_perp, funding, hold = lookup[s][day]
             notional = held[s]
 
+            # A gated-off symbol targets zero: capital sits in cash earning
+            # nothing. It is NOT redistributed to the symbols still held --
+            # concentrating into survivors would be a different strategy.
+            symbol_target = target if hold else 0.0
+
             # Rebalance to target BEFORE the day's move, paying on both legs.
-            turnover = abs(target - notional)
+            turnover = abs(symbol_target - notional)
             cost += turnover * config.cost_rate * 2.0
-            notional = target
+            notional = symbol_target
 
             basis_pnl += notional * (r_spot - r_perp)
             funding_pnl += notional * funding

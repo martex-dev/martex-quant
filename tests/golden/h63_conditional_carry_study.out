@@ -1,0 +1,56 @@
+==============================================================================
+H63 — FUNDING-CONDITIONAL CARRY (3 cells, trials 127-129 -> 129)
+==============================================================================
+
+Window: 2124 days, 2020-09-15 -> 2026-07-09
+
+Incumbent (H62 always-on), recomputed here on this same window:
+  Sharpe 2.29   CAGR +3.24%   MDD -5.09%   2022 net -4.83%/yr
+
+--- the declared 3-cell grid (ALL cells reported) ---
+
+  L=7
+    Sharpe   5.00   CAGR   +3.73%   MDD  -2.21%   DSR 1.0000
+    mean +1.001bp/day CI [+0.453, +1.712]bp
+    2022 net -1.43%/yr
+
+  L=30 (PRIMARY)
+    Sharpe   6.00   CAGR   +4.51%   MDD  -0.51%   DSR 1.0000
+    mean +1.205bp/day CI [+0.697, +1.867]bp
+    2022 net -0.01%/yr
+
+  L=90
+    Sharpe   5.89   CAGR   +4.27%   MDD  -0.63%   DSR 1.0000
+    mean +1.137bp/day CI [+0.667, +1.773]bp
+    2022 net -0.05%/yr
+
+------------------------------------------------------------------------------
+GATES (primary cell L=30; the grid is reported, not selected from)
+------------------------------------------------------------------------------
+  A1 CI excludes zero          : +0.697bp  PASS
+  A2 CAGR >= 2%/yr            : +4.51%  PASS
+  A3 Sharpe >= 1.0             : 6.00  PASS
+  A4 DSR >= 0.95 @ 129       : 1.0000  PASS
+  B5 Sharpe > incumbent 2.29   : 6.00  PASS
+  B6 CAGR > incumbent +3.24%   : +4.51%  PASS
+  B7 2022 > incumbent -4.83%  : -0.01%  PASS
+
+--- robustness ---
+  deployment: 79.2% of symbol-days actually held
+  (a high rate means the Sharpe is NOT an idle-capital artifact)
+
+  year-by-year, incumbent -> L=30:
+    2020    +4.15%/yr ->   +6.68%/yr
+    2021   +15.68%/yr ->  +15.95%/yr
+    2022    -4.83%/yr ->   -0.01%/yr
+    2023    +1.75%/yr ->   +2.49%/yr
+    2024    +4.57%/yr ->   +4.89%/yr
+    2025    +0.45%/yr ->   +0.63%/yr
+    2026    -0.78%/yr ->   -0.63%/yr
+    last 365d    +0.08%/yr ->   +0.15%/yr
+    last 730d    +0.75%/yr ->   +0.88%/yr
+
+==============================================================================
+VERDICT: GATE A + GATE B PASS -> candidate to replace H62 as the
+carry spec; eligible for a paper account.
+==============================================================================

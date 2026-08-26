@@ -350,6 +350,21 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h63_conditional_carry_study",
+        hypotheses="H63 funding-conditional carry, 3-cell grid (trials 127-129)",
+        seeds=(20260827,),
+        uses_universe=False,
+        data_files=(
+            "data/funding/BTCUSDT.parquet",
+            "data/perp/BTCUSDT.parquet",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260827. The carry engine is deterministic. "
+            "Recomputes the H62 incumbent in the same run rather than importing "
+            "its published figures."
+        ),
+    ),
+    ScriptSpec(
         name="h62_carry_study",
         hypotheses="H62 delta-neutral funding carry (trial 126)",
         seeds=(20260827,),
