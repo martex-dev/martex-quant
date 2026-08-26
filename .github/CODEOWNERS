@@ -1,0 +1,58 @@
+# CODEOWNERS — who must review what.
+#
+# `main` is protected: every pull request needs an approving review from
+# the owner of the paths it touches. The catch-all below means that is
+# true for all changes. The explicit entries under it are not redundant —
+# they document WHICH paths carry research or capital consequences, so a
+# contributor can see the risk before opening the PR rather than after.
+#
+# See CONTRIBUTING.md for what each group means in practice.
+
+# ---------------------------------------------------------------------
+# Default: everything needs owner review.
+# ---------------------------------------------------------------------
+*                                       @martex-dev
+
+# ---------------------------------------------------------------------
+# THE LEDGER — the project's only real asset.
+#
+# A change here can invalidate every published verdict without breaking
+# a single test. Pre-registration rules apply (CONTRIBUTING.md §2):
+# a hypothesis doc is committed BEFORE its test runs, and every evaluated
+# candidate counts as a trial — including cells nobody read.
+# ---------------------------------------------------------------------
+/PROJECT_MEMORY.md                      @martex-dev
+/PROJECT_STATE.md                       @martex-dev
+/CLAUDE.md                              @martex-dev
+/docs/hypotheses/                       @martex-dev
+/docs/research/ledger/                  @martex-dev
+
+# ---------------------------------------------------------------------
+# REPRODUCIBILITY GATES — these define what "unchanged" means.
+#
+# baseline.py declares the fingerprint inputs; the golden tests enforce
+# them. Editing either can silence a regression rather than fix it.
+# ---------------------------------------------------------------------
+/src/martex_quant/research/baseline.py  @martex-dev
+/tests/test_research_golden.py          @martex-dev
+
+# ---------------------------------------------------------------------
+# CAPITAL PATH — risk limits, kill switch, broker adapters, live config.
+#
+# The risk layer has veto power over every order and nothing may bypass
+# it. Going live is a deliberate CLI step, never a dashboard button, and
+# the guard's KILLED latch is cleared only by a human.
+# ---------------------------------------------------------------------
+/src/martex_quant/risk_management/      @martex-dev
+/src/martex_quant/live/                 @martex-dev
+/src/martex_quant/execution/            @martex-dev
+/docs/research/eval-runbook.md          @martex-dev
+/docs/research/eval-runbook-sprint-amendment.md @martex-dev
+/config/                                @martex-dev
+
+# ---------------------------------------------------------------------
+# PROJECT PLUMBING — CI, release, and these rules themselves.
+# ---------------------------------------------------------------------
+/.github/                               @martex-dev
+/pyproject.toml                         @martex-dev
+/CONTRIBUTING.md                        @martex-dev
