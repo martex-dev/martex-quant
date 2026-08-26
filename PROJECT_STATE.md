@@ -193,9 +193,42 @@ The single failure is the pre-existing frozen-fingerprint mismatch on
 `research_graph_report` recorded below (hypothesis doc 59 edited after
 the baseline was frozen); it needs a deliberate re-freeze and is not a
 code defect. +24 of the new tests cover the CLI, workspace scaffolding,
-and the packaging contract. CI workflow runs ruff check, ruff format --check,
-mypy (strict), pytest on every push; the golden tests skip in CI (no
-market data there) and are a LOCAL gate.
+and the packaging contract.
+
+`OBSERVATION` — **CI was red on every push and had been for some time**;
+found 2026-08-26 while preparing the public release. The green-badge
+claim in the README was false. Two independent causes, both now fixed:
+
+1. mypy, 128 errors. CI installs `-e .` + requirements-dev.txt, which
+   omitted numpy; mypy type-checks research/tesla/* and
+   research/ensemble.py unconditionally and cannot resolve their
+   annotations without it. It passed locally only because this machine's
+   venv happens to have numpy. Fixed by declaring numpy in
+   requirements-dev.txt.
+2. Test collection aborted: test_ensemble.py and test_tesla_cnn.py import
+   sklearn/keras at module scope, so a plain dev install — the exact
+   commands the README gives — died with ModuleNotFoundError. Fixed by
+   gating those two modules in tests/conftest.py, with a separate CI job
+   installing the `research` extra so coverage is not lost.
+
+`OBSERVATION` — the golden fingerprint gate did NOT skip in CI as this
+file previously claimed. `research_graph_report` declares only committed
+markdown as inputs, so `inputs_present` was true on the runner and the
+test ran. It could never pass there: the fingerprint hashes inputs byte
+for byte and this repo stores CRLF, so a Linux checkout's LF changes
+every hash and byte count (PROJECT_MEMORY.md 16,640 -> 16,429); the
+environment category also records interpreter and package versions the
+runner resolves independently. The skip is now keyed on the runner.
+**Local strength is unchanged** — still keyed only on inputs being
+entirely absent, so a present-but-CHANGED input remains a hard failure.
+
+`OBSERVATION` — CI green as of 2026-08-26 (run 32964842194), three jobs:
+lint/types/tests, the research extra, and a wheel-install smoke test.
+
+`INTERPRETATION` — the lesson is not about numpy. A local venv that had
+accumulated extras silently diverged from the declared dependency set,
+and the only signal was a badge nobody read. Treat CI status as a gate,
+not decoration, and check it in any session that claims a clean run.
 
 `OBSERVATION` — trial ledger: **125 registered, 124 run, 1 data-blocked
 (H54)** as of 2026-08-11. H58 added 5 (learned indicator ensemble,

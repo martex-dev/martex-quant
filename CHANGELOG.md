@@ -46,6 +46,21 @@ have to reverse-engineer.
 - `README.md` rewritten for people who have not read the ledger: what this
   is, what it honestly is not, and how to run it in three commands.
 
+### Fixed
+
+- **CI, which had been failing on every push before this release.** Two
+  causes: `mypy` reported 128 errors because `numpy` — a real transitive
+  dependency of the research modules — was never declared in
+  requirements-dev.txt; and test collection aborted outright because
+  `test_ensemble.py` and `test_tesla_cnn.py` import `sklearn`/`keras` at
+  module scope, so the exact install commands in the README left a new
+  contributor unable to run the suite at all.
+- The frozen-baseline golden gate no longer runs on hosted runners, where it
+  could never pass: the fingerprint hashes inputs byte for byte and the
+  repository stores CRLF, so a Linux checkout's LF changes every hash. It was
+  always documented as a local gate; now it behaves like one. Local strength
+  is unchanged.
+
 ### Notes
 
 Nothing in this release changes a single research verdict, strategy, cost
