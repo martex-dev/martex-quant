@@ -1,4 +1,4 @@
-# PROJECT_STATE.md — operational snapshot (refreshed 2026-08-10)
+# PROJECT_STATE.md — operational snapshot (refreshed 2026-08-26)
 
 Read together with PROJECT_MEMORY.md (knowledge/lessons) and CLAUDE.md
 (standing instructions). This file = what is RUNNING and what happens next.
@@ -31,22 +31,36 @@ MarketState + poison tests). Large-scale discovery engine NOT approved.
 
 ## Paper accounts — verified state (source: data/paper/<name>/equity.jsonl)
 
-All four started at $5,000. Figures are the last mark, 2026-08-10 00:10 UTC.
+All four started at $5,000. **Refreshed 2026-08-26** (previous refresh
+2026-08-10 is superseded; figures below recomputed from each account's
+full equity.jsonl, not carried forward).
 
 | Account | Marks / distinct days | Window | Equity | Since start | Peak (date) | Max DD on record |
 |---|---|---|---|---|---|---|
-| vol-target | 36 / 31 | 07-10 → 08-10 | $5,014.11 | +0.28% | $5,024.58 (08-07) | −0.21% |
-| rotation | 28 / 28 | 07-11 → 08-10 | $4,221.78 | **−15.55%** | $5,126.05 (07-13) | **−20.67%** |
-| rotation-stop | 26 / 26 | 07-12 → 08-10 | $4,395.58 | **−12.07%** | $5,095.19 (07-13) | **−13.73%** |
-| crash-bounce | 27 / 27 | 07-12 → 08-10 | $5,000.00 | 0.00% | — | 0.00% |
+| vol-target | 52 / 47 | 07-10 → 08-26 | $5,248.91 | **+4.98%** | $5,294.97 (08-24) | −0.87% |
+| rotation | 43 / 43 | 07-11 → 08-26 | $4,124.16 | **−17.52%** | $5,126.05 (07-13) | **−20.67%** |
+| rotation-stop | 40 / 40 | 07-12 → **08-25** | $4,671.38 | **−6.57%** | $5,095.19 (07-13) | **−15.56%** |
+| crash-bounce | 42 / 42 | 07-12 → 08-26 | $5,000.00 | 0.00% | — | 0.00% |
 
-`OBSERVATION` — rotation's trough was $4,066.28 on 2026-08-04; it has
-recovered to $4,221.78. rotation-stop's trough IS its current mark, so
-its drawdown from peak (−13.73%) equals its max drawdown on record.
+`OBSERVATION` — **rotation-stop's window ends 08-25, not 08-26.** It
+missed today's mark; cause and fix in "Automation health" below.
 
-`OBSERVATION` — crash-bounce has never taken a position: 27 marks, zero
-exposure throughout, $5,000.00 unchanged. Its trigger (BTC day < −3%)
-has not fired in the record window.
+`OBSERVATION` — direction of travel since the 08-10 refresh, per
+account: vol-target +0.28% → +4.98%; rotation −15.55% → −17.52%;
+rotation-stop −12.07% → −6.57%. rotation-stop's trough is no longer its
+current mark — it bottomed at $4,302.60 on 08-21 and has recovered
+since, so its drawdown from peak is now smaller than its max DD on
+record (−15.56%), which the 08-10 refresh noted were then equal.
+
+`OBSERVATION` — crash-bounce **still** has never taken a position: 42
+marks, zero exposure throughout, $5,000.00 unchanged. Its trigger (BTC
+day < −3%) has not fired once in the record window, now ~46 days.
+
+`INTERPRETATION` (flagged, low confidence) — 40–52 marks remains far too
+short for inference about any of these specs, and nothing here changes a
+verdict in either direction. Recorded as operational fact only. The
+eval-deferral decision below cites these numbers but does **not** rest
+on them; see the reasoning there.
 
 `OBSERVATION` — vol-target holds 1 non-zero exposure, cash $4,700.73.
 Its per-symbol lookbacks at the last mark: BTC 180, ETH 180, BNB 90,
@@ -127,6 +141,53 @@ The second observation describes the system's present reliability. It is
 that requires a clean shakedown needs a newly pre-registered window,
 not a re-reading of this one.
 
+### Mid-run truncation — found and mitigated 2026-08-26
+
+`OBSERVATION` — the "zero missed runs" claim above no longer holds. Two
+**partial** days are on record since it was written:
+
+| Date | Started | Completed | Accounts that lost their mark |
+|---|---|---|---|
+| 2026-08-20 | 09:46 (catch-up, not 03:10) | 1 of 4 | rotation, crash-bounce, rotation-stop |
+| 2026-08-26 | 03:10 | 3 of 4 | **rotation-stop** |
+
+`OBSERVATION` — Task Scheduler for the 2026-08-26 run: Last Run
+03:10:02, **LastTaskResult 3221225786 = 0xC000013A
+(STATUS_CONTROL_C_EXIT)**. The task was terminated mid-execution, not
+completed. data/paper/runs.log contains **zero** occurrences of "error",
+"traceback", or "failed" across all 2,982 lines — the truncation leaves
+no trace in the log because the process is killed, not failed.
+
+`OBSERVATION` — the 2026-08-20 run started at **09:46**, not 03:10. That
+is StartWhenAvailable firing a missed schedule late, and it completed
+only the first account in the loop. A catch-up run fires while the
+machine is in use, which is exactly when it is most likely to be
+interrupted.
+
+`OBSERVATION` — the runner is a sequential `for` loop over accounts. Its
+order was `vol-target rotation crash-bounce rotation-stop`, so
+**rotation-stop — the deployed spec and the canonical eval candidate —
+was last, and lost its mark in both truncations.**
+
+`INTERPRETATION` — an exit code of STATUS_CONTROL_C_EXIT on a scheduled
+task is consistent with the machine being shut down, slept, or logged
+off while the loop was running. This matches the July gap
+interpretation, now with a specific code rather than an inference. It is
+not a code fault, and no defect in the paper trader is implied.
+
+**Mitigation applied** (scripts/run_paper_daily.cmd): the loop is
+reordered to `rotation-stop rotation vol-target crash-bounce` — ordered
+by how much each record matters, deployed spec first, never-triggered
+overlay last. This does not prevent truncation; it changes **which**
+account absorbs one. Accounts are independent, so ordering has no effect
+on any result.
+
+`OBSERVATION` — the 2026-08-26 rotation-stop mark was **not**
+backfilled. A mark written ~19h after its scheduled slot would carry a
+timestamp inconsistent with every other mark in the series, and one
+recorded gap is cheaper than one silently irregular observation. The gap
+stands in the record.
+
 ---
 
 ## Evaluation / funded-challenge status
@@ -160,6 +221,48 @@ simply not in progress.
 made, remains the one committed 2026-07-13: rotation-stop alone at
 RISK_SCALE 0.85, one fee, no retries (P(pass) 62.3%, bust 37.7%,
 median 48d). That record stands unchanged.
+
+### DECISION — eval DEFERRED (owner, 2026-08-26)
+
+Next-action #4 ("decide the eval question explicitly") is **CLOSED as a
+deferral**. This is the recorded decision the previous refresh asked for;
+the question is no longer open.
+
+**Decision:** no funded evaluation will be attempted, and no eval fee
+will be paid, until the system demonstrates profitability. The eval is
+untouched until then.
+
+**Reason (owner's, stated plainly):** paying to be evaluated on a book
+that is not yet making money buys nothing. The evaluation fee is a real
+cost with a known failure probability (37.7% bust on the canonical
+config); spending it before there is profit to demonstrate converts
+research uncertainty into a cash loss without producing information the
+ledger does not already have.
+
+**Supporting numbers at the time of the decision** (2026-08-26, from
+each account's own equity.jsonl — see the refreshed table above):
+rotation-stop **−6.57%**, rotation **−17.52%**, crash-bounce **0.00%**
+(never triggered), vol-target **+4.98%**, after ~46 days.
+
+`INTERPRETATION` (flagged) — these paper figures are **not** evidence
+against the deployed spec, and this decision does not rest on them as if
+they were. 40 marks is far too short for inference about H42b, whose
+validation rests on the pre-registered backtest (DSR 0.992), unchanged.
+The decision rests on the asymmetry instead: deferring costs only time,
+while attempting costs a fee at a 37.7% bust rate for a demonstration
+there is currently no reason to make.
+
+**Condition to revisit:** a re-registered decision, with a stated
+profitability criterion met. Not a mood, not a good month — a written
+criterion, decided before the window it is measured over, per the
+project's standing rule that bars are set before results exist. Until
+that document exists, the eval stays closed and the runbook stays
+un-actioned.
+
+**What this does NOT change:** the July sprint plan and the eval-runbook
+remain pre-registered and valid documents, not withdrawn. The canonical
+single-attempt config above stands as the config that *would* be used.
+Deferral is not invalidation.
 
 ---
 
@@ -415,15 +518,25 @@ presented as a discovery.
    historical behaviour is preserved. Research-integrity work, not
    cleanup.
 3. **Data availability contract** to be written before Layer 3.
-4. **Decide the eval question explicitly.** It has been open and
-   undecided for ~4 weeks. Either register a decision to attempt with
-   the canonical single-attempt config, or record a decision to defer,
-   with a reason. Leaving it implicit is the one state that costs
-   information without buying any.
+4. ~~**Decide the eval question explicitly.**~~ **CLOSED 2026-08-26 —
+   deferred by owner decision.** See "DECISION — eval DEFERRED" above.
+   Reopening requires a written profitability criterion, registered
+   before the window it is measured over.
 5. **Refresh the lake** before any research run that needs data past
    2026-07-10.
 6. **October:** move the paper task 03:10 → 02:10 local (DST) to stay
    near the UTC close.
+7. **New, 2026-08-26 — decide the H43a census.** The contributor
+   proposal response (docs/research/bounded-search-proposal-response.md)
+   makes a descriptive census of H43a's 317 bounce days the precondition
+   for any bounded search. It costs 0 trials by the owncap-sizing
+   precedent, and it cannot be delegated: the lake is never committed,
+   so an outside contributor cannot run it. Either run it or record why
+   not.
+8. **New, 2026-08-26 — watch for further truncated paper runs.** Two are
+   on record (08-20, 08-26). The loop reorder protects the deployed spec
+   but does not stop truncation. If partial days keep appearing, the
+   scheduler settings need attention, not the runner.
 
 ---
 

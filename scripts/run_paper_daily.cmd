@@ -26,7 +26,17 @@ if not exist "%TB%" set "TB=martex-quant"
 
 if not exist "data\paper" mkdir "data\paper"
 
-for %%S in (vol-target rotation crash-bounce rotation-stop) do (
+rem ORDER MATTERS. The run is a sequential loop, so if it is interrupted
+rem partway - machine sleep, logoff, shutdown - the accounts at the END of
+rem the list are the ones that lose their mark. Two such truncations are on
+rem record: 2026-08-20 (1 of 4 completed) and 2026-08-26 (3 of 4, task exit
+rem 0xC000013A = STATUS_CONTROL_C_EXIT), and both times the account that
+rem lost its mark was the last one in this list.
+rem
+rem So the list is ordered by how much the record matters, not
+rem alphabetically or by age: the DEPLOYED spec runs first and the
+rem never-triggered overlay runs last.
+for %%S in (rotation-stop rotation vol-target crash-bounce) do (
     "%TB%" paper --strategy %%S >> "data\paper\runs.log" 2>&1
 )
 
