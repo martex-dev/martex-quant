@@ -69,7 +69,9 @@ def build_parser() -> argparse.ArgumentParser:
             "Research software — not financial advice. See DISCLAIMER.md."
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=("first run:\n  tradingbot init my-lab && cd my-lab\n  tradingbot quickstart\n"),
+        # One command per line: Windows PowerShell has no `&&`, and chaining
+        # there is a parser error that runs neither half.
+        epilog=("first run:\n  tradingbot init my-lab\n  cd my-lab\n  tradingbot quickstart\n"),
     )
     parser.add_argument("--version", action="version", version=f"trading-bot {__version__}")
     parser.add_argument(

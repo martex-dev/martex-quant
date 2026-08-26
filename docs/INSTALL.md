@@ -69,10 +69,14 @@ pip install -e .
 pip install -r requirements-dev.txt
 ```
 
-Confirm the checks pass before you change anything:
+Confirm the checks pass before you change anything. Run them one per line:
+Windows PowerShell has no `&&` operator, and chaining them there is a parser
+error that silently runs nothing.
 
 ```bash
-pytest && ruff check . && mypy
+pytest
+ruff check .
+mypy
 ```
 
 ---

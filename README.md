@@ -138,10 +138,21 @@ risk layer un-bypassable.
 ```bash
 git clone https://github.com/MartexHACK/trading-bot.git
 cd trading-bot
-python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
-pip install -e . && pip install -r requirements-dev.txt
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\activate
 
-pytest && ruff check . && mypy
+pip install -e .
+pip install -r requirements-dev.txt
+```
+
+Then run the checks, one per line rather than chained with `&&` — Windows
+PowerShell has no `&&` operator, and chaining there is a parser error that
+runs none of them:
+
+```
+pytest
+ruff check .
+mypy
 ```
 
 560+ tests, strict mypy, ruff-clean, CI green on every push.
