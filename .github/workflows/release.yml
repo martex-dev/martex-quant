@@ -1,0 +1,154 @@
+name: Release
+
+# Tag a version to cut a release:
+#   git tag v1.0.0 && git push origin v1.0.0
+#
+# Builds an sdist + wheel, verifies the built wheel actually installs and
+# runs on a clean machine, attaches both to a GitHub Release, and — once
+# trusted publishing is configured — uploads to PyPI.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build distributions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tooling
+        run: python -m pip install --upgrade build twine
+
+      - name: Build sdist and wheel
+        run: python -m build
+
+      - name: Check metadata
+        run: twine check dist/*
+
+      - name: Verify the research corpus is inside the wheel
+        # The wheel must carry docs/ and config/ (vendored by setup.py), or a
+        # `pip install` user gets a CLI that cannot scaffold a workspace.
+        run: |
+          python - <<'PY'
+          import sys, zipfile, glob
+          wheel = glob.glob("dist/*.whl")[0]
+          names = zipfile.ZipFile(wheel).namelist()
+          required = [
+              "trading_bot/_bundle/docs/research/ledger/trials.toml",
+              "trading_bot/_bundle/config/universe.json",
+          ]
+          missing = [r for r in required if r not in names]
+          leaked = [n for n in names if "secrets/" in n or n.endswith((".key", ".pem"))]
+          if missing:
+              sys.exit(f"wheel is missing the research corpus: {missing}")
+          if leaked:
+              sys.exit(f"wheel contains credentials: {leaked}")
+          hypotheses = [n for n in names if "_bundle/docs/hypotheses/" in n]
+          print(f"ok: {wheel} carries {len(hypotheses)} hypothesis documents")
+          PY
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: distributions
+          path: dist/
+
+  smoke:
+    name: Smoke test the wheel (${{ matrix.os }})
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: distributions
+          path: dist
+
+      - name: Install the built wheel
+        shell: bash
+        run: python -m pip install "$(ls dist/*.whl)"
+
+      - name: The CLI works from a clean install
+        shell: bash
+        env:
+          PYTHONIOENCODING: utf-8
+        run: |
+          tradingbot --version
+          tradingbot doctor || true   # no workspace yet; must not crash
+          tradingbot init lab
+          cd lab
+          tradingbot doctor
+          tradingbot ledger --limit 5
+
+  github-release:
+    name: Publish GitHub Release
+    needs: smoke
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: distributions
+          path: dist
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
+          body: |
+            Install this release:
+
+            ```
+            pip install trading-bot==${{ github.ref_name }}
+            ```
+
+            or download the `.whl` below and `pip install ./<file>.whl`.
+
+            Then:
+
+            ```
+            tradingbot init my-lab && cd my-lab
+            tradingbot quickstart
+            ```
+
+            **Research software — not financial advice, and not a profitable
+            trading bot.** Read `DISCLAIMER.md` before connecting it to
+            anything that holds money.
+
+  pypi:
+    name: Publish to PyPI
+    needs: smoke
+    runs-on: ubuntu-latest
+    # DISABLED until the project is registered on PyPI with a trusted
+    # publisher. To enable: create the project on PyPI, add this repository
+    # and the "pypi" environment as a trusted publisher, create the
+    # environment in repo settings, then delete this `if:` line.
+    if: false
+    environment:
+      name: pypi
+      url: https://pypi.org/p/trading-bot
+    permissions:
+      id-token: write # trusted publishing; no API token stored in secrets
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: distributions
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
