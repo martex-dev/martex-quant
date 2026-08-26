@@ -13,13 +13,13 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.backtesting.metrics import compute_metrics
-from trading_bot.data.models import Interval
-from trading_bot.data.series.store import SeriesKind, SeriesStore
-from trading_bot.features.intraday import load_15m_bars
-from trading_bot.features.panel import forward_return, relative_forward_return_ratio
-from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
-from trading_bot.stats.significance import ci_excludes_zero
+from martex_quant.backtesting.metrics import compute_metrics
+from martex_quant.data.models import Interval
+from martex_quant.data.series.store import SeriesKind, SeriesStore
+from martex_quant.features.intraday import load_15m_bars
+from martex_quant.features.panel import forward_return, relative_forward_return_ratio
+from martex_quant.stats.bootstrap import event_mean_ci as _event_mean_ci
+from martex_quant.stats.significance import ci_excludes_zero
 
 SYMBOLS = [
     "BTCUSDT",

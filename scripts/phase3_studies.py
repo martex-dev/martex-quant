@@ -18,23 +18,23 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.backtesting.engine import BacktestConfig, run_backtest
-from trading_bot.backtesting.metrics import (
+from martex_quant.backtesting.engine import BacktestConfig, run_backtest
+from martex_quant.backtesting.metrics import (
     compute_metrics,
     expected_max_sharpe,
     probabilistic_sharpe_ratio,
 )
-from trading_bot.backtesting.research import walk_forward_backtest
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.stats.significance import per_period_sharpe
-from trading_bot.strategies.base import Strategy
-from trading_bot.strategies.benchmark import BuyAndHold
-from trading_bot.strategies.breakout import DonchianBreakout
-from trading_bot.strategies.meanrev import BollingerReversion
-from trading_bot.strategies.momentum import TimeSeriesMomentum
-from trading_bot.strategies.vol_filter import VolFilteredMomentum
-from trading_bot.strategies.vol_target import VolTargetMomentum
+from martex_quant.backtesting.research import walk_forward_backtest
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.stats.significance import per_period_sharpe
+from martex_quant.strategies.base import Strategy
+from martex_quant.strategies.benchmark import BuyAndHold
+from martex_quant.strategies.breakout import DonchianBreakout
+from martex_quant.strategies.meanrev import BollingerReversion
+from martex_quant.strategies.momentum import TimeSeriesMomentum
+from martex_quant.strategies.vol_filter import VolFilteredMomentum
+from martex_quant.strategies.vol_target import VolTargetMomentum
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 CONFIG = BacktestConfig(initial_cash=10_000.0)

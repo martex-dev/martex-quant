@@ -37,7 +37,7 @@ my-lab/
 Commands find the workspace in this order:
 
 1. `--workspace DIR` (or `-w DIR`) on the command line
-2. the `TRADING_BOT_HOME` environment variable
+2. the `MARTEX_QUANT_HOME` environment variable
 3. the current directory
 
 So `cd my-lab` once and every command just works, or run
@@ -244,7 +244,7 @@ Full reasoning per hypothesis lives in `docs/hypotheses/`.
 
 ## Going further
 
-- Add a strategy: implement `Strategy` in `src/trading_bot/strategies/`. A
+- Add a strategy: implement `Strategy` in `src/martex_quant/strategies/`. A
   strategy maps market history to a target exposure in `[-1, +1]`. It never
   sizes positions, never creates orders, and never sees account state — that
   is portfolio and risk territory, by design, which is what makes strategies

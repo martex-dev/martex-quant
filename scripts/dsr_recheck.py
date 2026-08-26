@@ -64,14 +64,14 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.backtesting.metrics import (
+from martex_quant.backtesting.metrics import (
     expected_max_sharpe,
     probabilistic_sharpe_ratio,
 )
-from trading_bot.backtesting.multi import MultiBacktestConfig, run_multi_backtest
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.strategies.rotation import VolTargetRotation
+from martex_quant.backtesting.multi import MultiBacktestConfig, run_multi_backtest
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.strategies.rotation import VolTargetRotation
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "data/tmp/h4x_streams"

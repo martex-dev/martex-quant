@@ -11,20 +11,20 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.backtesting.engine import BacktestConfig
-from trading_bot.backtesting.metrics import (
+from martex_quant.backtesting.engine import BacktestConfig
+from martex_quant.backtesting.metrics import (
     compute_metrics,
     expected_max_sharpe,
     probabilistic_sharpe_ratio,
 )
-from trading_bot.backtesting.multi import MultiBacktestConfig, run_multi_backtest
-from trading_bot.backtesting.research import walk_forward_backtest
-from trading_bot.backtesting.walkforward import walk_forward_windows
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.risk_management.prop_sim import PropFirmRules, simulate_evaluation
-from trading_bot.strategies.rotation import VolTargetRotation
-from trading_bot.strategies.vol_target import VolTargetMomentum
+from martex_quant.backtesting.multi import MultiBacktestConfig, run_multi_backtest
+from martex_quant.backtesting.research import walk_forward_backtest
+from martex_quant.backtesting.walkforward import walk_forward_windows
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.risk_management.prop_sim import PropFirmRules, simulate_evaluation
+from martex_quant.strategies.rotation import VolTargetRotation
+from martex_quant.strategies.vol_target import VolTargetMomentum
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 TRAIN, TEST = 365, 90

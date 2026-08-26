@@ -1,6 +1,6 @@
 # Trading Bot — Quantitative Research Platform
 
-[![CI](https://github.com/MartexHACK/trading-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/MartexHACK/trading-bot/actions/workflows/ci.yml)
+[![CI](https://github.com/MartexHACK/martex-quant/actions/workflows/ci.yml/badge.svg)](https://github.com/MartexHACK/martex-quant/actions/workflows/ci.yml)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -109,7 +109,7 @@ feed and the execution adapter — the standard defense against "worked in
 backtest, died live."
 
 ```
-src/trading_bot/
+src/martex_quant/
   cli.py               the `martex-quant` command
   data/
     collectors/        exchange adapters (ccxt) behind a common interface
@@ -136,8 +136,8 @@ risk layer un-bypassable.
 ## Development
 
 ```bash
-git clone https://github.com/MartexHACK/trading-bot.git
-cd trading-bot
+git clone https://github.com/MartexHACK/martex-quant.git
+cd martex-quant
 python -m venv .venv
 source .venv/bin/activate       # Windows: .venv\Scripts\activate
 

@@ -11,11 +11,11 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.backtesting.metrics import compute_metrics
-from trading_bot.backtesting.multi import MultiBacktestConfig, run_multi_backtest
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.features.panel import (
+from martex_quant.backtesting.metrics import compute_metrics
+from martex_quant.backtesting.multi import MultiBacktestConfig, run_multi_backtest
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.features.panel import (
     align_day_to_cache_precision,
     daily_panel,
     forward_return,
@@ -23,9 +23,9 @@ from trading_bot.features.panel import (
     trailing_percentile_rank,
     vol_excl_current,
 )
-from trading_bot.stats.bootstrap import daily_mean_ci, two_group_diff_ci
-from trading_bot.stats.significance import ci_above_zero
-from trading_bot.strategies.event import CrashBounce
+from martex_quant.stats.bootstrap import daily_mean_ci, two_group_diff_ci
+from martex_quant.stats.significance import ci_above_zero
+from martex_quant.strategies.event import CrashBounce
 
 LEGACY8 = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 N_BOOT = 5_000

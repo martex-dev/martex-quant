@@ -1,7 +1,7 @@
 # TSLA CNN direction study — findings
 
 **Status:** complete, negative result.
-**Run:** 2026-08-10. Code: `src/trading_bot/research/tesla/`. Tests:
+**Run:** 2026-08-10. Code: `src/martex_quant/research/tesla/`. Tests:
 `tests/test_tesla_cnn.py`. Raw results: `data/Tesla/results_main.json`.
 
 This is a standalone research study on a single US equity. It is **not**

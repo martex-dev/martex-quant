@@ -35,8 +35,8 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
 
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / "data/tmp/h4x_streams"

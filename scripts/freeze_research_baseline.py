@@ -20,7 +20,7 @@ import json
 import sys
 from pathlib import Path
 
-from trading_bot.research.baseline import (
+from martex_quant.research.baseline import (
     FINGERPRINT_FILE,
     FROZEN_CATEGORIES,
     GOLDEN_DIR,

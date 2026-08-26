@@ -17,16 +17,16 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.backtesting.engine import BacktestConfig, run_backtest
-from trading_bot.backtesting.metrics import (
+from martex_quant.backtesting.engine import BacktestConfig, run_backtest
+from martex_quant.backtesting.metrics import (
     compute_metrics,
     expected_max_sharpe,
     probabilistic_sharpe_ratio,
 )
-from trading_bot.backtesting.research import walk_forward_backtest
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.strategies.momentum import TimeSeriesMomentum
+from martex_quant.backtesting.research import walk_forward_backtest
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.strategies.momentum import TimeSeriesMomentum
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 GRID = [7, 14, 30, 60, 90, 180]

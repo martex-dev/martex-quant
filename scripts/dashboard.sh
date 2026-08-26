@@ -7,7 +7,7 @@ set -euo pipefail
 export PYTHONIOENCODING=utf-8
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE="${TRADING_BOT_HOME:-$(dirname "$SCRIPT_DIR")}"
+WORKSPACE="${MARTEX_QUANT_HOME:-$(dirname "$SCRIPT_DIR")}"
 cd "$WORKSPACE"
 
 TB="$WORKSPACE/.venv/bin/martex-quant"

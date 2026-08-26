@@ -5,9 +5,9 @@ from datetime import UTC, datetime
 import polars as pl
 import pytest
 
-from trading_bot.data.indices import dominance_series, equal_weight_index
-from trading_bot.data.models import Interval, ohlcv_frame_from_rows
-from trading_bot.data.resample import resample_ohlcv
+from martex_quant.data.indices import dominance_series, equal_weight_index
+from martex_quant.data.models import Interval, ohlcv_frame_from_rows
+from martex_quant.data.resample import resample_ohlcv
 
 START = datetime(2024, 1, 1, tzinfo=UTC)  # midnight UTC: epoch-aligned
 H1_MS = 3_600_000

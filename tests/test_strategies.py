@@ -5,11 +5,11 @@ from datetime import UTC, datetime
 import polars as pl
 import pytest
 
-from trading_bot.backtesting.engine import BacktestConfig, run_backtest
-from trading_bot.data.models import ohlcv_frame_from_rows
-from trading_bot.execution.simulated import ExecutionConfig
-from trading_bot.strategies.meanrev import BollingerReversion
-from trading_bot.strategies.vol_filter import VolFilteredMomentum
+from martex_quant.backtesting.engine import BacktestConfig, run_backtest
+from martex_quant.data.models import ohlcv_frame_from_rows
+from martex_quant.execution.simulated import ExecutionConfig
+from martex_quant.strategies.meanrev import BollingerReversion
+from martex_quant.strategies.vol_filter import VolFilteredMomentum
 
 START = datetime(2024, 1, 1, tzinfo=UTC)
 H1_MS = 3_600_000

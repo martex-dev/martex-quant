@@ -33,7 +33,7 @@ Use the module form, which always works:
 
 ```bash
 python -m pip install martex-quant
-python -m trading_bot.cli doctor
+python -m martex_quant.cli doctor
 ```
 
 On macOS and Linux you may need `python3` instead of `python`.
@@ -43,12 +43,12 @@ On macOS and Linux you may need `python3` instead of `python`.
 ## Option 2 — install a downloaded release file
 
 Every release attaches a `.whl` (wheel) and a `.tar.gz` (source archive) to
-its [GitHub Releases page](https://github.com/MartexHACK/trading-bot/releases).
+its [GitHub Releases page](https://github.com/MartexHACK/martex-quant/releases).
 Download the `.whl` and install it directly — useful for an offline machine
 or when you want to pin an exact build:
 
 ```bash
-pip install ./trading_bot-1.0.0-py3-none-any.whl
+pip install ./martex_quant-1.0.0-py3-none-any.whl
 ```
 
 ---
@@ -59,8 +59,8 @@ Do this if you want to change the code, add a strategy, or run the test
 suite.
 
 ```bash
-git clone https://github.com/MartexHACK/trading-bot.git
-cd trading-bot
+git clone https://github.com/MartexHACK/martex-quant.git
+cd martex-quant
 
 python -m venv .venv
 source .venv/bin/activate        # Windows: .venv\Scripts\activate
@@ -132,7 +132,7 @@ Full command reference: [USAGE.md](USAGE.md).
 
 **`martex-quant: command not found` after installing.**
 Your virtual environment is not activated, or pip installed to a directory
-that is not on your PATH. `python -m trading_bot.cli` always works as a
+that is not on your PATH. `python -m martex_quant.cli` always works as a
 substitute.
 
 **Data pull fails with a connection or 451 error.**

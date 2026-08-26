@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pytest
 
-from trading_bot.data import report
-from trading_bot.data.models import Interval
-from trading_bot.data.store.catalog import Catalog, DatasetEntry
+from martex_quant.data import report
+from martex_quant.data.models import Interval
+from martex_quant.data.store.catalog import Catalog, DatasetEntry
 
 
 def make_entry(symbol: str = "BTCUSDT", rows: int = 25, errors: int = 0) -> DatasetEntry:

@@ -11,15 +11,15 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.features.panel import daily_panel as canonical_daily_panel
-from trading_bot.features.panel import (
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.features.panel import daily_panel as canonical_daily_panel
+from martex_quant.features.panel import (
     forward_return,
     trailing_percentile_rank,
     vol_excl_current,
 )
-from trading_bot.stats.bootstrap import event_mean_ci, two_group_diff_ci
-from trading_bot.stats.significance import ci_above_zero, ci_excludes_zero
+from martex_quant.stats.bootstrap import event_mean_ci, two_group_diff_ci
+from martex_quant.stats.significance import ci_above_zero, ci_excludes_zero
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 BLOCK_DAYS = 30

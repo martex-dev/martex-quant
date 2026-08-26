@@ -6,8 +6,8 @@ from types import SimpleNamespace
 
 from test_mt5_broker import FakeMT5
 
-from trading_bot.live.guard import check_once, is_halted
-from trading_bot.live.mt5_broker import MAGIC, Mt5Broker
+from martex_quant.live.guard import check_once, is_halted
+from martex_quant.live.mt5_broker import MAGIC, Mt5Broker
 
 T0 = datetime(2026, 8, 1, 12, 0, tzinfo=UTC)
 
@@ -95,7 +95,7 @@ def test_killed_latch_re_flattens_reopened_positions(tmp_path: Path) -> None:
 def test_trade_runner_refuses_while_halted(tmp_path: Path) -> None:
     from test_paper_trader import FakeDailyCollector
 
-    from trading_bot.live import trade
+    from martex_quant.live import trade
 
     fake, broker, guard_root = make(tmp_path)
     check_once(broker, guard_root, now=T0)

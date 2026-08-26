@@ -17,8 +17,8 @@ import types
 
 import pytest
 
-from trading_bot.stats import bootstrap
-from trading_bot.stats.bootstrap import (
+from martex_quant.stats import bootstrap
+from martex_quant.stats.bootstrap import (
     daily_mean_ci,
     event_mean_ci,
     flag_split_ci,

@@ -18,8 +18,8 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.features.panel import (
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.features.panel import (
     daily_panel,
     forward_return,
     momentum,
@@ -28,13 +28,13 @@ from trading_bot.features.panel import (
     up_day_share,
     vol_excl_current,
 )
-from trading_bot.research.ensemble import (
+from martex_quant.research.ensemble import (
     LeakageError,
     assert_features_are_causal,
     leak_alarm,
     run_walk_forward,
 )
-from trading_bot.research.relationships import Cell, Condition, measure_cell
+from martex_quant.research.relationships import Cell, Condition, measure_cell
 
 FEATURES = ["r30", "r90", "vol30", "ma90_dev", "v_ratio", "upshare90"]
 TARGET, OUTCOME = "target", "fwd7"

@@ -27,9 +27,9 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.models import Interval
-from trading_bot.data.series.store import SeriesKind, SeriesStore
-from trading_bot.data.store.parquet_store import ParquetStore
+from martex_quant.data.models import Interval
+from martex_quant.data.series.store import SeriesKind, SeriesStore
+from martex_quant.data.store.parquet_store import ParquetStore
 
 FEE = 51.80
 ACCOUNT = 5_000.0

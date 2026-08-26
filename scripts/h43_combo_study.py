@@ -16,15 +16,15 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.backtesting.metrics import (
+from martex_quant.backtesting.metrics import (
     compute_metrics,
     expected_max_sharpe,
     probabilistic_sharpe_ratio,
 )
-from trading_bot.data.models import Interval
-from trading_bot.data.series.store import SeriesKind, SeriesStore
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.risk_management.prop_sim import PropFirmRules, simulate_evaluation
+from martex_quant.data.models import Interval
+from martex_quant.data.series.store import SeriesKind, SeriesStore
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.risk_management.prop_sim import PropFirmRules, simulate_evaluation
 
 N_TRIALS = 107
 SCREEN_BAR = 0.30

@@ -13,8 +13,8 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.features.panel import (
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.features.panel import (
     daily_panel,
     forward_return,
     momentum,
@@ -22,8 +22,8 @@ from trading_bot.features.panel import (
     rolling_mean_of,
     true_range,
 )
-from trading_bot.research.ledger.records import Family
-from trading_bot.research.relationships import (
+from martex_quant.research.ledger.records import Family
+from martex_quant.research.relationships import (
     Cell,
     Condition,
     horizon_profile,

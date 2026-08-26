@@ -13,8 +13,8 @@ from datetime import UTC, datetime, timedelta
 import polars as pl
 import pytest
 
-from trading_bot.research import anomalies as an
-from trading_bot.research.strategy_conditions import (
+from martex_quant.research import anomalies as an
+from martex_quant.research.strategy_conditions import (
     GUARDED_WINDOW,
     MATURITY_CEILING,
     PreRegistrationRequired,

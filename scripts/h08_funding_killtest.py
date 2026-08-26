@@ -14,15 +14,15 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.features.panel import (
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.features.panel import (
     align_day_to_cache_precision,
     forward_return,
     trailing_percentile_rank,
 )
-from trading_bot.stats.bootstrap import two_group_diff_ci
-from trading_bot.stats.significance import ci_above_zero
+from martex_quant.stats.bootstrap import two_group_diff_ci
+from martex_quant.stats.significance import ci_above_zero
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 FUNDING_DIR = Path("data/funding")

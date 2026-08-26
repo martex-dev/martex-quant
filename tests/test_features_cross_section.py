@@ -13,8 +13,8 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from trading_bot.features.cross_section import ranking_spread_series
-from trading_bot.features.intraday import load_15m_bars
+from martex_quant.features.cross_section import ranking_spread_series
+from martex_quant.features.intraday import load_15m_bars
 
 MIN_COINS = 10
 

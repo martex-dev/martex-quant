@@ -32,8 +32,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from trading_bot.meme.registry import LaunchRegistry  # noqa: E402
-from trading_bot.meme.sources.dexscreener import DexScreenerClient  # noqa: E402
+from martex_quant.meme.registry import LaunchRegistry  # noqa: E402
+from martex_quant.meme.sources.dexscreener import DexScreenerClient  # noqa: E402
 
 logger = logging.getLogger("meme_panel")
 

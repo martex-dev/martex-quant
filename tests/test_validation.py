@@ -5,8 +5,8 @@ from datetime import UTC, datetime, timedelta
 import polars as pl
 import pytest
 
-from trading_bot.data.models import Interval, ohlcv_frame_from_rows
-from trading_bot.data.processors.validation import Severity, validate_ohlcv
+from martex_quant.data.models import Interval, ohlcv_frame_from_rows
+from martex_quant.data.processors.validation import Severity, validate_ohlcv
 
 START = datetime(2024, 1, 1, tzinfo=UTC)
 H1_MS = 3_600_000

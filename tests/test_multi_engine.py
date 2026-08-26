@@ -6,15 +6,15 @@ from datetime import UTC, datetime
 import polars as pl
 import pytest
 
-from trading_bot.backtesting.history import History
-from trading_bot.backtesting.multi import (
+from martex_quant.backtesting.history import History
+from martex_quant.backtesting.multi import (
     MultiAssetStrategy,
     MultiBacktestConfig,
     run_multi_backtest,
 )
-from trading_bot.data.models import ohlcv_frame_from_rows
-from trading_bot.execution.simulated import ExecutionConfig
-from trading_bot.strategies.rotation import DualMomentumRotation
+from martex_quant.data.models import ohlcv_frame_from_rows
+from martex_quant.execution.simulated import ExecutionConfig
+from martex_quant.strategies.rotation import DualMomentumRotation
 
 START = datetime(2024, 1, 1, tzinfo=UTC)
 DAY_MS = 86_400_000
@@ -100,7 +100,7 @@ def make_histories(closes: dict[str, list[float]]) -> dict[str, History]:
     out = {}
     for sym, series in closes.items():
         frame = daily_frame(series)
-        from trading_bot.core.events import bars_from_frame
+        from martex_quant.core.events import bars_from_frame
 
         history = History(bars_from_frame(frame))
         for _ in series:
@@ -153,7 +153,7 @@ def test_rotation_validation() -> None:
 
 
 def test_vol_target_rotation_scales_down_in_high_vol() -> None:
-    from trading_bot.strategies.rotation import VolTargetRotation
+    from martex_quant.strategies.rotation import VolTargetRotation
 
     calm = [100.0 * (1.002**i) for i in range(40)]
     wild = [100.0 * (1.002**i) * (1 + (0.06 if i % 2 else -0.02)) for i in range(40)]
@@ -168,14 +168,14 @@ def test_vol_target_rotation_scales_down_in_high_vol() -> None:
 
 
 def test_vol_target_rotation_stays_out_without_history() -> None:
-    from trading_bot.strategies.rotation import VolTargetRotation
+    from martex_quant.strategies.rotation import VolTargetRotation
 
     short = make_histories({"A": [100.0, 105.0, 110.0, 120.0]})
     assert VolTargetRotation(lookback=2, vol_window=30).target_weights(short) == {}
 
 
 def test_crash_bounce_triggers_only_after_btc_crash() -> None:
-    from trading_bot.strategies.event import CrashBounce
+    from martex_quant.strategies.event import CrashBounce
 
     crash = make_histories(
         {
@@ -199,7 +199,7 @@ def test_crash_bounce_triggers_only_after_btc_crash() -> None:
 def test_crash_bounce_validation() -> None:
     import pytest as _pytest
 
-    from trading_bot.strategies.event import CrashBounce
+    from martex_quant.strategies.event import CrashBounce
 
     with _pytest.raises(ValueError):
         CrashBounce(threshold=0.03)

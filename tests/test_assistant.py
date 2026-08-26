@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from trading_bot.research.assistant import (
+from martex_quant.research.assistant import (
     Objection,
     Proposal,
     Severity,

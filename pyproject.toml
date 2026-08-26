@@ -43,7 +43,7 @@ mt5 = [
     "MetaTrader5>=5.0.45; sys_platform == 'win32'",  # official MT5 Python API
 ]
 research = [
-    # TSLA CNN study only (src/trading_bot/research/tesla). Not needed by the
+    # TSLA CNN study only (src/martex_quant/research/tesla). Not needed by the
     # data pipeline, backtester, or any live/paper path — keep it out of the
     # runtime install.
     "tensorflow-cpu>=2.16",
@@ -57,22 +57,22 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/MartexHACK/trading-bot"
-Repository = "https://github.com/MartexHACK/trading-bot"
-Issues = "https://github.com/MartexHACK/trading-bot/issues"
-Changelog = "https://github.com/MartexHACK/trading-bot/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/MartexHACK/martex-quant"
+Repository = "https://github.com/MartexHACK/martex-quant"
+Issues = "https://github.com/MartexHACK/martex-quant/issues"
+Changelog = "https://github.com/MartexHACK/martex-quant/blob/main/CHANGELOG.md"
 
 [project.scripts]
-martex-quant = "trading_bot.cli:main"
+martex-quant = "martex_quant.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 # The research corpus (hypotheses, trial ledger, universe config) is vendored
-# into trading_bot/_bundle/ at build time by setup.py, so an installed wheel
-# can scaffold a complete workspace. See trading_bot/bundle.py.
-trading_bot = ["_bundle/**/*"]
+# into martex_quant/_bundle/ at build time by setup.py, so an installed wheel
+# can scaffold a complete workspace. See martex_quant/bundle.py.
+martex_quant = ["_bundle/**/*"]
 
 [tool.ruff]
 line-length = 100
@@ -91,7 +91,7 @@ select = [
 [tool.mypy]
 python_version = "3.12"
 strict = true
-packages = ["trading_bot"]
+packages = ["martex_quant"]
 mypy_path = "src"
 
 [[tool.mypy.overrides]]

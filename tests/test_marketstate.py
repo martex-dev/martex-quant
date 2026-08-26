@@ -15,9 +15,9 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from trading_bot.data.models import OHLCV_SCHEMA, Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.marketstate.state import (
+from martex_quant.data.models import OHLCV_SCHEMA, Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.marketstate.state import (
     AvailabilityError,
     BarCloseAvailability,
     MarketState,

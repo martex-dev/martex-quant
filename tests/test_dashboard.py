@@ -6,8 +6,8 @@ import urllib.request
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 
-from trading_bot.dashboard.data import gather_status, read_jsonl
-from trading_bot.dashboard.server import _bound_handler
+from martex_quant.dashboard.data import gather_status, read_jsonl
+from martex_quant.dashboard.server import _bound_handler
 
 
 def write_jsonl(path: Path, rows: list[dict]) -> None:
@@ -107,7 +107,7 @@ def test_run_action_inherits_full_environment(tmp_path: Path, monkeypatch) -> No
     Actions must inherit the parent environment."""
     import os
 
-    from trading_bot.dashboard import server
+    from martex_quant.dashboard import server
 
     monkeypatch.setenv("DASHBOARD_ENV_CANARY", "present")
     monkeypatch.setitem(

@@ -13,8 +13,8 @@ from __future__ import annotations
 import statistics
 from pathlib import Path
 
-from trading_bot.backtesting.candidate import candidate_oos_daily_returns
-from trading_bot.risk_management.prop_sim import PropFirmRules, simulate_evaluation
+from martex_quant.backtesting.candidate import candidate_oos_daily_returns
+from martex_quant.risk_management.prop_sim import PropFirmRules, simulate_evaluation
 
 RULESETS = [
     PropFirmRules(

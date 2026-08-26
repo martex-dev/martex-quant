@@ -14,7 +14,7 @@ max loss, 3% daily loss, no time limit, 1:30, MT5.
 ## Day 0 — after purchase, BEFORE any order
 
 1. Log the firm's MT5 credentials into the terminal (GUI, human only).
-2. `python -m trading_bot.live.trade --strategy vol-target` (DRY RUN).
+2. `python -m martex_quant.live.trade --strategy vol-target` (DRY RUN).
 3. List their crypto symbols; write config/symbol_map.json (their names
    for our 8 USDT pairs). Verify per symbol: contract size, volume_min/
    step (our slice sizes ~0.9 x 1.5 x $625 / price must clear volume_min),

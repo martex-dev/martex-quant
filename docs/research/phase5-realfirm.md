@@ -81,7 +81,7 @@ validation. Deferred until a futures firm is actually on the table.
 
 ## Paper trading is LIVE (Phase 5 core)
 
-`python -m trading_bot.live.paper --strategy vol-target` — run daily,
+`python -m martex_quant.live.paper --strategy vol-target` — run daily,
 shortly after 00:00 UTC. First real run (2026-07-11): parameters
 selected per symbol, exposures all 0.0 — trailing momentum is currently
 negative, so the system's first live decision was to hold no position.

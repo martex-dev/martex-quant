@@ -24,19 +24,19 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.backtesting.engine import BacktestConfig
-from trading_bot.backtesting.research import walk_forward_backtest
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.risk_management.prop_sim import (
+from martex_quant.backtesting.engine import BacktestConfig
+from martex_quant.backtesting.research import walk_forward_backtest
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.risk_management.prop_sim import (
     EvalResult,
     PropFirmRules,
     simulate_evaluation,
     simulate_two_step,
 )
-from trading_bot.strategies.base import Strategy
-from trading_bot.strategies.breakout import DonchianBreakout
-from trading_bot.strategies.vol_target import VolTargetMomentum
+from martex_quant.strategies.base import Strategy
+from martex_quant.strategies.breakout import DonchianBreakout
+from martex_quant.strategies.vol_target import VolTargetMomentum
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 STORE = ParquetStore(Path("data/lake"))

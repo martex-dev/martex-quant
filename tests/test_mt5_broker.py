@@ -7,8 +7,8 @@ from types import SimpleNamespace
 
 from test_paper_trader import T0, FakeDailyCollector
 
-from trading_bot.live import trade
-from trading_bot.live.mt5_broker import MAGIC, Mt5Broker
+from martex_quant.live import trade
+from martex_quant.live.mt5_broker import MAGIC, Mt5Broker
 
 
 class FakeMT5:

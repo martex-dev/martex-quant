@@ -17,14 +17,14 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.backtesting.engine import BacktestConfig, run_backtest
-from trading_bot.backtesting.metrics import compute_metrics
-from trading_bot.data.models import Interval
-from trading_bot.data.series.store import SeriesKind, SeriesStore
-from trading_bot.execution.simulated import ExecutionConfig
-from trading_bot.risk_management.prop_sim import PropFirmRules, simulate_evaluation
-from trading_bot.strategies.base import Strategy
-from trading_bot.strategies.fade import FadeFirstHour, FadeORB
+from martex_quant.backtesting.engine import BacktestConfig, run_backtest
+from martex_quant.backtesting.metrics import compute_metrics
+from martex_quant.data.models import Interval
+from martex_quant.data.series.store import SeriesKind, SeriesStore
+from martex_quant.execution.simulated import ExecutionConfig
+from martex_quant.risk_management.prop_sim import PropFirmRules, simulate_evaluation
+from martex_quant.strategies.base import Strategy
+from martex_quant.strategies.fade import FadeFirstHour, FadeORB
 
 SYMBOLS = [
     "BTCUSDT",

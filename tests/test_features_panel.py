@@ -15,10 +15,10 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from trading_bot.data.models import OHLCV_SCHEMA, Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.features.diagnostics import compare_panels, format_comparison, panel_signature
-from trading_bot.features.panel import (
+from martex_quant.data.models import OHLCV_SCHEMA, Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.features.diagnostics import compare_panels, format_comparison, panel_signature
+from martex_quant.features.panel import (
     CACHE_DAY_DTYPE,
     Feature,
     align_day_to_cache_precision,
@@ -101,7 +101,7 @@ def test_vol_excl_and_incl_current_are_different_features(store: ParquetStore) -
 def test_there_is_no_ambiguous_volatility_constructor() -> None:
     """Guards the API shape itself: a bare vol()/volatility() would let a
     caller pick a convention by accident."""
-    import trading_bot.features.panel as panel_module
+    import martex_quant.features.panel as panel_module
 
     assert not hasattr(panel_module, "volatility")
     assert not hasattr(panel_module, "vol")

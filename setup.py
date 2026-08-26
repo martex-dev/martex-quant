@@ -1,10 +1,10 @@
 """Build-time hook: vendor the research corpus into the package.
 
 Project metadata lives in `pyproject.toml`; this file exists only to copy
-`docs/` and `config/` into `src/trading_bot/_bundle/` before the wheel is
+`docs/` and `config/` into `src/martex_quant/_bundle/` before the wheel is
 built, so that `pip install martex-quant` ships the pre-registered hypotheses,
 the trial ledger, and the universe config — not just the code. See
-`trading_bot/bundle.py` for the runtime half.
+`martex_quant/bundle.py` for the runtime half.
 
 `config/secrets/` is excluded explicitly. It is gitignored, but a developer
 building a wheel on a machine where it exists must not publish it.
@@ -20,7 +20,7 @@ from setuptools import setup
 from setuptools.command.build_py import build_py as _build_py
 
 _ROOT = Path(__file__).resolve().parent
-_BUNDLE = _ROOT / "src" / "trading_bot" / "_bundle"
+_BUNDLE = _ROOT / "src" / "martex_quant" / "_bundle"
 _TREES = ("docs", "config")
 
 # Never vendor these, whatever the working tree happens to contain.

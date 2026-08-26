@@ -4,8 +4,8 @@ from datetime import UTC, datetime
 
 import pytest
 
-from trading_bot.core.events import Bar, Fill, Side
-from trading_bot.portfolio.portfolio import Portfolio
+from martex_quant.core.events import Bar, Fill, Side
+from martex_quant.portfolio.portfolio import Portfolio
 
 TS = datetime(2024, 1, 1, tzinfo=UTC)
 BAR = Bar(TS, open=100.0, high=101.0, low=99.0, close=100.0, volume=50.0)

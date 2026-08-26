@@ -15,7 +15,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from trading_bot.research.tesla.dataset import (
+from martex_quant.research.tesla.dataset import (
     DOWN,
     NEUTRAL,
     UP,
@@ -26,8 +26,8 @@ from trading_bot.research.tesla.dataset import (
     trailing_volatility,
     triple_barrier_labels,
 )
-from trading_bot.research.tesla.evaluate import roc_auc, score_classification
-from trading_bot.research.tesla.splits import validation_tail, walk_forward_folds
+from martex_quant.research.tesla.evaluate import roc_auc, score_classification
+from martex_quant.research.tesla.splits import validation_tail, walk_forward_folds
 
 
 def _synthetic_bars(n: int = 400, seed: int = 0) -> Bars:
@@ -267,8 +267,8 @@ def test_positive_control_harness_finds_a_planted_signal() -> None:
     purged folds and scoring. If this ever fails, every null result the
     study reports becomes uninterpretable.
     """
-    from trading_bot.research.tesla.model import LogisticClassifier
-    from trading_bot.research.tesla.splits import walk_forward_folds
+    from martex_quant.research.tesla.model import LogisticClassifier
+    from martex_quant.research.tesla.splits import walk_forward_folds
 
     bars = _synthetic_bars(1500, seed=11)
     data = build_dataset(bars, window=20, horizon=5)

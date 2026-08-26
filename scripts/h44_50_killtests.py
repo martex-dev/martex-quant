@@ -15,11 +15,11 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.features.intraday import load_15m_bars
-from trading_bot.features.panel import forward_return, trailing_percentile_rank
-from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
-from trading_bot.stats.bootstrap import two_group_diff_ci
-from trading_bot.stats.significance import ci_excludes_zero
+from martex_quant.features.intraday import load_15m_bars
+from martex_quant.features.panel import forward_return, trailing_percentile_rank
+from martex_quant.stats.bootstrap import event_mean_ci as _event_mean_ci
+from martex_quant.stats.bootstrap import two_group_diff_ci
+from martex_quant.stats.significance import ci_excludes_zero
 
 SYMBOLS = [
     "BTCUSDT",

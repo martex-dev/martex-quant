@@ -9,10 +9,10 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.stats.bootstrap import daily_mean_ci
-from trading_bot.stats.significance import ci_above_zero
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.stats.bootstrap import daily_mean_ci
+from martex_quant.stats.significance import ci_above_zero
 
 SYMBOLS = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 LOOKBACKS = [30, 90]

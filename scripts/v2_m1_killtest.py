@@ -21,12 +21,12 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.indices import dominance_series, equal_weight_index
-from trading_bot.data.models import Interval
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.features.panel import forward_return, relative_forward_return_difference
-from trading_bot.stats.bootstrap import flag_split_ci
-from trading_bot.stats.significance import ci_above_zero
+from martex_quant.data.indices import dominance_series, equal_weight_index
+from martex_quant.data.models import Interval
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.features.panel import forward_return, relative_forward_return_difference
+from martex_quant.stats.bootstrap import flag_split_ci
+from martex_quant.stats.significance import ci_above_zero
 
 ALTS = ["ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 LOOKBACKS = [14, 30, 60]

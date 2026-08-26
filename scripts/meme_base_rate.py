@@ -26,14 +26,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 import polars as pl  # noqa: E402
 
-from trading_bot.meme.economics import CostModel  # noqa: E402
-from trading_bot.meme.panel import (  # noqa: E402
+from martex_quant.meme.economics import CostModel  # noqa: E402
+from martex_quant.meme.panel import (  # noqa: E402
     HORIZONS_MIN,
     coverage_summary,
     measure_launch,
     read_panel,
 )
-from trading_bot.meme.registry import LaunchRegistry  # noqa: E402
+from martex_quant.meme.registry import LaunchRegistry  # noqa: E402
 
 logger = logging.getLogger("meme_base_rate")
 

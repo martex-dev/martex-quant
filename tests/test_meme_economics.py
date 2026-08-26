@@ -11,7 +11,7 @@ import math
 
 import pytest
 
-from trading_bot.meme.economics import (
+from martex_quant.meme.economics import (
     CostModel,
     evaluate_trade,
     max_viable_notional,

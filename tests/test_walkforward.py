@@ -2,7 +2,7 @@
 
 import pytest
 
-from trading_bot.backtesting.walkforward import walk_forward_windows
+from martex_quant.backtesting.walkforward import walk_forward_windows
 
 
 def test_basic_tiling_no_overlap_full_oos_coverage() -> None:

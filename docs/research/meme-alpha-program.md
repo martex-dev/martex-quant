@@ -91,7 +91,7 @@ A Solana AMM round trip costs, per position:
 | Failed attempts | ~5% | pays the fee, gets no position |
 | Block-time drift | ~1% × 2 | modelled as extra slippage |
 
-Implemented in `src/trading_bot/meme/economics.py`. The consequence:
+Implemented in `src/martex_quant/meme/economics.py`. The consequence:
 
 - At **$500,000 a position**, the flat fee is 0.00016%. Costs are pure impact,
   and impact is manageable because you can pick deep pools.
@@ -150,11 +150,11 @@ indexer key (Helius/Bitquery free tiers are sufficient).
 
 | Component | File | Status |
 |---|---|---|
-| Rate-limited HTTP client | `src/trading_bot/meme/http.py` | done |
-| GeckoTerminal adapter | `src/trading_bot/meme/sources/geckoterminal.py` | done |
-| Launch registry (first-sighting, append-only) | `src/trading_bot/meme/registry.py` | done, recording |
-| Forward outcome measurement | `src/trading_bot/meme/outcomes.py` | done |
-| AMM cost model | `src/trading_bot/meme/economics.py` | done |
+| Rate-limited HTTP client | `src/martex_quant/meme/http.py` | done |
+| GeckoTerminal adapter | `src/martex_quant/meme/sources/geckoterminal.py` | done |
+| Launch registry (first-sighting, append-only) | `src/martex_quant/meme/registry.py` | done, recording |
+| Forward outcome measurement | `src/martex_quant/meme/outcomes.py` | done |
+| AMM cost model | `src/martex_quant/meme/economics.py` | done |
 | Recorder daemon | `scripts/meme_record.py` | running |
 | Base-rate report | `scripts/meme_cohort_report.py` | done |
 

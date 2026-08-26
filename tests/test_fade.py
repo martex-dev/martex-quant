@@ -2,9 +2,9 @@
 
 from datetime import UTC, datetime, timedelta
 
-from trading_bot.backtesting.history import History
-from trading_bot.core.events import Bar
-from trading_bot.strategies.fade import FadeFirstHour, FadeORB
+from martex_quant.backtesting.history import History
+from martex_quant.core.events import Bar
+from martex_quant.strategies.fade import FadeFirstHour, FadeORB
 
 DAY0 = datetime(2024, 1, 1, tzinfo=UTC)
 

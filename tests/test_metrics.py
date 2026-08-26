@@ -5,14 +5,14 @@ from datetime import UTC, datetime, timedelta
 import polars as pl
 import pytest
 
-from trading_bot.backtesting.metrics import (
+from martex_quant.backtesting.metrics import (
     compute_metrics,
     expected_max_sharpe,
     probabilistic_sharpe_ratio,
     round_trips,
 )
-from trading_bot.core.events import Fill, Side
-from trading_bot.data.models import Interval
+from martex_quant.core.events import Fill, Side
+from martex_quant.data.models import Interval
 
 START = datetime(2024, 1, 1, tzinfo=UTC)
 

@@ -44,8 +44,8 @@ jobs:
           wheel = glob.glob("dist/*.whl")[0]
           names = zipfile.ZipFile(wheel).namelist()
           required = [
-              "trading_bot/_bundle/docs/research/ledger/trials.toml",
-              "trading_bot/_bundle/config/universe.json",
+              "martex_quant/_bundle/docs/research/ledger/trials.toml",
+              "martex_quant/_bundle/config/universe.json",
           ]
           missing = [r for r in required if r not in names]
           leaked = [n for n in names if "secrets/" in n or n.endswith((".key", ".pem"))]
@@ -119,11 +119,11 @@ jobs:
           files: dist/*
           generate_release_notes: true
           body: |
-            Download `trading_bot-${{ steps.version.outputs.number }}-py3-none-any.whl`
+            Download `martex_quant-${{ steps.version.outputs.number }}-py3-none-any.whl`
             below and install it:
 
             ```
-            pip install ./trading_bot-${{ steps.version.outputs.number }}-py3-none-any.whl
+            pip install ./martex_quant-${{ steps.version.outputs.number }}-py3-none-any.whl
             ```
 
             Then, as three separate commands — `&&` is a parser error in

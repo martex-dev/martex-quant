@@ -10,13 +10,13 @@ from datetime import UTC, datetime
 import polars as pl
 import pytest
 
-from trading_bot.backtesting.engine import BacktestConfig, run_backtest
-from trading_bot.backtesting.history import History
-from trading_bot.core.events import Side
-from trading_bot.data.models import ohlcv_frame_from_rows
-from trading_bot.execution.simulated import ExecutionConfig
-from trading_bot.strategies.base import Strategy
-from trading_bot.strategies.benchmark import BuyAndHold, Flat, SmaCross
+from martex_quant.backtesting.engine import BacktestConfig, run_backtest
+from martex_quant.backtesting.history import History
+from martex_quant.core.events import Side
+from martex_quant.data.models import ohlcv_frame_from_rows
+from martex_quant.execution.simulated import ExecutionConfig
+from martex_quant.strategies.base import Strategy
+from martex_quant.strategies.benchmark import BuyAndHold, Flat, SmaCross
 
 START = datetime(2024, 1, 1, tzinfo=UTC)
 H1_MS = 3_600_000

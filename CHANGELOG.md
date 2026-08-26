@@ -8,26 +8,42 @@ All notable changes to this project are documented here. Format follows
 
 ### Changed
 
-- **Renamed the distribution to `martex-quant`** (`pip install martex-quant`),
-  and the command to `martex-quant`. The import package is unchanged: it is
-  still `import trading_bot`, and the repository is still `trading-bot`.
+- **Renamed the project to `martex-quant`, throughout.** The old name was
+  `trading-bot`, and every name derived from it moved:
 
-  PyPI rejected `trading-bot` as too similar to the existing `tradingbot`.
-  Checking that the exact name returned 404 was not sufficient — that only
-  proves nobody holds it, not that PyPI will let you register it, because the
-  similarity check collapses separators. `tradingbot`, `trading-bots`, and
-  `tradebot` all already exist.
+  | | Before | After |
+  |---|---|---|
+  | PyPI distribution | `trading-bot` | `martex-quant` |
+  | Command | `tradingbot` | `martex-quant` |
+  | Import package | `trading_bot` | `martex_quant` |
+  | Repository | `MartexHACK/trading-bot` | `MartexHACK/martex-quant` |
+  | Workspace env var | `TRADING_BOT_HOME` | `MARTEX_QUANT_HOME` |
 
-- Enabled the PyPI publishing job, which now runs on every version tag via
+  The trigger was PyPI refusing `trading-bot` as too similar to an existing
+  project. Checking that the exact name returned 404 was not sufficient —
+  that only proves nobody holds it, not that PyPI will let you register it,
+  because the similarity check collapses separators. `tradingbot`,
+  `trading-bots`, and `tradebot` all already exist.
+
+  No research artefact changed. No hypothesis document referenced the package
+  name, the frozen-baseline gate excludes the `code` category by design, and
+  no golden stdout contained it — so no verdict, ledger entry, statistic, or
+  frozen baseline was touched by the rename.
+
+  GitHub redirects the old repository URL, so existing clones and links keep
+  working. `git remote set-url` is still worth running on any local clone.
+
+- Enabled the PyPI publishing job, which runs on every version tag via
   trusted publishing (OIDC, no stored API token).
 
 ### Fixed
 
 - The v1.0.0 release notes told users to run `tradingbot init my-lab && cd
   my-lab`. Windows PowerShell has no `&&` operator — it is a parser error, so
-  neither half runs. Every chained command in the README, INSTALL, the
-  `--help` epilog, and the release template is now one per line. The published
-  v1.0.0 notes were corrected in place.
+  neither half runs, which is exactly how the first release attempt failed.
+  Every chained command in the README, INSTALL, the `--help` epilog, and the
+  release template is now one per line. The published v1.0.0 notes were
+  corrected in place.
 - The release template interpolated the git tag straight into a pip command,
   emitting `==v1.0.0` (with the `v`), which pip rejects. The version is now
   derived by stripping the prefix.
@@ -47,7 +63,7 @@ have to reverse-engineer.
   `backtest`, `montecarlo`, `paper`, `dashboard`, `ledger`.
 - **Workspaces.** `tradingbot init my-lab` scaffolds a directory holding the
   data lake, paper-trading state, and the full research corpus. Commands
-  resolve their workspace from `--workspace`, `$TRADING_BOT_HOME`, or the
+  resolve their workspace from `--workspace`, `$MARTEX_QUANT_HOME`, or the
   current directory, so an installed copy no longer has to be run from a git
   checkout.
 - **The research corpus ships inside the package.** The 29 pre-registered

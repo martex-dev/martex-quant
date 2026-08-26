@@ -25,7 +25,7 @@ killed ideas without a new pre-registered spec and a stated reason.
   deliberate CLI step, never a dashboard button; the guard's KILLED
   latch is cleared only by a human.
 - Every session: run pytest + ruff + strict mypy before committing;
-  commit per component; push to origin (GitHub MartexHACK/trading-bot).
+  commit per component; push to origin (GitHub MartexHACK/martex-quant).
 - Restart the dashboard server after changing dashboard code.
 - Report negative results with the same rigor as positive ones. The
   ledger's honesty is the project's only real asset.
@@ -232,7 +232,7 @@ Prefer:
 Recommended structure:
 
 ```
-trading_bot/
+martex_quant/
 
 ├── data/
 │   ├── collectors/
@@ -479,7 +479,7 @@ The honest comparison isn't "conservative vs. aggressive." It's "constrained opt
 Core architectural decision: **event-driven core with a vectorized research layer**. Vectorized backtests (pandas/polars operations over whole arrays) are fast for research sweeps but hide look-ahead bugs and can't model execution realistically. Event-driven backtests process one timestamp at a time through the same code path as live trading — slower, but structurally incapable of look-ahead leakage, and they let backtest and live share the strategy and risk code. We use both: vectorized for coarse hypothesis screening, event-driven as the source of truth. Any strategy must pass the event-driven engine before being trusted.
 
 ```
-trading_bot/
+martex_quant/
 ├── core/                  # Event bus, clock, event types (MarketEvent,
 │                          #   SignalEvent, OrderEvent, FillEvent)
 ├── data/
@@ -552,7 +552,7 @@ Timelines are estimates with wide error bars; phase gates matter more than dates
 
 ## 7. First Milestone
 
-**Milestone 1: Validated Data Foundation.** Scope: repository scaffolding with CI, lint, typing; the `data/` subsystem complete — one collector (Binance OHLCV via ccxt is the cheapest starting point since it's free and lets us build the pipeline before spending on futures data), the validation processor, the Parquet store with catalog, and a data-quality report command. Deliverable: `python -m trading_bot.data.pull --symbol BTCUSDT --interval 1h --years 4` produces validated, gap-audited Parquet plus a quality report, with the whole pipeline under test.
+**Milestone 1: Validated Data Foundation.** Scope: repository scaffolding with CI, lint, typing; the `data/` subsystem complete — one collector (Binance OHLCV via ccxt is the cheapest starting point since it's free and lets us build the pipeline before spending on futures data), the validation processor, the Parquet store with catalog, and a data-quality report command. Deliverable: `python -m martex_quant.data.pull --symbol BTCUSDT --interval 1h --years 4` produces validated, gap-audited Parquet plus a quality report, with the whole pipeline under test.
 
 Why data first and not the backtester: every downstream result inherits data quality, garbage here silently poisons everything, and it's the component with the least design risk — a clean win that establishes our engineering standards before the genuinely hard design work (the fill model) begins.
 

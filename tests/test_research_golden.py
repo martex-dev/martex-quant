@@ -47,8 +47,8 @@ from typing import Any
 
 import pytest
 
-from trading_bot.research import baseline
-from trading_bot.research.baseline import ScriptSpec
+from martex_quant.research import baseline
+from martex_quant.research.baseline import ScriptSpec
 
 ROOT = Path(__file__).resolve().parents[1]
 IDS = [spec.name for spec in baseline.SPECS]

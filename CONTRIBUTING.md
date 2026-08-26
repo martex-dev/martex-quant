@@ -68,7 +68,7 @@ CI runs all four on every push. All must be green.
 
 ## Adding a strategy
 
-Implement `Strategy` in `src/trading_bot/strategies/`, add unit tests with
+Implement `Strategy` in `src/martex_quant/strategies/`, add unit tests with
 synthetic data, and register it in the CLI's strategy tables if it should be
 runnable from the command line. Then pre-register a hypothesis and test it
 properly.

@@ -11,8 +11,8 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from trading_bot.meme.outcomes import measure
-from trading_bot.meme.sources.geckoterminal import Bar
+from martex_quant.meme.outcomes import measure
+from martex_quant.meme.sources.geckoterminal import Bar
 
 T0 = datetime(2026, 8, 11, 12, 0, tzinfo=UTC)
 

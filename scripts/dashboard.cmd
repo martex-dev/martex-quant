@@ -8,8 +8,8 @@ rem file works on any machine, not just the one it was written on.
 setlocal
 set PYTHONIOENCODING=utf-8
 
-if defined TRADING_BOT_HOME (
-    set "WORKSPACE=%TRADING_BOT_HOME%"
+if defined MARTEX_QUANT_HOME (
+    set "WORKSPACE=%MARTEX_QUANT_HOME%"
 ) else (
     set "WORKSPACE=%~dp0.."
 )

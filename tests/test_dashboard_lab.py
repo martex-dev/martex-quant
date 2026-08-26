@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from trading_bot.dashboard.lab import (
+from martex_quant.dashboard.lab import (
     gather_lab,
     independence_audit,
     ledger_summary,

@@ -12,15 +12,15 @@ from pathlib import Path
 
 import pytest
 
-from trading_bot.research.ledger.records import EvidenceDescriptor, Family, Trial
-from trading_bot.research.ledger.registry import (
+from martex_quant.research.ledger.records import EvidenceDescriptor, Family, Trial
+from martex_quant.research.ledger.registry import (
     index_fingerprint,
     ledger_claims,
     load_ledger,
     rebuild_index,
     with_trial,
 )
-from trading_bot.research.ledger.vocabulary import (
+from martex_quant.research.ledger.vocabulary import (
     HISTORICAL_VERDICT_ALIASES,
     Grade,
     Maturity,
@@ -28,7 +28,7 @@ from trading_bot.research.ledger.vocabulary import (
     Verdict,
     exceeds_ceiling,
 )
-from trading_bot.stats.multiple_testing import (
+from martex_quant.stats.multiple_testing import (
     DEFAULT_Q_GLOBAL,
     allocate_family_budget,
     by_correction_factor,

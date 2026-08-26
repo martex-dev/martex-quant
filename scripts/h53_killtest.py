@@ -13,9 +13,9 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.features.panel import forward_return
-from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
-from trading_bot.stats.significance import ci_excludes_zero
+from martex_quant.features.panel import forward_return
+from martex_quant.stats.bootstrap import event_mean_ci as _event_mean_ci
+from martex_quant.stats.significance import ci_excludes_zero
 
 SYMBOLS = [
     "BTCUSDT",

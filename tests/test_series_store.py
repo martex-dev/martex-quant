@@ -13,7 +13,7 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from trading_bot.data.series.store import (
+from martex_quant.data.series.store import (
     SPECS,
     STREAM_KINDS,
     Provenance,

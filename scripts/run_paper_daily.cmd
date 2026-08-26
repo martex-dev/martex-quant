@@ -11,10 +11,10 @@ rem Runs EVERY paper strategy; add a line per new survivor.
 setlocal
 set PYTHONIOENCODING=utf-8
 
-rem Workspace: %TRADING_BOT_HOME% if set, otherwise the repo root above this
+rem Workspace: %MARTEX_QUANT_HOME% if set, otherwise the repo root above this
 rem script. Never a hardcoded path - this file ships to other machines.
-if defined TRADING_BOT_HOME (
-    set "WORKSPACE=%TRADING_BOT_HOME%"
+if defined MARTEX_QUANT_HOME (
+    set "WORKSPACE=%MARTEX_QUANT_HOME%"
 ) else (
     set "WORKSPACE=%~dp0.."
 )

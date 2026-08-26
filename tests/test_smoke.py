@@ -3,8 +3,8 @@
 Replaced by real tests as each component lands (validator, store, collector).
 """
 
-import trading_bot
+import martex_quant
 
 
 def test_package_imports() -> None:
-    assert trading_bot.__version__
+    assert martex_quant.__version__

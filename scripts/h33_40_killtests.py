@@ -14,8 +14,8 @@ from pathlib import Path
 
 import polars as pl
 
-from trading_bot.data.store.parquet_store import ParquetStore
-from trading_bot.features.panel import (
+from martex_quant.data.store.parquet_store import ParquetStore
+from martex_quant.features.panel import (
     align_day_to_cache_precision,
     forward_return,
     momentum,
@@ -24,10 +24,10 @@ from trading_bot.features.panel import (
     rolling_mean_of,
     true_range,
 )
-from trading_bot.features.panel import daily_panel as canonical_daily_panel
-from trading_bot.stats.bootstrap import event_mean_ci as _event_mean_ci
-from trading_bot.stats.bootstrap import two_group_diff_ci
-from trading_bot.stats.significance import ci_excludes_zero
+from martex_quant.features.panel import daily_panel as canonical_daily_panel
+from martex_quant.stats.bootstrap import event_mean_ci as _event_mean_ci
+from martex_quant.stats.bootstrap import two_group_diff_ci
+from martex_quant.stats.significance import ci_excludes_zero
 
 LEGACY8 = ["BTCUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT", "XRPUSDT", "ADAUSDT", "DOGEUSDT", "LTCUSDT"]
 PERP_DIR = Path("data/perp")

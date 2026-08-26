@@ -6,9 +6,9 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from trading_bot.data.models import Interval, ohlcv_frame_from_rows
-from trading_bot.data.store.catalog import Catalog, DatasetEntry
-from trading_bot.data.store.parquet_store import ParquetStore
+from martex_quant.data.models import Interval, ohlcv_frame_from_rows
+from martex_quant.data.store.catalog import Catalog, DatasetEntry
+from martex_quant.data.store.parquet_store import ParquetStore
 
 H1_MS = 3_600_000
 

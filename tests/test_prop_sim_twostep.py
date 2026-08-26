@@ -2,7 +2,7 @@
 
 import pytest
 
-from trading_bot.risk_management.prop_sim import (
+from martex_quant.risk_management.prop_sim import (
     PropFirmRules,
     simulate_evaluation,
     simulate_two_step,

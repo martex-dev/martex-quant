@@ -14,7 +14,7 @@ import numpy as np
 import polars as pl
 import pytest
 
-from trading_bot.research.ensemble import (
+from martex_quant.research.ensemble import (
     LeakageError,
     assert_features_are_causal,
     leak_alarm,

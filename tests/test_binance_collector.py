@@ -5,8 +5,8 @@ from datetime import timedelta
 import pytest
 from conftest import H1_MS, START, START_MS, FakeExchange
 
-from trading_bot.data.collectors.binance import BinanceCollector, to_ccxt_symbol
-from trading_bot.data.models import OHLCV_SCHEMA, Interval
+from martex_quant.data.collectors.binance import BinanceCollector, to_ccxt_symbol
+from martex_quant.data.models import OHLCV_SCHEMA, Interval
 
 
 def make_collector(fake: FakeExchange) -> BinanceCollector:

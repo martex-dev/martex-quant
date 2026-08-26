@@ -5,10 +5,10 @@ from datetime import UTC, datetime, timedelta
 import polars as pl
 import pytest
 
-from trading_bot.backtesting.engine import BacktestConfig, run_backtest
-from trading_bot.data.models import ohlcv_frame_from_rows
-from trading_bot.execution.simulated import ExecutionConfig
-from trading_bot.risk_management.policies import (
+from martex_quant.backtesting.engine import BacktestConfig, run_backtest
+from martex_quant.data.models import ohlcv_frame_from_rows
+from martex_quant.execution.simulated import ExecutionConfig
+from martex_quant.risk_management.policies import (
     CompositePolicy,
     DailyLossPolicy,
     DrawdownGuardPolicy,
@@ -16,7 +16,7 @@ from trading_bot.risk_management.policies import (
     mode1_policy,
     mode2_policy,
 )
-from trading_bot.strategies.benchmark import BuyAndHold
+from martex_quant.strategies.benchmark import BuyAndHold
 
 TS = datetime(2024, 1, 1, tzinfo=UTC)
 

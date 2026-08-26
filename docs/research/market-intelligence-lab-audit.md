@@ -103,7 +103,7 @@ This matters for MI prioritization and is flagged, not acted on.
   truth; any database is a *derived index* (conflict C3).
 - **No second statistics implementation.** The 11 copy-pasted block
   bootstraps get extracted upward into one library, not forked sideways.
-- **No separate `research` CLI.** Convention is `python -m trading_bot.X`.
+- **No separate `research` CLI.** Convention is `python -m martex_quant.X`.
 
 ### 2.3 Where MI plugs in naturally
 
@@ -262,7 +262,7 @@ docs ever disagree, the docs win, and a test asserts they agree.
 
 ### C4 — "Extend the existing CLI" — there isn't one
 
-There are six `python -m trading_bot.X` entry points plus ~30 ad-hoc
+There are six `python -m martex_quant.X` entry points plus ~30 ad-hoc
 scripts. There is no unified command surface to extend. Building one is
 justified but is new construction, not extension, and it should follow
 the existing module convention rather than introducing a `research`
@@ -273,7 +273,7 @@ binary.
 ## 4. Proposed architecture
 
 ```
-src/trading_bot/
+src/martex_quant/
   data/
     store/parquet_store.py      (unchanged — immutable exchange bars)
     series/                     NEW: non-OHLCV observations

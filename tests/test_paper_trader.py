@@ -7,8 +7,8 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from trading_bot.data.models import Interval, ohlcv_frame_from_rows
-from trading_bot.live.paper import SYMBOLS, PaperTrader
+from martex_quant.data.models import Interval, ohlcv_frame_from_rows
+from martex_quant.live.paper import SYMBOLS, PaperTrader
 
 DAY_MS = 86_400_000
 T0 = datetime(2024, 1, 1, tzinfo=UTC)
@@ -196,7 +196,7 @@ class CrashingCollector(FakeDailyCollector):
                 [start_ms + i * DAY_MS, price, max(c, price) * 1.001, min(c, price) * 0.999, c, 1e6]
             )
             price = c
-        from trading_bot.data.models import ohlcv_frame_from_rows
+        from martex_quant.data.models import ohlcv_frame_from_rows
 
         self.df = ohlcv_frame_from_rows(rows)
 
@@ -237,7 +237,7 @@ def test_rotation_stop_goes_flat_after_crash(tmp_path: Path) -> None:
 
 
 def test_sprint_weights_no_crash_equals_rotation_stop() -> None:
-    from trading_bot.live.decision import rotation_stop_weights, sprint_weights
+    from martex_quant.live.decision import rotation_stop_weights, sprint_weights
 
     collector = FakeDailyCollector()
     now = T0 + timedelta(days=555)
@@ -255,7 +255,7 @@ def test_sprint_weights_deploys_idle_cash_after_btc_crash() -> None:
     -8% on the last bar -> the bounce overlay must deploy the idle cash
     equally across the alts. This is exactly the 43a mechanism: stops
     create idle cash at the same moment crashes create the bounce."""
-    from trading_bot.live.decision import sprint_weights
+    from martex_quant.live.decision import sprint_weights
 
     collector = CrashingCollector()
     now = T0 + timedelta(days=555)

@@ -9,10 +9,10 @@ set -euo pipefail
 
 export PYTHONIOENCODING=utf-8
 
-# Workspace: $TRADING_BOT_HOME if set, otherwise the directory above this
+# Workspace: $MARTEX_QUANT_HOME if set, otherwise the directory above this
 # script (the repository root in a source install). Never a hardcoded path.
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-WORKSPACE="${TRADING_BOT_HOME:-$(dirname "$SCRIPT_DIR")}"
+WORKSPACE="${MARTEX_QUANT_HOME:-$(dirname "$SCRIPT_DIR")}"
 cd "$WORKSPACE"
 
 # Prefer the project's virtualenv; fall back to whatever is on PATH.

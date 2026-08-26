@@ -12,7 +12,7 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from trading_bot.meme.panel import DELISTED_RETURN, Observation, measure_launch
+from martex_quant.meme.panel import DELISTED_RETURN, Observation, measure_launch
 
 T0 = datetime(2026, 8, 11, 12, 0, tzinfo=UTC)
 

@@ -4,8 +4,8 @@ from datetime import UTC, datetime
 
 import pytest
 
-from trading_bot.core.events import Bar, Order, Side
-from trading_bot.execution.simulated import ExecutionConfig, SimulatedBroker
+from martex_quant.core.events import Bar, Order, Side
+from martex_quant.execution.simulated import ExecutionConfig, SimulatedBroker
 
 TS = datetime(2024, 1, 1, tzinfo=UTC)
 BAR = Bar(TS, open=200.0, high=210.0, low=190.0, close=205.0, volume=100.0)

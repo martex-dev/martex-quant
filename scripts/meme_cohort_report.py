@@ -31,11 +31,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 import polars as pl  # noqa: E402
 
-from trading_bot.meme.economics import CostModel, evaluate_trade  # noqa: E402
-from trading_bot.meme.http import RateLimitedJsonClient  # noqa: E402
-from trading_bot.meme.outcomes import HORIZONS_MIN, measure  # noqa: E402
-from trading_bot.meme.registry import LaunchRegistry  # noqa: E402
-from trading_bot.meme.sources.geckoterminal import GeckoTerminalClient  # noqa: E402
+from martex_quant.meme.economics import CostModel, evaluate_trade  # noqa: E402
+from martex_quant.meme.http import RateLimitedJsonClient  # noqa: E402
+from martex_quant.meme.outcomes import HORIZONS_MIN, measure  # noqa: E402
+from martex_quant.meme.registry import LaunchRegistry  # noqa: E402
+from martex_quant.meme.sources.geckoterminal import GeckoTerminalClient  # noqa: E402
 
 GECKO_ACCEPT = "application/json;version=20230302"
 

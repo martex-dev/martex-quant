@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import pytest
 
-from trading_bot.research.graph import (
+from martex_quant.research.graph import (
     Edge,
     EdgeKind,
     Node,

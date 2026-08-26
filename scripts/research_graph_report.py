@@ -24,7 +24,7 @@ while quietly omitting rows would be worse than one with a stated scope.
 
 from __future__ import annotations
 
-from trading_bot.research.graph import (
+from martex_quant.research.graph import (
     Edge,
     EdgeKind,
     Node,

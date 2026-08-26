@@ -13,9 +13,9 @@ from pathlib import Path
 
 import pytest
 
-from trading_bot import workspace as ws
-from trading_bot.bundle import bundle_root
-from trading_bot.cli import build_parser, main
+from martex_quant import workspace as ws
+from martex_quant.bundle import bundle_root
+from martex_quant.cli import build_parser, main
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 
@@ -230,4 +230,4 @@ def test_release_documents_exist() -> None:
 
 def test_entry_point_is_declared() -> None:
     text = (REPO_ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    assert 'martex-quant = "trading_bot.cli:main"' in text
+    assert 'martex-quant = "martex_quant.cli:main"' in text

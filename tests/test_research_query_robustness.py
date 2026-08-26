@@ -13,7 +13,7 @@ from pathlib import Path
 import polars as pl
 import pytest
 
-from trading_bot.research.ledger.query import (
+from martex_quant.research.ledger.query import (
     DEAD_VERDICTS,
     already_tested,
     contradictions,
@@ -24,10 +24,10 @@ from trading_bot.research.ledger.query import (
     summarise,
     survivors,
 )
-from trading_bot.research.ledger.registry import load_ledger
-from trading_bot.research.ledger.vocabulary import Maturity
-from trading_bot.research.relationships import Cell, Condition
-from trading_bot.research.robustness import (
+from martex_quant.research.ledger.registry import load_ledger
+from martex_quant.research.ledger.vocabulary import Maturity
+from martex_quant.research.relationships import Cell, Condition
+from martex_quant.research.robustness import (
     ReplicationRun,
     Stressor,
     StressRecord,

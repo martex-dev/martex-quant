@@ -6,12 +6,12 @@ from pathlib import Path
 
 from conftest import START, START_MS, FakeExchange
 
-from trading_bot.data import pull
-from trading_bot.data.collectors.binance import BinanceCollector
-from trading_bot.data.models import Interval
-from trading_bot.data.processors.validation import validate_ohlcv
-from trading_bot.data.store.catalog import Catalog
-from trading_bot.data.store.parquet_store import ParquetStore
+from martex_quant.data import pull
+from martex_quant.data.collectors.binance import BinanceCollector
+from martex_quant.data.models import Interval
+from martex_quant.data.processors.validation import validate_ohlcv
+from martex_quant.data.store.catalog import Catalog
+from martex_quant.data.store.parquet_store import ParquetStore
 
 
 def test_floor_to_interval() -> None:

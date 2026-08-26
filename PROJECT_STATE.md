@@ -139,7 +139,7 @@ from the repository:
 | `config/secrets/hyro.json` (API keys) | ABSENT |
 | `config/symbol_map.json` | ABSENT |
 | `config/universe_hyro.json` | ABSENT |
-| `src/trading_bot/live/bybit_broker.py` | ABSENT |
+| `src/martex_quant/live/bybit_broker.py` | ABSENT |
 | `data/live/guard/` (guard run state) | ABSENT |
 
 `OBSERVATION` — `data/live/` contains only the legacy vol-target
@@ -251,19 +251,19 @@ ledger entry, cost model, or statistic was touched. This is packaging.
 
 What shipped:
 
-- `tradingbot` console entry point (`src/trading_bot/cli.py`) covering
+- `tradingbot` console entry point (`src/martex_quant/cli.py`) covering
   init, doctor, quickstart, data pull/status, backtest, montecarlo,
   paper, dashboard, ledger.
-- **Workspaces** (`src/trading_bot/workspace.py`). Nearly every path in
+- **Workspaces** (`src/martex_quant/workspace.py`). Nearly every path in
   this codebase is cwd-relative (`data/lake`, `data/paper/<strategy>`,
   `docs/research/ledger/trials.toml`, `config/universe.json`), which
   only worked from a checkout. The CLI now resolves a workspace from
-  `--workspace` / `$TRADING_BOT_HOME` / cwd and chdirs into it before
+  `--workspace` / `$MARTEX_QUANT_HOME` / cwd and chdirs into it before
   dispatch — one decision point instead of threading a root through
   modules the ledger depends on.
 - **The corpus ships inside the wheel.** `setup.py` vendors `docs/` and
-  `config/` into `trading_bot/_bundle/` at build time (secrets excluded);
-  `src/trading_bot/bundle.py` resolves the live checkout first and the
+  `config/` into `martex_quant/_bundle/` at build time (secrets excluded);
+  `src/martex_quant/bundle.py` resolves the live checkout first and the
   packaged copy otherwise. A `pip install` therefore carries the 29
   hypothesis documents and the 125-trial ledger, not just code.
 - MIT `LICENSE`, `DISCLAIMER.md`, `CONTRIBUTING.md` (pre-registration
@@ -284,7 +284,7 @@ resolving the corpus from site-packages.
 
 `OBSERVATION` — the distribution is named **`martex-quant`**
 (`pip install martex-quant`), and the command is `martex-quant`. The
-import package is unchanged — still `import trading_bot` — and so is the
+import package is unchanged — still `import martex_quant` — and so is the
 repository name.
 
 `OBSERVATION` — the first choice, `trading-bot`, was rejected by PyPI as

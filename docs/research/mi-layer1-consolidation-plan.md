@@ -211,7 +211,7 @@ Handling, per the standing rule:
    cannot be honoured literally here: there is no stable historical behaviour
    to preserve.)
 2. **Documented** — recorded in `REPRODUCIBILITY_DEFECTS` in
-   `trading_bot.research.baseline`, and surfaced in the fingerprint of that
+   `martex_quant.research.baseline`, and surfaced in the fingerprint of that
    script so it can never be quietly forgotten.
 3. **Correction candidate** — take an explicit seed parameter. Requires its
    own pre-registration; it will change the published digits.
@@ -342,7 +342,7 @@ variant is wrong becomes a separate, pre-registered correction.
 
 **Committed before any refactor**, so the safety net predates the change.
 
-### Step 1 — `src/trading_bot/stats/bootstrap.py`
+### Step 1 — `src/martex_quant/stats/bootstrap.py`
 
 Four public functions, one per estimator shape, all with explicit
 `block`, `seed`, `n_boot` (no hidden defaults), plus one private
@@ -366,7 +366,7 @@ Order: h11, h09, h53 (single-estimator, smallest) → Shape A family
 **A golden diff is a stop-and-investigate event, never an accepted
 update.**
 
-### Step 3 — `src/trading_bot/features/panel.py`
+### Step 3 — `src/martex_quant/features/panel.py`
 
 `daily_panel(store, symbols, *, features, drop_nulls=None)` — per-symbol
 build then concat. Features are named, versioned, individually
@@ -383,7 +383,7 @@ in the studies.
 
 Full suite (228 existing + new), all 13 goldens byte-identical, `ruff
 check`, `ruff format --check`, `mypy` strict. Note: `mypy` is configured
-with `packages = ["trading_bot"]`, so `scripts/` is not type-checked
+with `packages = ["martex_quant"]`, so `scripts/` is not type-checked
 today; logic moving into `src/` gains strict typing as a side benefit
 (verified: scripts pass mypy when checked explicitly, so no surprises).
 
