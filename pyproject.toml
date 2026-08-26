@@ -4,9 +4,32 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "trading-bot"
-version = "0.1.0"
-description = "Quantitative trading research platform: data pipeline, backtesting, strategy evaluation."
+version = "1.0.0"
+description = "Quantitative trading research platform: data pipeline, event-driven backtesting, statistical validation, Monte Carlo, paper trading."
+readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "mvnikolov" }]
+keywords = [
+    "trading",
+    "quantitative-finance",
+    "backtesting",
+    "algorithmic-trading",
+    "research",
+    "crypto",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Typing :: Typed",
+]
 dependencies = [
     "ccxt>=4.3",
     "polars>=1.0",
@@ -33,8 +56,23 @@ dev = [
     "mypy>=1.10",
 ]
 
+[project.urls]
+Homepage = "https://github.com/MartexHACK/trading-bot"
+Repository = "https://github.com/MartexHACK/trading-bot"
+Issues = "https://github.com/MartexHACK/trading-bot/issues"
+Changelog = "https://github.com/MartexHACK/trading-bot/blob/main/CHANGELOG.md"
+
+[project.scripts]
+tradingbot = "trading_bot.cli:main"
+
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+# The research corpus (hypotheses, trial ledger, universe config) is vendored
+# into trading_bot/_bundle/ at build time by setup.py, so an installed wheel
+# can scaffold a complete workspace. See trading_bot/bundle.py.
+trading_bot = ["_bundle/**/*"]
 
 [tool.ruff]
 line-length = 100

@@ -38,3 +38,7 @@ Thumbs.db
 config/secrets/
 *.key
 *.pem
+
+# Research corpus vendored into the package by setup.py at build time.
+# Generated from docs/ and config/; the originals are the source of truth.
+/src/trading_bot/_bundle/

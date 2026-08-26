@@ -1,0 +1,17 @@
+# Source distributions carry the readable project, not only the package: the
+# research corpus in its original location, the tests, and the documents a
+# reviewer would want (license, disclaimer, changelog).
+include LICENSE DISCLAIMER.md CHANGELOG.md CONTRIBUTING.md SECURITY.md
+include README.md CLAUDE.md PROJECT_STATE.md PROJECT_MEMORY.md
+include requirements.txt requirements-dev.txt
+include setup.py
+
+recursive-include docs *.md *.toml
+recursive-include tests *.py *.json *.txt
+recursive-include scripts *.py *.cmd *.sh
+include config/universe.json
+
+# Credentials must never enter a distribution, whatever the working tree holds.
+recursive-exclude config/secrets *
+global-exclude *.key *.pem .env
+global-exclude __pycache__ *.py[cod]
