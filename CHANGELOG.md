@@ -16,7 +16,7 @@ All notable changes to this project are documented here. Format follows
   | PyPI distribution | `trading-bot` | `martex-quant` |
   | Command | `tradingbot` | `martex-quant` |
   | Import package | `trading_bot` | `martex_quant` |
-  | Repository | `MartexHACK/trading-bot` | `MartexHACK/martex-quant` |
+  | Repository | `martex-dev/trading-bot` | `martex-dev/martex-quant` |
   | Workspace env var | `TRADING_BOT_HOME` | `MARTEX_QUANT_HOME` |
 
   The trigger was PyPI refusing `trading-bot` as too similar to an existing

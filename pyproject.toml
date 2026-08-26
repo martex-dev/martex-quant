@@ -57,10 +57,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/MartexHACK/martex-quant"
-Repository = "https://github.com/MartexHACK/martex-quant"
-Issues = "https://github.com/MartexHACK/martex-quant/issues"
-Changelog = "https://github.com/MartexHACK/martex-quant/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/martex-dev/martex-quant"
+Repository = "https://github.com/martex-dev/martex-quant"
+Issues = "https://github.com/martex-dev/martex-quant/issues"
+Changelog = "https://github.com/martex-dev/martex-quant/blob/main/CHANGELOG.md"
 
 [project.scripts]
 martex-quant = "martex_quant.cli:main"

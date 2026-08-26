@@ -25,7 +25,7 @@ killed ideas without a new pre-registered spec and a stated reason.
   deliberate CLI step, never a dashboard button; the guard's KILLED
   latch is cleared only by a human.
 - Every session: run pytest + ruff + strict mypy before committing;
-  commit per component; push to origin (GitHub MartexHACK/martex-quant).
+  commit per component; push to origin (GitHub martex-dev/martex-quant).
 - Restart the dashboard server after changing dashboard code.
 - Report negative results with the same rigor as positive ones. The
   ledger's honesty is the project's only real asset.

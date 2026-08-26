@@ -43,7 +43,7 @@ On macOS and Linux you may need `python3` instead of `python`.
 ## Option 2 — install a downloaded release file
 
 Every release attaches a `.whl` (wheel) and a `.tar.gz` (source archive) to
-its [GitHub Releases page](https://github.com/MartexHACK/martex-quant/releases).
+its [GitHub Releases page](https://github.com/martex-dev/martex-quant/releases).
 Download the `.whl` and install it directly — useful for an offline machine
 or when you want to pin an exact build:
 
@@ -59,7 +59,7 @@ Do this if you want to change the code, add a strategy, or run the test
 suite.
 
 ```bash
-git clone https://github.com/MartexHACK/martex-quant.git
+git clone https://github.com/martex-dev/martex-quant.git
 cd martex-quant
 
 python -m venv .venv

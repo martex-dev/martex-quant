@@ -3,7 +3,7 @@
 ## Reporting a vulnerability
 
 Please report security issues privately rather than in a public issue:
-open a [security advisory](https://github.com/MartexHACK/martex-quant/security/advisories/new)
+open a [security advisory](https://github.com/martex-dev/martex-quant/security/advisories/new)
 on this repository.
 
 Especially interested in anything that could:
