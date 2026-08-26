@@ -187,9 +187,13 @@ quote volume, 2026-07-12, union legacy 8, stables/leveraged excluded".
 
 ## Code health
 
-`OBSERVATION` — full suite **458 tests, all passing** (2026-08-11), of
+`OBSERVATION` — full suite **567 tests, 566 passing** (2026-08-26), of
 which 30 are golden-output regressions over the whole research corpus.
-Working tree clean. CI workflow runs ruff check, ruff format --check,
+The single failure is the pre-existing frozen-fingerprint mismatch on
+`research_graph_report` recorded below (hypothesis doc 59 edited after
+the baseline was frozen); it needs a deliberate re-freeze and is not a
+code defect. +24 of the new tests cover the CLI, workspace scaffolding,
+and the packaging contract. CI workflow runs ruff check, ruff format --check,
 mypy (strict), pytest on every push; the golden tests skip in CI (no
 market data there) and are a LOCAL gate.
 
@@ -203,6 +207,58 @@ explicitly in `[unallocated]` rather than distributed by guess.
 `INTERPRETATION` — every future strategy claim is now deflated against
 125 rather than 120. That is a real cost, accepted deliberately and
 recorded in the H58 registration before the test ran.
+
+---
+
+## Public distribution — v1.0.0 (new, 2026-08-26)
+
+`OBSERVATION` — the project is now packaged as installable software, not
+only a readable repository. Nothing in the research changed: no verdict,
+ledger entry, cost model, or statistic was touched. This is packaging.
+
+What shipped:
+
+- `tradingbot` console entry point (`src/trading_bot/cli.py`) covering
+  init, doctor, quickstart, data pull/status, backtest, montecarlo,
+  paper, dashboard, ledger.
+- **Workspaces** (`src/trading_bot/workspace.py`). Nearly every path in
+  this codebase is cwd-relative (`data/lake`, `data/paper/<strategy>`,
+  `docs/research/ledger/trials.toml`, `config/universe.json`), which
+  only worked from a checkout. The CLI now resolves a workspace from
+  `--workspace` / `$TRADING_BOT_HOME` / cwd and chdirs into it before
+  dispatch — one decision point instead of threading a root through
+  modules the ledger depends on.
+- **The corpus ships inside the wheel.** `setup.py` vendors `docs/` and
+  `config/` into `trading_bot/_bundle/` at build time (secrets excluded);
+  `src/trading_bot/bundle.py` resolves the live checkout first and the
+  packaged copy otherwise. A `pip install` therefore carries the 29
+  hypothesis documents and the 125-trial ledger, not just code.
+- MIT `LICENSE`, `DISCLAIMER.md`, `CONTRIBUTING.md` (pre-registration
+  rule applies to PRs), `SECURITY.md`, `CHANGELOG.md`, `docs/INSTALL.md`,
+  `docs/USAGE.md`, rewritten `README.md`.
+- `.github/workflows/release.yml`: tag `v*` -> build, verify the wheel
+  carries the corpus and carries no credentials, smoke-test the built
+  wheel on Linux/Windows/macOS, attach to a GitHub Release. The PyPI job
+  is present but gated behind `if: false` until the name is registered
+  with a trusted publisher.
+- `scripts/*.cmd` de-hardcoded (they contained an absolute path to this
+  machine) plus `.sh` equivalents for Linux/macOS.
+
+`OBSERVATION` — verified end to end: built wheel installed into a clean
+venv with no checkout present, then `init` -> `doctor` -> `ledger` ->
+`quickstart` (real Binance pull + walk-forward) -> `paper` all succeeded,
+resolving the corpus from site-packages.
+
+`OBSERVATION` — distribution name `trading-bot` was confirmed unclaimed
+on PyPI at build time. Registering it is a manual step the maintainer
+must take before the PyPI job is enabled.
+
+`INTERPRETATION` — the risk this introduces is reputational, not
+statistical: a public audience may read "validated" as "profitable".
+The README, DISCLAIMER, and the quickstart's closing text all state
+plainly that neither validated strategy has been shown profitable with
+real capital. That wording is load-bearing and should not be softened
+for marketing.
 
 ---
 

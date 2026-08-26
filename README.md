@@ -1,116 +1,162 @@
 # Trading Bot — Quantitative Research Platform
 
-A professional-grade algorithmic trading research platform for crypto markets,
-built incrementally, hypothesis-first, with statistical validation at every
-gate.
+[![CI](https://github.com/MartexHACK/trading-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/MartexHACK/trading-bot/actions/workflows/ci.yml)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-The goal was never a good-looking backtest. The goal is infrastructure
-rigorous enough to distinguish a real trading edge from noise — and to say
-"no edge found" honestly when that's the answer. Most tested ideas here were
-killed. That's the process working, not failing.
+A platform for testing trading hypotheses honestly: a validated data
+pipeline, an event-driven backtester, real statistical validation, Monte
+Carlo simulation against prop-firm rule sets, paper trading, and an
+operations dashboard.
 
-**Current phase: Phase 5 — paper trading, moving toward a live funded-account
-evaluation.**
+**It is not a profitable trading bot, and it does not pretend to be one.**
+It ships with the full research ledger behind it — 125 pre-registered trials
+across 120 hypotheses — and most of them were killed. That ledger is the
+product. The tooling exists to produce more of it.
 
-## Where the project stands
+> Research software. Not financial advice. No strategy here is proven
+> profitable with real money. Read [DISCLAIMER.md](DISCLAIMER.md) before
+> connecting this to anything that holds money.
 
-- **120 hypotheses pre-registered and tested** (119 run, 1 data-blocked),
-  every one committed to a written spec *before* results — no retroactively
-  deciding what counts. Every trial, including failed variants, stays in the
-  ledger permanently; the statistical bar is benchmarked against all of them,
-  not just the survivors.
-- **2 strategies validated** above the project's absolute statistical bar
-  (deflated Sharpe ratio > 0.95):
-  - **Cross-sectional rotation** across a 40-coin universe (DSR 0.990) — got
-    *stronger*, not weaker, as the universe widened.
-  - **Rotation + chandelier stop** (DSR 0.992) — beats the base rotation
-    strategy on every metric: Sharpe 1.47 vs 1.10, max drawdown -29% vs -58%,
-    prop-firm pass probability 73% vs 63%.
-- **~200 automated tests**, strict mypy, ruff-clean, CI green on every push.
-- **4 live paper-trading accounts** ($5,000 each), running nightly and
-  unattended via a scheduled task, each writing its own equity curve, trade
-  journal, and plain-English daily diary.
-- A real funded-account evaluation attempt is priced, planned, and gated on
-  a clean paper-trading shakedown — sized using Monte Carlo simulation
-  against the firm's actual rule set, not guesswork.
+---
 
-Along the way the research also mapped real market structure: crypto trends
-at daily-and-slower horizons but reverts intraday, and that intraday
-reversion is real but smaller than retail execution costs — confirmed four
-independent ways. Full detail, every hypothesis, every verdict, and the
-reasoning behind each: [`PROJECT_MEMORY.md`](PROJECT_MEMORY.md). What's
-running right now and what happens next: [`PROJECT_STATE.md`](PROJECT_STATE.md).
+## Install
+
+```bash
+pip install trading-bot
+```
+
+```bash
+tradingbot init my-lab
+cd my-lab
+tradingbot quickstart
+```
+
+`quickstart` downloads real market data, walk-forward backtests it with fees,
+spread, and slippage included, and then explains why the number it just
+printed is not evidence of an edge.
+
+Python 3.12+. Full instructions, including installing a downloaded `.whl` and
+troubleshooting: [docs/INSTALL.md](docs/INSTALL.md).
+
+## What you can do with it
+
+| Command | What it does |
+|---|---|
+| `tradingbot doctor` | Check the install, dependencies, corpus, and workspace |
+| `tradingbot quickstart` | Guided first run: pull data, backtest it, read the result |
+| `tradingbot data pull` | Download, **validate**, and store OHLCV history |
+| `tradingbot backtest` | Walk-forward backtest, out of sample, costs included |
+| `tradingbot montecarlo` | Prop-firm evaluation pass odds, with confidence intervals |
+| `tradingbot paper` | One forward-testing day on a simulated $5,000 account |
+| `tradingbot dashboard` | Equity curves, trade journals, daily diaries, the Lab |
+| `tradingbot ledger` | Every trial ever run, and its verdict |
+
+Full reference: [docs/USAGE.md](docs/USAGE.md).
+
+## Why this exists
+
+The base rate for retail algorithmic trading is poor. Most edges reachable
+with public data and one developer's compute are gone. So the goal was never
+a good-looking backtest — it was infrastructure rigorous enough to tell a
+real edge from noise, and to say *"no edge found"* out loud when that is the
+answer.
+
+Concretely, that means:
+
+- **Pre-registration.** Every hypothesis is a numbered document with its
+  pass/fail bars, committed *before* the test runs. Deciding what counts as
+  success after seeing results is how most retail backtests fool their
+  authors, and the commit timestamp is the only defense.
+- **Every trial counts, forever.** Failed variants stay in the ledger. The
+  statistical bar (deflated Sharpe ratio) is benchmarked against *all* trials
+  ever run, not just the survivors — so the graveyard is load-bearing
+  evidence, not an embarrassment.
+- **Costs are never optional.** Fees, spread, and slippage are inside every
+  result.
+- **The event-driven engine is the source of truth.** It processes one
+  timestamp at a time through the same code path as live trading, which makes
+  look-ahead leakage structurally impossible. Vectorized screening is for
+  cheap pre-filtering only.
+- **Negative results are reported with the same rigor as positive ones.**
+
+## What the research found
+
+- **125 trials across 120 hypotheses**, 124 run, 1 data-blocked. Kill rate
+  37%.
+- **2 strategies cleared the bar** (deflated Sharpe > 0.95):
+  - Cross-sectional rotation across a 40-coin universe (DSR 0.990) — which
+    got *stronger*, not weaker, as the universe widened.
+  - Rotation with a chandelier stop (DSR 0.992) — better on every metric:
+    Sharpe 1.47 vs 1.10, max drawdown −29% vs −58%, simulated prop-firm pass
+    probability 73% vs 63%.
+- **Market structure worth knowing:** crypto trends at daily-and-slower
+  horizons but reverts intraday — and that intraday reversion is real but
+  *smaller than retail execution costs*, confirmed four independent ways.
+- Neither validated strategy has been proven profitable with real capital.
+  Paper trading exists precisely to measure the gap between backtest and
+  live.
+
+Every hypothesis, verdict, and the reasoning behind it:
+[`PROJECT_MEMORY.md`](PROJECT_MEMORY.md). What is running right now:
+[`PROJECT_STATE.md`](PROJECT_STATE.md). Or just run `tradingbot ledger`.
 
 ## Architecture
 
-Event-driven core (structurally incapable of look-ahead bias) with a
-vectorized layer for cheap hypothesis screening; anything that survives
-screening must also pass the event-driven engine before being trusted.
-Backtest and live share the same strategy/portfolio/risk code paths and
-differ only in the data feed and execution adapter — the standard defense
-against "worked in backtest, died live."
+Event-driven core with a vectorized research layer. Backtest and live share
+the same strategy, portfolio, and risk code paths and differ only in the data
+feed and the execution adapter — the standard defense against "worked in
+backtest, died live."
 
 ```
 src/trading_bot/
+  cli.py               the `tradingbot` command
   data/
-    collectors/       # exchange adapters (ccxt) behind a common interface
-    processors/        # validation — reports problems, never silently repairs
-    store/              # Parquet lake + catalog
-  strategies/          # pure functions: market state -> signals (no orders, no sizing)
-  backtesting/         # event-driven engine, vectorized screener, walk-forward harness
-  risk_management/     # sizing policy, drawdown/daily-loss tracking, kill switch
-  execution/           # simulated fills + live broker adapters
-live/                  # decision core shared by paper + live, broker adapters, guard
+    collectors/        exchange adapters (ccxt) behind a common interface
+    processors/        validation — reports problems, never silently repairs
+    store/             Parquet lake + catalog
+  strategies/          pure functions: market history -> exposure in [-1, +1]
+  backtesting/         event-driven engine, screener, walk-forward harness
+  stats/               deflated Sharpe, bootstrap, multiple-testing correction
+  risk_management/     sizing policy, drawdown tracking, kill switch, prop sim
+  execution/           simulated fills + live broker adapters
+  live/                decision core shared by paper and live, guard, narration
+  research/            the hypothesis ledger and its query layer
+  dashboard/           local operations view
 docs/
-  hypotheses/          # one numbered, pre-registered doc per hypothesis
-  research/            # eval runbook, sprint plans, backlog
-data/                  # market data + paper trading records (gitignored, regenerable)
-tests/
+  hypotheses/          one pre-registered document per hypothesis
+  research/            the trial ledger, evaluation runbook, design notes
 ```
 
-## Setup
-
-Requires Python 3.12+.
-
-```
-python -m venv .venv
-.venv\Scripts\activate          # Windows
-pip install -e .
-pip install -r requirements-dev.txt
-```
+A strategy never touches orders or sizing. It emits a target exposure;
+portfolio and risk layers translate that into orders, and risk has veto power
+over every one of them. That is what makes strategies unit-testable and the
+risk layer un-bypassable.
 
 ## Development
 
+```bash
+git clone https://github.com/MartexHACK/trading-bot.git
+cd trading-bot
+python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -e . && pip install -r requirements-dev.txt
+
+pytest && ruff check . && mypy
 ```
-pytest              # run tests
-ruff check .        # lint
-ruff format .       # format
-mypy                # type check
-```
 
-CI runs all three on every push. Every session runs this full check before
-committing.
+560+ tests, strict mypy, ruff-clean, CI green on every push.
 
-## Research process
+Contributions welcome — but read [CONTRIBUTING.md](CONTRIBUTING.md) first.
+The pre-registration rule applies to pull requests too.
 
-1. **Pre-register** — numbered hypothesis doc with verdict bars, committed
-   before any test runs.
-2. **Kill test** — cheap information study before any strategy is built.
-3. **Event-driven validation** — the engine is the source of truth; vectorized
-   screening is pre-engine only.
-4. **Beat the deployed system, not zero** — new features must improve on
-   what's already validated.
-5. **Report negative results with the same rigor as positive ones** — the
-   ledger's honesty is the project's only real asset.
+## Real money
 
-## Roadmap
+Live execution is not reachable from this CLI, is never a dashboard button,
+requires your own broker credentials and a deliberate command-line action,
+and sits behind a risk guard whose KILLED latch only a human can clear. Those
+gates are deliberate. Please leave them there.
 
-1. Data foundation — done (48 validated datasets, 0 errors)
-2. Event-driven backtesting engine — done
-3. Strategy research — done for this cycle (120 hypotheses, 2 validated)
-4. Risk engine & prop-firm rule simulation — done
-5. Paper trading — **in progress** (Phase 5, shakedown before live eval)
-6. Live funded-account evaluation — next
+## License
 
-See [`CLAUDE.md`](CLAUDE.md) for the full project charter and engineering
-rules.
+MIT — see [LICENSE](LICENSE). Provided with no warranty of any kind. Read
+[DISCLAIMER.md](DISCLAIMER.md).
