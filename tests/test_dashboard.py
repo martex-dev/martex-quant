@@ -87,7 +87,7 @@ def test_http_endpoints(tmp_path: Path) -> None:
     server, port = _serve(tmp_path)
     try:
         page = urllib.request.urlopen(f"http://127.0.0.1:{port}/").read().decode()
-        assert "Trading Bot" in page
+        assert "Martex Quant" in page
 
         status = json.loads(urllib.request.urlopen(f"http://127.0.0.1:{port}/api/status").read())
         assert status["paper"]["started"] is False

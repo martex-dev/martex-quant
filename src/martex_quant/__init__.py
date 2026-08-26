@@ -1,4 +1,4 @@
-"""Trading Bot: a quantitative trading research platform.
+"""Martex Quant: a quantitative trading research platform.
 
 Data pipeline, event-driven backtesting, statistical validation, Monte Carlo
 simulation against prop-firm rule sets, paper trading, and an operations

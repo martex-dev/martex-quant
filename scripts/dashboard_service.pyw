@@ -13,7 +13,7 @@ PROJECT = Path(__file__).resolve().parent.parent
 os.chdir(PROJECT)
 sys.path.insert(0, str(PROJECT / "src"))
 
-from trading_bot.dashboard.server import serve  # noqa: E402
+from martex_quant.dashboard.server import serve  # noqa: E402
 
 try:
     serve(PROJECT)
