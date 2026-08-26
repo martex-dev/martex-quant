@@ -160,3 +160,13 @@ gates are deliberate. Please leave them there.
 
 MIT — see [LICENSE](LICENSE). Provided with no warranty of any kind. Read
 [DISCLAIMER.md](DISCLAIMER.md).
+
+See [`CLAUDE.md`](CLAUDE.md) for the full project charter and engineering
+rules.
+
+---
+
+*The project leans heavily on Claude Code (Fable 5) — largely vibe-coded with
+light human supervision. Stating that plainly, as a disclaimer. It still runs
+smoothly: the suite is green in CI, and the dashboard is live and updating
+daily at 8:10 PM EST.* — Martex
