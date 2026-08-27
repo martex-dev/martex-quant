@@ -70,6 +70,17 @@ class CarryConfig:
     fee_bps: float = 10.0
     half_spread_bps: float = 1.0
     collateral_ratio: float = 0.5
+    # Intersect symbol timelines (True) or take their union (False).
+    #
+    # True is the H62/H63 behaviour: every symbol must have a bar, so the
+    # window is bounded by the shortest history. Correct for 8 majors that
+    # all list early; useless for a wide universe, where one 2026 listing
+    # would collapse the window to weeks.
+    #
+    # False lets a symbol participate on the days it exists, with capital
+    # split equally across whatever is available that day. Default stays
+    # True so no existing result can move.
+    require_all_symbols: bool = True
 
     @property
     def cost_rate(self) -> float:
@@ -155,7 +166,8 @@ def run_carry(
     symbols = sorted(frames)
     days: set[datetime] = set(frames[symbols[0]]["day"].to_list())
     for s in symbols[1:]:
-        days &= set(frames[s]["day"].to_list())
+        other = set(frames[s]["day"].to_list())
+        days = (days & other) if config.require_all_symbols else (days | other)
     timeline = sorted(days)
     if len(timeline) < 2:
         raise ValueError("symbols share fewer than 2 common days")
@@ -184,13 +196,28 @@ def run_carry(
     rows: list[dict[str, object]] = []
     for day in timeline:
         prev_equity = equity
-        # Target notional is a function of YESTERDAY's equity only.
-        target = (prev_equity / n) * config.collateral_ratio
+        # Capital is split across the symbols that actually exist today, so
+        # a book of 8 in 2020 and 35 in 2026 is equally weighted in both.
+        present = [s for s in symbols if day in lookup[s]]
+        if not present:
+            rows.append(
+                {
+                    "timestamp": day,
+                    "ret": 0.0,
+                    "funding_ret": 0.0,
+                    "basis_ret": 0.0,
+                    "cost_ret": 0.0,
+                    "n_symbols": 0,
+                    "equity": equity,
+                }
+            )
+            continue
+        target = (prev_equity / len(present)) * config.collateral_ratio
 
         funding_pnl = 0.0
         basis_pnl = 0.0
         cost = 0.0
-        for s in symbols:
+        for s in present:
             r_spot, r_perp, funding, hold = lookup[s][day]
             notional = held[s]
 
@@ -219,13 +246,16 @@ def run_carry(
                 "funding_ret": funding_pnl / prev_equity,
                 "basis_ret": basis_pnl / prev_equity,
                 "cost_ret": -cost / prev_equity,
+                "n_symbols": len(present),
                 "equity": equity,
             }
         )
 
     frame = pl.DataFrame(rows)
     return CarryResult(
-        daily=frame.select("timestamp", "ret", "funding_ret", "basis_ret", "cost_ret"),
+        daily=frame.select(
+            "timestamp", "ret", "funding_ret", "basis_ret", "cost_ret", "n_symbols"
+        ),
         equity=frame.select(
             "timestamp",
             "equity",
