@@ -1,0 +1,41 @@
+==============================================================================
+H66 — CROSS-SECTIONAL CARRY, top-K funding (3 cells, 145-147 -> 147)
+==============================================================================
+
+Universe: 34 symbols. L=30 inherited, not re-tuned.
+
+Shared window: 2019-09-11 -> 2026-07-09
+
+Incumbents, recomputed in THIS run on THIS window:
+  harvest-all, 34 sym (H65): Sharpe  5.60  CAGR  +4.36%  MDD  -0.76%  held~20.0
+  harvest-all,  8 sym (H63): Sharpe  5.91  CAGR  +4.64%  MDD  -0.84%  held~7.5
+
+--- the declared K grid (ALL cells reported) ---
+
+  K=3
+    Sharpe   2.27  CAGR   +2.99%  MDD  -7.65%  DSR 1.0000
+    mean +0.809bp/day  CI low +0.124bp  last365 -1.72%/yr
+
+  K=5 (PRIMARY)
+    Sharpe   2.99  CAGR   +3.50%  MDD  -5.52%  DSR 1.0000
+    mean +0.944bp/day  CI low +0.263bp  last365 -2.04%/yr
+
+  K=10
+    Sharpe   4.06  CAGR   +3.93%  MDD  -4.17%  DSR 1.0000
+    mean +1.057bp/day  CI low +0.461bp  last365 -3.07%/yr
+
+------------------------------------------------------------------------------
+GATES (primary cell K=5)
+------------------------------------------------------------------------------
+  A1 CI excludes zero          : +0.263bp  PASS
+  A2 CAGR >= 2%/yr            : +3.50%  PASS
+  A3 Sharpe >= 1.0             : 2.99  PASS
+  A4 DSR >= 0.95 @ 147       : 1.0000  PASS
+  B5 Sharpe > harvest-34 5.60  : 2.99  FAIL   <- SELECT vs HARVEST
+  B6 Sharpe > harvest-8  5.91  : 2.99  FAIL
+  C7 |corr| rot-stop < 0.30     : +0.0076  PASS
+  C8 MDD within 3pt of -0.76% : -5.52%  FAIL
+
+==============================================================================
+VERDICT: STANDALONE-VIABLE — real edge, fails its comparison bars.
+==============================================================================

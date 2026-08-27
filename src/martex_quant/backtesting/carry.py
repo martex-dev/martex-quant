@@ -81,6 +81,19 @@ class CarryConfig:
     # split equally across whatever is available that day. Default stays
     # True so no existing result can move.
     require_all_symbols: bool = True
+    # Denominator for the per-symbol allocation.
+    #
+    # "present" (H62/H63/H65): split capital across every symbol that has a
+    # bar today; a symbol gated off leaves ITS share in cash. This is what
+    # "capital not deployed sits in cash" means in those registrations.
+    #
+    # "held" (H66): split capital across only the symbols actually held, so
+    # a top-K book deploys fully into its K names instead of leaving 29/34
+    # of the book idle. Required for a top-K rule to be comparable to a
+    # harvest rule at all.
+    #
+    # Default is "present" so no existing result can move.
+    allocate_over: str = "present"
 
     @property
     def cost_rate(self) -> float:
@@ -212,7 +225,29 @@ def run_carry(
                 }
             )
             continue
-        target = (prev_equity / len(present)) * config.collateral_ratio
+        if config.allocate_over == "held":
+            n_alloc = sum(1 for s in present if lookup[s][day][3])
+        else:
+            n_alloc = len(present)
+        if n_alloc == 0:
+            rows.append(
+                {
+                    "timestamp": day,
+                    "ret": 0.0,
+                    "funding_ret": 0.0,
+                    "basis_ret": 0.0,
+                    "cost_ret": 0.0,
+                    "n_symbols": 0,
+                    "equity": equity,
+                }
+            )
+            # Any position left open must still be closed out and paid for.
+            for s in present:
+                if held[s]:
+                    equity -= abs(held[s]) * config.cost_rate * 2.0
+                    held[s] = 0.0
+            continue
+        target = (prev_equity / n_alloc) * config.collateral_ratio
 
         funding_pnl = 0.0
         basis_pnl = 0.0

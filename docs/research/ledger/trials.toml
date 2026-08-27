@@ -19,8 +19,8 @@
 # distributed by guess.
 
 period = "2026"
-ledger_total_claimed = 144
-ledger_run_claimed = 143
+ledger_total_claimed = 147
+ledger_run_claimed = 146
 ledger_data_blocked_claimed = 1
 
 [[entries]]
@@ -334,6 +334,20 @@ dsr_n_trials = 144
 source = "docs/hypotheses/65-wide-universe-carry.md"
 evidence = "Ledger: +3 -> 144 (declared 3-cell grid L in {7,30,90}, ALL cells reported). STANDALONE-VIABLE: Gate A and Gate C pass, Gate B fails. Wide book (34 symbols, L=30) Sharpe 5.60, CAGR +4.36%, MDD -0.76%, DSR 1.0000 @144, mean +1.170bp/day CI low +0.669bp, corr with rotation-stop -0.0040. The 8-symbol incumbent recomputed in the SAME run on the SAME window: Sharpe 5.91, CAGR +4.64%. Grid: L=7 Sharpe 4.23, L=30 5.60, L=90 5.71."
 notes = "FIRST USE of docs/research/standalone-viable-amendment.md. Under the pre-2026-08-27 rule this would have been recorded KILLED alongside H04 mean-reversion, which had no edge at all; it clears every absolute bar and merely loses to the incumbent. NOT deployed, and it does NOT count toward the eight-edge target -- it is the same edge as H63 harvested more widely, not an independent one. FINDING: meta-finding 3 (breadth feeds cross-sectional edges) does NOT extend to carry. Going 8 -> 34 symbols LOWERED Sharpe. Proposed refinement, offered as a hypothesis and not an established rule: breadth feeds edges that SELECT and dilutes edges that HARVEST. CONFOUND recorded honestly -- symbol count rises monotonically (11 in 2020 to 34 in 2026) while returns fall, and the extra symbols exist mostly in the thin-funding years, so dilution cannot be fully separated from timing; a clean test needs a universe held constant through time. The 7 cost caveat did not need invoking: Gate B failed under the OPTIMISTIC cost model, so honest wider spreads on thin listings would only widen the gap. Third confirmation that carry earns ~nothing today (2025 -0.08%/yr, 2026 -0.78%/yr). Pre-registered and committed (8cb096f) before the study existed."
+
+[[entries]]
+hypothesis = "H66"
+family = "strategy.carry.cross_sectional"
+trial_count = 3
+grade = "strategy"
+protocol = "confirmatory"
+verdict = "candidate"
+maturity = "L4"
+dsr = 1.0
+dsr_n_trials = 147
+source = "docs/hypotheses/66-cross-sectional-carry.md"
+evidence = "Ledger: +3 -> 147 (declared K grid {3,5,10}, ALL cells reported). STANDALONE-VIABLE: Gate A passes, Gate B fails, Gate C bar 8 fails. Primary K=5: Sharpe 2.99, CAGR +3.50%, MDD -5.52%, DSR 1.0000 @147, mean +0.944bp/day CI low +0.263bp, corr rotation-stop +0.0076. Incumbents recomputed in the same run on the same window: harvest-34 Sharpe 5.60 / CAGR +4.36% / MDD -0.76%; harvest-8 Sharpe 5.91 / CAGR +4.64% / MDD -0.84%. Grid monotone: K=3 2.27, K=5 2.99, K=10 4.06."
+notes = "REFUTES the select/harvest refinement proposed in H65 8.1 one hypothesis earlier. H66 was registered specifically to test it and predicted top-K would beat harvest-all; it loses monotonically -- the less you select, the better it gets. H65's verdict and figures stand; only its speculative refinement is withdrawn, and H65 is annotated in place. BETTER EXPLANATION: carry's high Sharpe is a DIVERSIFICATION property, not a premium-size one. K=10 keeps nearly the same mean (+3.93% vs +4.36%) while MDD grows fivefold (-4.17% vs -0.76%); at K=3 MDD is -7.65%, ten times the harvest book. Averaging ~20 near-independent small funding streams is what produces Sharpe 5.9, not the size of any premium. This also undercuts H65's dilution story: if the extra 26 symbols were dilution, concentrating should have helped. Section 3's squeeze prediction -- 'will show up as drawdown, not as mean' -- was written before the run and is exactly what happened; bar 8 was set at 3 points before any drawdown was seen and fails at 4.76. IMPLEMENTATION DEFECT found and corrected before recording: the first run divided capital by symbols PRESENT rather than symbols HELD, contradicting this hypothesis's own specification and deploying only 5/34 of the book, which produced a spurious Gate A failure (CAGR +1.29%). Fixed via an explicit allocate_over setting defaulting to the harvest behaviour; h62/h63/h65 goldens verified byte-identical. Not deployed; does NOT count toward the eight-edge target. Recent window is worse than any prior carry hypothesis: last 365 days -2.04%/yr. Pre-registered and committed (cce944d) before any code existed."
 
 # The remainder the committed documents do not allocate. Carried explicitly
 # rather than distributed by guess: assigning it would be fabrication, and

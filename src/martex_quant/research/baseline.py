@@ -350,6 +350,23 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h66_cross_sectional_carry_study",
+        hypotheses="H66 cross-sectional carry, top-K grid (trials 145-147)",
+        seeds=(20260827,),
+        uses_universe=True,
+        data_files=(
+            "data/funding/BTCUSDT.parquet",
+            "data/perp/BTCUSDT.parquet",
+            "data/funding/LINKUSDT.parquet",
+            "data/perp/LINKUSDT.parquet",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260827; the carry engine is "
+            "deterministic. Recomputes BOTH harvest incumbents (H63 and H65 "
+            "specs) in-run on the shared window rather than importing them."
+        ),
+    ),
+    ScriptSpec(
         name="h65_wide_carry_study",
         hypotheses="H65 wide-universe carry, 3-cell grid (trials 142-144)",
         seeds=(20260827,),

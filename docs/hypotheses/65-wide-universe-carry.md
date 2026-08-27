@@ -183,6 +183,15 @@ feeds cross-sectional edges that SELECT; it dilutes edges that HARVEST.*
 Stated as a hypothesis for future testing, not as an established rule —
 this is one measurement in one family.
 
+> **REFUTED 2026-08-27 by H66**, which was registered to test exactly this
+> and predicted top-K would beat harvest-all. It does not, monotonically:
+> K=3 → 2.27, K=5 → 2.99, K=10 → 4.06, harvest-all → 5.60. The refinement
+> above must NOT be quoted as a project finding. H66 §8.3 gives the better
+> explanation — carry's Sharpe is a diversification property, not a
+> premium-size one — and notes that this also undercuts the dilution story
+> in §8.1. **This verdict's own bars and figures are unchanged;** only the
+> speculative refinement is withdrawn.
+
 ### 8.2 Why this is STANDALONE-VIABLE and not KILLED
 
 `OBSERVATION` — the wide book clears **every** absolute bar: mean
