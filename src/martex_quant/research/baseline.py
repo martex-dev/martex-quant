@@ -350,6 +350,30 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h69_cross_venue_strategy",
+        hypotheses="H69 cross-venue premium, strategy grade (trials 165-167)",
+        seeds=(20260827,),
+        daily_symbols=(
+            "BTCUSDT",
+            "ETHUSDT",
+            "SOLUSDT",
+            "XRPUSDT",
+        ),
+        data_files=(
+            "data/venues/binance_BTC.parquet",
+            "data/venues/coinbaseexchange_BTC.parquet",
+            "data/venues/peg_usdt_usd.parquet",
+            "data/tmp/h4x_streams/rot_stop_stream.parquet",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260827 at 30-day blocks; the engine "
+            "itself is deterministic. Reads BOTH stores by design -- the "
+            "venue cache supplies the exogenous signal and the frozen lake "
+            "supplies the traded OHLCV, which is why lake symbols and venue "
+            "files are both fingerprinted."
+        ),
+    ),
+    ScriptSpec(
         name="h68_cross_venue_killtest",
         hypotheses="H68 cross-venue dislocation, family F2 kill test (trials 153-164)",
         seeds=(20260827,),

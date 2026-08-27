@@ -1,0 +1,46 @@
+====================================================================================================
+H69 - CROSS-VENUE PREMIUM, STRATEGY GRADE (family F2, trials 165-167)
+====================================================================================================
+
+Universe: 20 symbols (inherited from H68). Traded leg: frozen lake, 2019-01-01 -> 2026-07-10
+Signal: s2_adj_premium rank >= 0.90 of trailing 90d; 889 entry days carry at least one qualifier
+Execution: decisions at the close, fills at the NEXT bar's open, 10bp fee + 1bp
+           half-spread + 25bp participation impact, per side.
+
+--- the three declared cells, plus the Gate B benchmark (same run, same window) ---
+  book                               CAGR  Sharpe      MDD  mean bp/day           95% CI (bp)     DSR  in mkt
+  hold=1d                          39.06%    0.90  -73.24%       12.643     [+1.627, +23.124]  0.0901   33.0%
+  hold=7d                          30.30%    0.89  -50.01%        9.176     [+1.683, +17.588]  0.3598   69.3%  <- PRIMARY
+  hold=30d                         25.23%    0.85  -54.76%        7.621     [+0.170, +16.084]  0.4623   91.7%
+  equal-weight buy-and-hold        52.97%    0.94  -80.23%       20.712     [+3.022, +38.236]  0.0005  100.0%  <- BENCHMARK
+
+--- the six pre-registered bars (Section 5.1), judged on the primary ---
+  A1. mean daily net > 0, CI excludes zero         +9.176bp, low +1.683bp         -> PASS
+  A2. net CAGR >= 2%/yr                            +30.30%                        -> PASS
+  A3. Sharpe >= 1.0                                0.89                           -> FAIL
+  A4. DSR_global >= 0.95 @ 167                     0.3598                         -> FAIL
+  B5. Sharpe > buy-and-hold (same window)          0.89 vs 0.94                   -> FAIL
+  C6. |corr| with rotation-stop < 0.30             +0.3929 (n=2652)               -> FAIL
+
+  Gate A FAIL   Gate B FAIL   Gate C FAIL
+
+--- Section 5.3 reported, not gated ---
+  time in market 69.3%   MDD -50.01%   fills 7,615 (benchmark 11,181)
+  skew +0.799   excess kurtosis +11.10   worst day -11.45%   best day +19.16%
+
+  tail-conditional check (H67 Section 8.4's PROPOSED bar, reported only):
+    rotation-stop worst decile   n= 266  mean H69 return -1.575%  (unconditional +0.092%)
+    rotation-stop worst 5%       n= 134  mean H69 return -1.968%  (unconditional +0.092%)
+    rotation-stop worst 1%       n=  28  mean H69 return -2.648%  (unconditional +0.092%)
+
+--- per-year (primary cell vs benchmark) ---
+  2019  n= 274  ours   +28.38%/yr  Sharpe   1.18   buy-and-hold    -0.22%/yr
+  2020  n= 366  ours   +70.43%/yr  Sharpe   1.81   buy-and-hold  +182.58%/yr
+  2021  n= 365  ours   +23.64%/yr  Sharpe   0.53   buy-and-hold  +289.27%/yr
+  2022  n= 365  ours   -12.93%/yr  Sharpe  -0.29   buy-and-hold   -93.70%/yr
+  2023  n= 365  ours   +91.48%/yr  Sharpe   2.46   buy-and-hold   +84.53%/yr
+  2024  n= 366  ours   +94.14%/yr  Sharpe   2.60   buy-and-hold  +124.69%/yr
+  2025  n= 365  ours   -19.53%/yr  Sharpe  -0.70   buy-and-hold   -13.54%/yr
+  2026  n= 191  ours   -47.79%/yr  Sharpe  -1.14   buy-and-hold   -45.54%/yr
+
+====================================================================================================

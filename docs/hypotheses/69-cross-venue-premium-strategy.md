@@ -1,7 +1,13 @@
 # Hypothesis 69 — Cross-Venue Premium, Strategy Grade (family F2)
 
-Status: **PRE-REGISTERED 2026-08-27. NO RESULT EXISTS.** Trials declared:
-**+3 → 167.** Verdict will be written into §8 and nowhere else.
+Status: **KILLED (2026-08-27).** Trials: **+3 → 167.** Verdict in §8.
+All three gates fail. H68's info signal does **not** survive contact with
+execution: the book earns +30.30%/yr at **Sharpe 0.89** and loses to
+simply owning the basket (0.94). §2's warning about a bull sample was the
+right warning, and Gate B — written for exactly this — is what caught it.
+The pre-registered correlation prediction (0.3–0.7) was **correct** at
++0.3929. H68's verdict is untouched; a real info signal has been shown
+not to be a tradable edge in this shape.
 
 The strategy hypothesis `docs/hypotheses/68-cross-venue-dislocation.md`
 §8.7 said was owed. H68 found the peg-adjusted USD-vs-USDT venue premium
@@ -249,6 +255,161 @@ the amendment has not been adopted.
 
 ---
 
-## 8. VERDICT
+## 8. VERDICT (2026-08-27, scripts/h69_cross_venue_strategy.py, +3 → 167)
 
-*(Not yet run. This section is written only when the study executes.)*
+**KILLED.** Gate A fails (A3, A4), Gate B fails, Gate C fails. Per §6,
+*"A fails → KILLED"* — and it would have closed on the §6 beta branch
+even had Sharpe cleared 1.0, because Gate B failed independently.
+
+Window **2019-01-01 → 2026-07-10** as §4.4 declared, 20 symbols, engine
+fills at the next bar's open with 10bp fee + 1bp half-spread + 25bp
+participation impact per side. 889 entry days carried at least one
+qualifier.
+
+### 8.1 The three declared cells, plus the Gate B benchmark
+
+All run in the same process, over the identical window.
+
+| Book | CAGR | Sharpe | MDD | mean bp/day | 95% CI (bp) | DSR@167 | in market |
+|---|---|---|---|---|---|---|---|
+| hold = 1d | +39.06% | 0.90 | −73.24% | +12.643 | [+1.627, +23.124] | 0.0901 | 33.0% |
+| **hold = 7d — PRIMARY** | **+30.30%** | **0.89** | **−50.01%** | **+9.176** | **[+1.683, +17.588]** | **0.3598** | 69.3% |
+| hold = 30d | +25.23% | 0.85 | −54.76% | +7.621 | [+0.170, +16.084] | 0.4623 | 91.7% |
+| **equal-weight buy-and-hold** | **+52.97%** | **0.94** | −80.23% | +20.712 | [+3.022, +38.236] | 0.0005 | 100.0% |
+
+### 8.2 The six bars
+
+| Gate | Bar | Measured | Result |
+|---|---|---|---|
+| A1 | mean > 0, CI excludes zero | +9.176bp, low +1.683bp | **PASS** |
+| A2 | CAGR ≥ 2%/yr | +30.30% | **PASS** |
+| A3 | Sharpe ≥ 1.0 | **0.89** | **FAIL** |
+| A4 | DSR ≥ 0.95 @167 | **0.3598** | **FAIL** |
+| B5 | Sharpe > buy-and-hold | **0.89 vs 0.94** | **FAIL** |
+| C6 | \|corr\| rotation-stop < 0.30 | **+0.3929** (n=2,652) | **FAIL** |
+
+### 8.3 The finding: a significant spread is not a Sharpe
+
+`OBSERVATION` — H68 measured the S2 spread at **+3.17% per 7 days**, CI
+[+0.51%, +6.08%], breadth 17/20, on 31,752 symbol-days. That is not a
+marginal result. The book built from it — same symbols, same threshold,
+same window, **zero new parameter search** — earns Sharpe **0.89** and is
+beaten by owning the basket equally weighted.
+
+`INTERPRETATION` — **the info-grade bar has no variance term, and that is
+the gap this hypothesis exposes.** `E[fwd | HIGH] − E[fwd | LOW]` with a
+CI excluding zero says the conditional means differ. It says nothing
+about the volatility a book must carry to collect that difference. Here
+the qualifying set averages ~1.4 names, so harvesting a panel-wide mean
+requires holding a concentrated book whose realized volatility is far
+above the panel average. The mean survived; the ratio did not.
+
+**Proposed as a general lesson, and it is cheap to act on:** an
+info-grade SIGNAL should be reported alongside the *volatility of the
+bucket*, not only the difference of its means. Two signals with identical
+spreads are not equally valuable if one is carried by 15 names and the
+other by 1.4. Stated as a proposal for the standard info template, not
+adopted by this verdict.
+
+### 8.4 It is beta, and §2 said so before the run
+
+`OBSERVATION` — §2 recorded, before any strategy code existed: *"the
+unconditional forward 7-day return over this window is +0.92%, roughly
+60%/yr… a long-only crypto book will pass a 'is it profitable' bar in
+this window almost regardless of whether the signal works. §5 Gate B
+exists entirely because of this line."*
+
+`OBSERVATION` — A1 and A2 **passed**: mean +9.176bp/day with a CI
+excluding zero, CAGR +30.30%. On those two bars alone this looks like a
+success.
+
+`INTERPRETATION` — and it is not one. Gate B is what separates the two
+readings, and it fired: the timing **subtracts** risk-adjusted return
+relative to owning everything. Without Gate B this verdict would have
+recorded a +30%/yr strategy as a win. **The bar earned its place**, and
+that is worth more than the result it killed.
+
+### 8.5 The correlation prediction was right
+
+`OBSERVATION` — §5.2 predicted, before the run: *"Gate C will probably
+fail… predicted correlation 0.3–0.7."* Measured: **+0.3929**.
+
+`INTERPRETATION` — meta-finding 5 holds again. Every long-crypto book in
+this ledger sits 0.52–0.82 against every other; this one is 0.39 against
+rotation-stop, at the low end but well outside the 0.30 bar. **Not an
+independent edge**, and it does not count toward the eight-edge target.
+
+`OBSERVATION` — the tail-conditional statistic proposed in H67 §8.4,
+reported here only (the amendment is **not** adopted): on rotation-stop's
+worst decile H69 returns **−1.575%**, worst 5% **−1.968%**, worst 1%
+**−2.648%**, against +0.092% unconditional.
+
+`INTERPRETATION` — useful scope information for that proposal. Here the
+**linear bar already saw the dependence** (+0.39, failing), so the
+tail check adds nothing. H67's blindness was specific to a
+**short-convexity** payoff driven by squared returns. **The proposed
+amendment should therefore be scoped to asymmetric payoffs, not applied
+to every hypothesis** — for a directional book the existing bar works.
+
+### 8.6 What the signal did do, recorded without being acted on
+
+`OBSERVATION` — at hold = 1 the book earns **+39.06%/yr while deployed
+only 33.0% of the time**, against buy-and-hold's +52.97%/yr at 100%.
+Per unit of time in market that is roughly **118%/yr vs 53%/yr**.
+
+`INTERPRETATION` — the signal **does** concentrate return into the days
+it is on, by more than 2×. What it does not do is concentrate
+*risk-adjusted* return, and this project cannot lever an edge that failed
+its own validation. This is recorded because it points at a differently
+shaped question — the premium as an **overlay or filter on the deployed
+book** rather than a standalone long book — and **that would be a new
+pre-registration with a stated reason, not a rescue of this one.**
+Time in market is also not the same as leverage-adjusted exposure, so the
+118% figure is an illustration, not a Sharpe claim.
+
+### 8.7 Per-year, including the part that is tempting and must be refused
+
+| Year | n | H69 | Sharpe | buy-and-hold |
+|---|---|---|---|---|
+| 2019 | 274 | +28.38%/yr | 1.18 | −0.22%/yr |
+| 2020 | 366 | +70.43%/yr | 1.81 | +182.58%/yr |
+| 2021 | 365 | +23.64%/yr | 0.53 | +289.27%/yr |
+| 2022 | 365 | −12.93%/yr | −0.29 | −93.70%/yr |
+| **2023** | 365 | **+91.48%/yr** | **2.46** | +84.53%/yr |
+| **2024** | 366 | **+94.14%/yr** | **2.60** | +124.69%/yr |
+| **2025** | 365 | **−19.53%/yr** | −0.70 | −13.54%/yr |
+| **2026** | 191 | **−47.79%/yr** | −1.14 | −45.54%/yr |
+
+`OBSERVATION` — 2023 and 2024 are excellent on their own (Sharpe 2.46 and
+2.60, beating buy-and-hold in 2023). 2025 and 2026 are bad.
+
+`INTERPRETATION` — **this is exactly the slice that must not be acted
+on.** Selecting 2023–2024 after seeing the full result is the failure
+pre-registration exists to prevent, and the ledger has a standing rule
+that near-misses stay closed. Recorded because §7 required the per-year
+table, and because H68 §8.6 **pre-flagged 2025 as its weak year** — that
+flag was written before this study existed and it was right, which makes
+the 2025–2026 weakness a confirmed property rather than bad luck.
+
+### 8.8 Caveats that survive the kill
+
+- **§0 stands: this was never out-of-sample.** It shared H68's data,
+  parameters and window, so it could only ever have answered "is it
+  tradable". It answered no.
+- **An implementation deviation was found and corrected before this
+  verdict was written.** The first run fed the engine the lake's full
+  extent from 2017-08-17 rather than §4.4's declared 2019-01-01 start,
+  which let the benchmark trade the 2017 bubble (+838%/yr) and the 2018
+  crash while the strategy sat in signal-less cash. Corrected to the
+  registered window; the fix **helped** the benchmark (Sharpe 0.86 →
+  0.94) and helped the strategy less (0.82 → 0.89), so it widened the
+  Gate B gap rather than narrowing it. The pre-fix figures are recorded
+  here so the correction is auditable.
+- **MDD −50% on the primary and −73% at hold = 1.** Whatever else this
+  book is, it is not a low-drawdown vehicle.
+- **The 25bp participation-impact model is the project standard, not a
+  measurement**, and it is applied to concentrated positions in names as
+  small as WLD and ENA. It is more likely optimistic than pessimistic.
+- **H68's verdict is untouched.** The info signal remains a SIGNAL; what
+  is now also on the record is that it does not survive execution in a
+  long-only ladder. Those are different claims and the ledger holds both.

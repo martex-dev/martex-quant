@@ -3,7 +3,7 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 164 registered (163 run, 1 data-blocked: H54). Every new
+## Trial ledger: 167 registered (166 run, 1 data-blocked: H54). Every new
 ## spec raises the DSR bar. Do not test without a numbered doc FIRST.
 ##
 ## SOURCE OF TRUTH for the ledger is docs/research/ledger/trials.toml, not
@@ -13,7 +13,8 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 ## momentum family), H63 conditional carry ELIGIBLE (Sharpe 6.00, replaces
 ## H62 as the carry spec), H64 cointegration KILLED, H65 wide-universe
 ## carry STANDALONE-VIABLE, H66 cross-sectional carry STANDALONE-VIABLE,
-## H67 variance risk premium KILLED, H68 cross-venue dislocation SIGNAL.
+## H67 variance risk premium KILLED, H68 cross-venue dislocation SIGNAL,
+## H69 the strategy built on H68 KILLED.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
 
@@ -180,6 +181,34 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
     on 2021-2023 history is sized on a regime that no longer exists**, and
     a hypothesis whose returns are concentrated before 2024 should say so
     in its verdict.
+
+13. **A significant spread is not a Sharpe — the info bar has no
+    variance term (H69).** H68's S2 spread was **+3.17% per 7 days**, CI
+    excluding zero, breadth 17/20, on 31,752 symbol-days. The strategy
+    built from it with **zero new parameter search** — same symbols, same
+    threshold, same window, engine-graded with next-open fills — earns
+    **Sharpe 0.89** and is **beaten by equal-weight buy-and-hold (0.94)**.
+    **Why:** `E[fwd|HIGH] − E[fwd|LOW]` with a CI excluding zero says the
+    conditional means differ and says nothing about the volatility needed
+    to collect the difference. The qualifying set averages **~1.4 names**,
+    so a panel-wide mean has to be harvested through a concentrated book.
+    The mean survived; the ratio did not.
+    **Proposed, not adopted:** report an info SIGNAL alongside the
+    **volatility of its bucket**. Two identical spreads are not equally
+    valuable if one is carried by 15 names and the other by 1.4.
+    **The benchmark bar earned its place.** H69's A1 and A2 passed
+    (+9.176bp/day, CAGR +30.30%); on those alone it reads as a +30%/yr
+    success. Only the buy-and-hold comparison separated that from the
+    truth, and it was pre-registered specifically because the window's
+    unconditional 7d return is +0.92%. **Any long-only crypto book tested
+    on 2019-2026 needs a buy-and-hold bar or the verdict is meaningless.**
+    Correlation with rotation-stop **+0.3929**, inside the 0.3-0.7 band
+    predicted before the run — meta-finding 5 again.
+    **Scope note for finding 9's proposed tail bar:** it added nothing
+    here, because for a *directional* book the linear correlation bar
+    already caught the dependence. H67's blindness was specific to
+    **short-convexity** payoffs, so that amendment should be scoped to
+    asymmetric payoffs rather than applied universally.
 
 12. **The Coinbase premium is not the tether peg, and cross-venue
     dislocation is the first new INFO signal in a long time (H68).** The

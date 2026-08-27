@@ -128,8 +128,16 @@ found the peg-adjusted USD-vs-USDT premium predicts forward returns:
 momentum and concentration checks. The peg alone is noise, so the
 "Coinbase premium" is **not** tether. Dispersion (S3) and peg deviation
 (S4) are CLOSED as noise.
-**What is still owed:** a pre-registered strategy hypothesis facing the
-incremental bar against the deployed book. **What is still untested:**
+**H69 answered what was owed, and the answer was no.** The strategy built
+on S2 with zero new parameter search is **KILLED** (2026-08-27): Sharpe
+0.89 against equal-weight buy-and-hold's 0.94, DSR 0.36, correlation
++0.39 with rotation-stop. The info signal does not survive execution in a
+long-only ladder. H68's SIGNAL verdict stands — "the effect is real" and
+"the effect is tradable in this shape" are different claims.
+**F2 has now spent 15 of ~30 trials.** What remains open in it is a
+differently *shaped* question (the premium as an overlay or filter on the
+deployed book rather than a standalone long book), which needs its own
+pre-registration and a stated reason. **What is still untested:**
 the arbitrage version — the p90 premium is 11bp against a 3.17% forward
 spread, so nothing here is harvested by closing a gap, and genuine
 cross-venue arbitrage still needs order-book data and latency this
@@ -193,10 +201,12 @@ Liquidation events are mechanically forced selling with a known trigger.
    It was run ahead of F1's data-collection tail because its kill test was
    cheap (a free index, no chain needed) and it gated the largest build in
    Tier 1. That gate is now shut.
-5. **F2 cross-exchange** — **started and open (H68, 2026-08-27).** The
-   multi-venue dataset now exists in `data/venues/`. The kill test found
-   a signal; the strategy hypothesis is the next thing this family owes,
-   and it is currently the highest-value open thread in the program.
+5. **F2 cross-exchange** — **started; kill test SIGNAL (H68), strategy
+   KILLED (H69).** The multi-venue dataset exists in `data/venues/` and
+   the information is real, but it did not survive execution as a
+   standalone long book. The family is no longer the obvious next move:
+   reopening it means proposing a different vehicle, not another pass at
+   the same one.
 
 Tier 3 waits until Tier 1–2 is exhausted; it is gated on infrastructure,
 not on ideas.

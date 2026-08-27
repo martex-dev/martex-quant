@@ -18,7 +18,7 @@ from pathlib import Path
 
 import polars as pl
 
-from martex_quant.features.panel import forward_return, trailing_percentile_rank
+from martex_quant.features.crossvenue import build_signal_panel
 from martex_quant.stats.bootstrap import two_group_diff_ci
 
 ROOT = Path(".")
@@ -49,111 +49,15 @@ SIGNALS: dict[str, tuple[str, int | None]] = {
 # --------------------------------------------------------------------------
 
 
-def _venue(venue: str, symbol: str) -> pl.DataFrame | None:
-    path = VENUE_DIR / f"{venue}_{symbol}.parquet"
-    if not path.exists():
-        return None
-    return pl.read_parquet(path).sort("timestamp")
-
-
-def _segments(frame: pl.DataFrame) -> list[pl.DataFrame]:
-    """Split a symbol's series at any break in consecutive daily bars.
-
-    Coinbase suspended XRP/USD for 904 days over the SEC suit. Without
-    this split, `shift(-h)` would pair 2021-01-19 with a date in 2023 and
-    report a two-and-a-half-year move as a 7-day forward return, and the
-    trailing percentile window would rank against prices from before the
-    delisting. Segments make both operations respect the hole.
-    """
-    gaps = frame.select(
-        (pl.col("timestamp").diff().dt.total_days() > 1).fill_null(False).alias("brk")
-    )["brk"].to_list()
-    out: list[pl.DataFrame] = []
-    start = 0
-    for i, is_break in enumerate(gaps):
-        if is_break:
-            out.append(frame.slice(start, i - start))
-            start = i
-    out.append(frame.slice(start, frame.height - start))
-    return [s for s in out if s.height > PCT_WINDOW + max(HORIZONS)]
-
-
 def build_panel() -> tuple[pl.DataFrame, list[str], list[tuple[str, float]]]:
-    """Join the three venues plus the peg, derive the four signals."""
-    peg = (
-        pl.read_parquet(VENUE_DIR / "peg_usdt_usd.parquet")
-        .sort("timestamp")
-        .select("timestamp", pl.col("close").log().alias("g"))
+    """The declared panel. Construction lives in features/crossvenue.py so
+    that H69's strategy consumes the SAME rows this study measured."""
+    return build_signal_panel(
+        ROOT,
+        pct_window=PCT_WINDOW,
+        horizons=HORIZONS,
+        volume_floor=VOLUME_FLOOR,
     )
-    symbols = sorted({p.stem.split("_", 1)[1] for p in VENUE_DIR.glob("binance_*.parquet")})
-
-    parts: list[pl.DataFrame] = []
-    kept: list[str] = []
-    rejected: list[tuple[str, float]] = []
-
-    for symbol in symbols:
-        legs = {v: _venue(v, symbol) for v in ("binance", "okx", "coinbaseexchange")}
-        if any(leg is None for leg in legs.values()):
-            continue
-        frame = legs["binance"].select(  # type: ignore[union-attr]
-            "timestamp",
-            pl.col("close").alias("binance_close"),
-            pl.col("close").log().alias("b"),
-            pl.col("quote_volume").alias("vb"),
-        )
-        frame = frame.join(
-            legs["okx"].select(  # type: ignore[union-attr]
-                "timestamp", pl.col("close").log().alias("o"), pl.col("quote_volume").alias("vo")
-            ),
-            on="timestamp",
-            how="inner",
-        ).join(
-            legs["coinbaseexchange"].select(  # type: ignore[union-attr]
-                "timestamp", pl.col("close").log().alias("c"), pl.col("quote_volume").alias("vc")
-            ),
-            on="timestamp",
-            how="inner",
-        )
-        if frame.height == 0:
-            continue
-
-        floor = min(
-            frame["vb"].median() or 0.0, frame["vo"].median() or 0.0, frame["vc"].median() or 0.0
-        )
-        if floor < VOLUME_FLOOR:
-            rejected.append((symbol, float(floor)))
-            continue
-
-        frame = frame.join(peg, on="timestamp", how="inner").sort("timestamp")
-        frame = frame.with_columns(
-            s1_raw_premium=pl.col("c") - pl.col("b"),
-            s2_adj_premium=pl.col("c") - (pl.col("b") + pl.col("g")),
-            s4_peg=pl.col("g"),
-        ).with_columns(
-            s3_dispersion=pl.concat_list(
-                pl.col("c"), pl.col("b") + pl.col("g"), pl.col("o") + pl.col("g")
-            ).list.std()
-        )
-
-        for segment in _segments(frame):
-            piece = segment
-            for name in SIGNALS:
-                ranks = trailing_percentile_rank(
-                    piece[name].to_list(), window=PCT_WINDOW, skip_nulls=False
-                )
-                piece = piece.with_columns(pl.Series(f"pct_{name}", ranks, dtype=pl.Float64))
-            for h in HORIZONS:
-                feature = forward_return(h, price_column="binance_close")
-                piece = piece.with_columns(**{feature.name: feature.expr})
-            piece = piece.with_columns(
-                trail1=pl.col("binance_close") / pl.col("binance_close").shift(1) - 1.0,
-                trail7=pl.col("binance_close") / pl.col("binance_close").shift(7) - 1.0,
-            )
-            parts.append(piece.with_columns(pl.lit(symbol).alias("symbol")))
-        kept.append(symbol)
-
-    panel = pl.concat(parts).rename({"timestamp": "day"})
-    return panel, kept, rejected
 
 
 def pooled_diff(panel: pl.DataFrame, signal: str, horizon: int) -> tuple[float, float, float, int]:

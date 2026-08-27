@@ -506,7 +506,7 @@ presented as a discovery.
 
 ---
 
-## H68 — cross-venue dislocation SIGNALS; F2 is open and owes a strategy (2026-08-27)
+## H68 — cross-venue dislocation SIGNALS; H69 shows it is not tradable (2026-08-27)
 
 `OBSERVATION` — pre-registered (commit 3eb0fbc) before any study code
 existed; run the same day. **Ledger 152 -> 164.** Family F2's kill test.
@@ -561,17 +561,56 @@ significance, so the consistent sign is the meaningful part. But 2025 is
 a real wobble and the strategy follow-up must confront it rather than
 average it away.
 
-### What F2 owes next
+### What F2 owed, and how it turned out — H69 KILLED (2026-08-27)
 
-**A pre-registered strategy hypothesis on S2.** It faces the
-**incremental** bar against the deployed book, not zero. Open questions
-it must answer: Sharpe after costs; correlation with rotation-stop; and
-whether the h=1 cell — cheapest to trade at ~22bp round trip — survives
-once it is a return stream rather than a bucketed mean.
+**The strategy hypothesis was registered (34b11e5), built and run. All
+three gates fail.** Ledger 164 -> 167.
 
-**H68 deploys nothing and makes nothing paper-eligible.** Info grade
-only; no DSR deflation has been applied, and the N=164 burden lands on
-the follow-up.
+| Book | CAGR | Sharpe | MDD | DSR@167 | in market |
+|---|---|---|---|---|---|
+| hold = 1d | +39.06% | 0.90 | −73.24% | 0.0901 | 33.0% |
+| **hold = 7d (primary)** | **+30.30%** | **0.89** | −50.01% | **0.3598** | 69.3% |
+| hold = 30d | +25.23% | 0.85 | −54.76% | 0.4623 | 91.7% |
+| **equal-weight buy-and-hold** | +52.97% | **0.94** | −80.23% | 0.0005 | 100.0% |
+
+A1 (mean > 0, CI excludes zero) and A2 (CAGR ≥ 2%) **pass**. A3 (Sharpe
+≥ 1.0), A4 (DSR ≥ 0.95), B5 (beat buy-and-hold) and C6 (|corr| < 0.30,
+measured **+0.3929**) all **fail**.
+
+`INTERPRETATION` — **a significant spread is not a Sharpe.** H68's
++3.17%/7d had a CI excluding zero and 17/20 breadth on 31,752
+symbol-days. The book built from it with zero new parameter search loses
+to owning the basket. The info-grade bar has no variance term: a
+conditional-mean difference says nothing about the volatility required to
+collect it, and the qualifying set averages ~1.4 names, so a panel-wide
+mean must be harvested through a concentrated book.
+
+`OBSERVATION` — **the benchmark bar is what caught this.** On A1 and A2
+alone the book reads as a +30%/yr success. §2 of the pre-registration
+recorded, before any code existed, that the window's unconditional 7-day
+return is +0.92% and that Gate B existed entirely for that reason.
+
+`OBSERVATION` — the §5.2 correlation prediction (0.3–0.7) was **right**
+at +0.3929. Meta-finding 5 holds; this is not an independent edge and
+does not count toward the eight-edge target.
+
+`OBSERVATION` — recorded and **not acted on**: at hold = 1 the book earns
++39.06%/yr while deployed only 33.0% of the time (~118%/yr per unit of
+time in market, vs buy-and-hold's 53%). The signal concentrates return
+but not risk-adjusted return. 2023 (+91.48%, Sharpe 2.46) and 2024
+(+94.14%, Sharpe 2.60) are excellent; **slicing them out post hoc is
+exactly what pre-registration forbids**, and H68 §8.6 pre-flagged 2025 as
+its weak year before this study existed — 2025 (−19.53%) and 2026
+(−47.79%) confirmed it.
+
+**H68's SIGNAL verdict is untouched.** "The effect is real" and "the
+effect is tradable in this shape" are different claims and the ledger
+holds both. Nothing is deployed; nothing is paper-eligible.
+
+**F2 is no longer the obvious next move.** Reopening it means proposing a
+different vehicle — the premium as an overlay or filter on the deployed
+book rather than a standalone long book — which is a new
+pre-registration with a stated reason, not a rescue of H69.
 
 ---
 
