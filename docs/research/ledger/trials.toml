@@ -19,8 +19,8 @@
 # distributed by guess.
 
 period = "2026"
-ledger_total_claimed = 129
-ledger_run_claimed = 128
+ledger_total_claimed = 141
+ledger_run_claimed = 140
 ledger_data_blocked_claimed = 1
 
 [[entries]]
@@ -308,6 +308,18 @@ dsr_n_trials = 129
 source = "docs/hypotheses/63-funding-conditional-carry.md"
 evidence = "Ledger: +3 -> 129 (declared 3-cell grid L in {7,30,90}, ALL cells reported). Primary L=30 on H62's identical 2,124-day window: Sharpe 6.00 vs incumbent 2.29, CAGR +4.51% vs +3.24%, MDD -0.51% vs -5.09%, 2022 net -0.01%/yr vs -4.83%/yr, mean +1.205bp/day CI [+0.697,+1.867], DSR 1.0000 @129. Gate A and Gate B both pass. Grid cells: L=7 Sharpe 5.00, L=30 Sharpe 6.00, L=90 Sharpe 5.89."
 notes = "Replaces H62 as the carry spec. Believed rather than merely passed because all three cells agree across a 13x lookback range (a plateau, not a spike) and the filter improves all 7 years monotonically, with deployment at 79.2% of symbol-days so the Sharpe is not an idle-capital artifact. LOAD-BEARING CAVEAT: it does NOT fix the dead recent regime -- last 365 days move only +0.08%/yr to +0.15%/yr. A filter cannot create a premium nobody is paying; forward expectation at current funding is ~0%/yr. FIRST DOCUMENTED EXCEPTION TO META-FINDING 2 (sizing beats switching), with the mechanism stated in the pre-registration BEFORE the run: this switch conditions on the revenue itself, not on a proxy for it. Proposed refinement: switches fail when they condition on a predictor of the payoff, and can succeed when they condition on the payoff itself. Pre-registered and committed (0e87191) before the engine filter existed."
+
+[[entries]]
+hypothesis = "H64"
+family = "strategy.statarb.cointegration"
+trial_count = 12
+grade = "strategy"
+protocol = "confirmatory"
+verdict = "killed"
+maturity = "L3"
+source = "docs/hypotheses/64-cointegration-pairs.md"
+evidence = "Ledger: +12 -> 141 (declared 12-cell grid, ALL cells reported). Gate A failed on all four bars at the primary cell (z_in 2.0, z_out 0.5, hold 30): mean -0.509bp/day CI low -3.429bp, CAGR -2.82%, Sharpe -0.15, DSR 0.0783 @141. No cell in the grid exceeds Sharpe 0.21; nine of twelve are negative; every cell carries a -29% to -38% MDD on a book with no net directional exposure."
+notes = "First hypothesis of family F4 (stat-arb). Gate B PASSED -- corr -0.0674 with rotation-stop and -0.0627 with H63 carry -- so the book was genuinely market-neutral and this is a validated machine finding no edge, not a broken one. Cointegration was found consistently (12.8 qualifying pairs on average) and the Engle-Granger implementation is calibrated (4.0% false positives on 300 simulated independent random walks vs nominal 5%). The mechanism is the link-break named in the pre-registration: cointegration measured over 365 days does not survive the next 180. SECOND INDEPENDENT CONFIRMATION that crypto does not mean-revert at retail cost, after H04 on absolute prices; with H44/H45/H53/H57 intraday (real but sub-cost) the reversion family is closed. Specification gap filled at implementation: the pre-registration caps concurrent pairs at 10 but does not say which 10, so candidates are ranked by strongest formation-window ADF statistic -- a formation-time quantity, no look-ahead, no alternative tested. All §7 limitations bias TOWARD the strategy, so the kill needs no pessimistic re-run. Pre-registered and committed (2bdf61d) before any code existed."
 
 # The remainder the committed documents do not allocate. Carried explicitly
 # rather than distributed by guess: assigning it would be fabrication, and

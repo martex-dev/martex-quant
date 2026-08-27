@@ -350,6 +350,23 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h64_pairs_study",
+        hypotheses="H64 cointegrated pairs, family F4, 12-cell grid (trials 130-141)",
+        seeds=(20260827,),
+        uses_universe=True,
+        data_files=(
+            "data/funding/BTCUSDT.parquet",
+            "data/perp/BTCUSDT.parquet",
+            "data/tmp/h4x_streams/rot_stop_stream.parquet",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260827. The pairs engine and the "
+            "Engle-Granger test are deterministic -- no RNG. Recomputes the "
+            "H63 carry stream in-run for the correlation gate rather than "
+            "reading a cache."
+        ),
+    ),
+    ScriptSpec(
         name="h63_conditional_carry_study",
         hypotheses="H63 funding-conditional carry, 3-cell grid (trials 127-129)",
         seeds=(20260827,),

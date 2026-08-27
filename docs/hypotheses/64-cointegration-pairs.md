@@ -1,6 +1,9 @@
 # Hypothesis 64 — Cointegrated Pairs (family F4, stat-arb)
 
-Status: **PRE-REGISTERED 2026-08-27, NOT RUN.** Trials: **+12 → 141.**
+Status: **KILLED (2026-08-27) — Gate A failed on all four bars.** Trials:
+**+12 → 141.** Verdict in §8. All 12 cells dead (best Sharpe 0.21). Gate B
+PASSED — the book was genuinely market-neutral (corr −0.067 / −0.063), so
+this is a validated machine finding no edge, not a broken one.
 
 First hypothesis of family **F4 (statistical arbitrage)** from
 `docs/research/family-expansion-program.md`. Chosen first because it needs
@@ -128,3 +131,130 @@ forward-marching, every quantity known at *t−1*.
 - **Daily closes only.** No intraday spread dynamics; entries and exits
   occur at the next daily open with the standard one-bar latency.
 - **The lake ends 2026-07-10.** Any run today uses data to that date.
+
+---
+
+## 8. VERDICT (2026-08-27, scripts/h64_pairs_study.py, +12 → 141)
+
+**KILLED. Gate A failed on all four bars.** Panel: 3,250 days
+(2017-08-17 → 2026-07-10), 40 symbols, 365d formation → 180d trading,
+hedge ratio frozen at formation.
+
+### The declared 12-cell grid — all cells, as promised
+
+| z_in | z_out | hold | Sharpe | CAGR | MDD | DSR |
+|---|---|---|---|---|---|---|
+| 1.5 | 0.0 | 30 | 0.00 | −1.02% | −29.10% | 0.1492 |
+| 1.5 | 0.0 | 60 | **0.21** | **+1.92%** | −32.71% | 0.3371 |
+| 1.5 | 0.5 | 30 | −0.06 | −1.89% | −36.98% | 0.1119 |
+| 1.5 | 0.5 | 60 | 0.12 | +0.72% | −37.50% | 0.2542 |
+| 2.0 | 0.0 | 30 | 0.02 | −0.66% | −35.33% | 0.1799 |
+| 2.0 | 0.0 | 60 | −0.11 | −2.37% | −33.83% | 0.0958 |
+| **2.0** | **0.5** | **30 (primary)** | **−0.15** | **−2.82%** | **−35.92%** | **0.0783** |
+| 2.0 | 0.5 | 60 | −0.11 | −2.33% | −36.85% | 0.0970 |
+| 2.5 | 0.0 | 30 | −0.16 | −2.74% | −32.29% | 0.0805 |
+| 2.5 | 0.0 | 60 | −0.16 | −2.76% | −29.64% | 0.0801 |
+| 2.5 | 0.5 | 30 | −0.32 | −4.71% | −38.33% | 0.0252 |
+| 2.5 | 0.5 | 60 | −0.20 | −3.36% | −34.30% | 0.0587 |
+
+| Gate | Bar | Measured | Result |
+|---|---|---|---|
+| A1 | mean > 0, CI excludes zero | −0.509 bp/day, CI low −3.429 bp | **FAIL** |
+| A2 | CAGR ≥ 2%/yr | −2.82% | **FAIL** |
+| A3 | Sharpe ≥ 1.0 | −0.15 | **FAIL** |
+| A4 | DSR ≥ 0.95 @141 | 0.0783 | **FAIL** |
+| B5 | \|corr\| rotation-stop < 0.30 | **−0.0674** (n=2,880) | PASS |
+| B6 | \|corr\| H63 carry < 0.30 | **−0.0627** (n=2,124) | PASS |
+
+### 8.1 The kill is not marginal, and the grid says so
+
+`OBSERVATION` — **no cell reaches Sharpe 0.21.** The best cell
+(1.5/0.0/60) earns +1.92%/yr against a 2% bar and a −32.71% drawdown. The
+worst loses 4.71%/yr. Nine of twelve cells are negative.
+
+`INTERPRETATION` — a grid this uniformly dead is a stronger result than a
+single failing cell. There is no corner of the declared space where this
+works, so the kill does not depend on the primary cell having been
+nominated correctly.
+
+### 8.2 The machinery worked; the edge was not there
+
+Three things separate this from a botched implementation, and they matter
+because they mean the negative result is trustworthy:
+
+`OBSERVATION` — **cointegration was found, consistently.** An average of
+**12.8 pairs** passed the Engle-Granger test at any moment. The strategy
+was not starved of candidates; it traded 3.3 pairs on average at the
+primary cell.
+
+`OBSERVATION` — **the test is correctly calibrated.** Against 300
+simulated independent random-walk pairs it admitted **4.0%** at
+`alpha = 0.05`. A test that over-rejects would have manufactured pairs out
+of noise; this one does not (`tests/test_cointegration.py`).
+
+`OBSERVATION` — **the book was genuinely market-neutral.** Correlation
+−0.067 with rotation-stop and −0.063 with carry: **Gate B passed
+comfortably.** The construction did exactly what it was designed to do.
+
+`INTERPRETATION` — this is the cleanest possible shape for a negative
+result: the machinery is validated, the independence is real, and the edge
+simply is not there. It is **independent and unprofitable**, which is
+worth nothing on its own but does confirm the F4 family can be tested
+properly.
+
+### 8.3 The drawdowns are the mechanism
+
+`OBSERVATION` — every cell carries a **−29% to −38% maximum drawdown** on
+a book with no net directional exposure.
+
+`INTERPRETATION` — that is the link-break failure named in §3 before the
+run, and it is the whole story. Cointegration measured on 365 days does
+not survive the next 180: pairs that reverted historically diverge
+permanently, the position bleeds in the direction of the break, and the
+z ≥ 4.0 stop crystallises the loss. Mean reversion in the spread was real
+in the formation window and absent in the trading window.
+
+### 8.4 What this confirms
+
+`OBSERVATION` — the pre-registration (§2) recorded the prior: H04
+mean-reversion was **REJECTED decisively** at the single-asset level, and
+meta-finding 6 states *"frequency kills."*
+
+`INTERPRETATION` — **this is the second independent confirmation that
+crypto does not mean-revert at retail-reachable cost.** H04 killed it on
+absolute prices; H64 kills it on relative prices with an economic link and
+a walk-forward hedge ratio, which was the strongest remaining version of
+the idea. Meta-finding 1 — *crypto is a continuation market* — now has a
+sixth confirmation, and it is the one that cost the most to obtain.
+
+**Proposed for PROJECT_MEMORY:** *reversion has now failed on absolute
+price (H04), on intraday microstructure (H44/H45/H53/H57, real but
+sub-cost), and on cointegrated relative value (H64). The reversion family
+is CLOSED at retail cost structures.*
+
+### 8.5 Specification gap that had to be filled
+
+`OBSERVATION` — the pre-registration caps concurrent pairs at 10 but does
+not say which 10 to prefer when more qualify. The implementation ranks by
+**strongest formation-window cointegration evidence** (most negative ADF
+statistic). It is a formation-time quantity, so it adds no look-ahead, and
+**no alternative ranking was tested against results.**
+
+`INTERPRETATION` — recorded because it is a degree of freedom the
+pre-registration did not close. Given that all 12 cells fail and the best
+is +1.92%, it is implausible that a different ranking rescues this, but
+the gap is the reader's to judge, not this document's to wave away.
+
+### 8.6 Limitations that did NOT save it
+
+The §7 caveats all bias **toward** the strategy, which strengthens the
+kill:
+
+- Short borrow was modelled as a flat cost and never sourced; real borrow
+  would be worse.
+- Perp funding on a short leg was not modelled at all.
+- The universe is survivorship-biased *against* observing link breaks —
+  dead coins are absent, and link breaks are exactly what killed this.
+
+**A strategy that fails under optimistic assumptions does not need
+pessimistic ones re-run.**
