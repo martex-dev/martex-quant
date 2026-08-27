@@ -1,7 +1,11 @@
 # Hypothesis 70 — Rotation Concentration: was K=2 ever the right number?
 
-Status: **PRE-REGISTERED 2026-08-28. NO RESULT EXISTS.** Trials declared:
-**+3 → 170.** Verdict will be written into §8 and nowhere else.
+Status: **KILLED — K=2 VINDICATED (2026-08-28).** Trials: **+3 → 170.**
+Verdict in §8. Gate A fails on the primary and on **every** cell, so the
+result does not depend on which cell was primary. All three §5.1
+predictions were **wrong**: H66's carry finding does not transfer to
+momentum rotation. The live-window diagnostic points the **opposite way**
+to the backtest, and §8.6 says what that does and does not license.
 
 This one is aimed at the **deployed spec**, not at a new family. It asks
 whether the single number that was never tested — how many slots
@@ -206,6 +210,194 @@ N=174 moves `DSR_global` by less than 0.001 and changes no verdict here.
 
 ---
 
-## 8. VERDICT
+## 8. VERDICT (2026-08-28, scripts/h70_rotation_concentration.py, +3 → 170)
 
-*(Not yet run. This section is written only when the study executes.)*
+**KILLED. K=2 is vindicated.** Gate A fails on the primary K=5, and — the
+part that matters — on **every** declared cell. Common window 2,880 days,
+2018-08-17 → 2026-07-05, all four books run in one process.
+
+### 8.1 The incumbent reproduces exactly, which is what makes the rest usable
+
+`OBSERVATION` — the K=2 recomputation lands on **CAGR +42.91%, Sharpe
+1.47, MDD −29.01%**. The published deployed-spec figures are **+42.9% /
+1.47 / −29.0%**.
+
+`INTERPRETATION` — the walk-forward protocol in this script reproduces
+the deployed spec to the published digits. Every comparison below is
+therefore against the real incumbent, not an approximation of it. Had
+this not reproduced, no cell figure would have been reportable.
+
+### 8.2 The declared cells — all reported
+
+| Book | CAGR | Sharpe | MDD | mean bp/day | 95% CI (bp) | DSR@170 | L path |
+|---|---|---|---|---|---|---|---|
+| **K=2 (incumbent)** | +42.91% | **1.47** | **−29.01%** | +10.737 | [+4.882, +16.536] | 0.9994 | 30:15 90:17 |
+| **K=3** | **+46.23%** | **1.61** | −32.40% | +11.290 | [+5.514, +17.046] | 0.9998 | 30:13 90:19 |
+| **K=5 (primary)** | +34.53% | 1.40 | −31.46% | +8.850 | [+3.698, +14.043] | 0.9979 | 30:17 90:15 |
+| K=8 | +27.13% | 1.27 | −31.82% | +7.151 | [+2.605, +11.832] | 0.9931 | 30:19 90:13 |
+
+### 8.3 The four bars
+
+| Gate | Bar | Measured (K=5) | Result |
+|---|---|---|---|
+| A1 | Sharpe > incumbent's | 1.40 vs **1.47** | **FAIL** |
+| A2 | MDD less severe than incumbent's | −31.46% vs **−29.01%** | **FAIL** |
+| B3 | DSR ≥ 0.95 @170 | 0.9979 | PASS |
+| C4 | CAGR ≥ 75% of incumbent's | +34.53% vs +32.18% needed | PASS |
+
+`OBSERVATION` — **A2 fails for every cell.** K=3 (−32.40%), K=5 (−31.46%)
+and K=8 (−31.82%) all draw down worse than K=2's −29.01%. A1 additionally
+fails for K=5 and K=8.
+
+`INTERPRETATION` — the verdict does not rest on the choice of primary. Had
+any other cell been declared primary, Gate A would still have failed.
+That is a stronger result than a single-cell failure and it is the reason
+this reads as *vindication* rather than *inconclusive*.
+
+### 8.4 Every prediction was wrong: H66 does not transfer
+
+| K | 2 | 3 | 5 | 8 |
+|---|---|---|---|---|
+| Sharpe | 1.47 | **1.61** | 1.40 | 1.27 |
+| CAGR | 42.91 | **46.23** | 34.53 | 27.13 |
+| MDD | **−29.01** | −32.40 | −31.46 | −31.82 |
+
+`OBSERVATION` — §5.1 predicted Sharpe rising monotonically in K, CAGR
+falling monotonically, and MDD improving. **None of the three holds.**
+Sharpe and CAGR both peak at K=3 and then fall; MDD is worst-in-class at
+K=3 and never beats K=2.
+
+`INTERPRETATION` — **H66's carry result does not generalize to momentum
+rotation, and the reason is mechanical.** Carry harvests a premium paid
+by ~20 near-independent funding streams, so averaging more of them cuts
+variance without cutting the mean. Rotation *selects*: its whole return
+comes from concentrating in the few strongest names, and the 4th through
+8th ranked coins are simply worse assets, not additional independent
+draws of the same edge. Diluting a selection edge with weaker picks
+lowers the mean faster than it lowers the variance.
+
+That is the same select-versus-harvest distinction H65 §8.1 proposed and
+H66 §8.3 withdrew — and this is the first evidence that the distinction
+is real, arriving from the opposite direction. **Recorded as a
+hypothesis, not a rule:** it is now one measurement in each of two
+families, which is exactly the evidential state that produced the
+withdrawn refinement last time. It should not be quoted as established.
+
+`OBSERVATION` — MDD gets **worse** at every K above 2, which no one
+predicted. More names did not mean more diversification here; it meant
+more simultaneous exposure to the same alt-beta in a drawdown.
+
+### 8.5 K=3 beats the incumbent on return and is NOT being acted on
+
+`OBSERVATION` — K=3 posts **Sharpe 1.61 vs 1.47** and **CAGR +46.23% vs
++42.91%**. It loses only on drawdown, −32.40% vs −29.01%, which is the
+bar it fails.
+
+`INTERPRETATION` — three reasons this is recorded and not adopted:
+
+1. **It was not the primary.** K=5 was declared primary in §4.1 before any
+   number existed. Promoting the best of a four-point grid after seeing
+   all four is the failure pre-registration exists to prevent — the same
+   call made in H67 §8.6 when BTC-only was the best cell.
+2. **It fails the registered bar anyway.** A2 is not a technicality here:
+   meta-finding 8 records that constraint geometry, not the return
+   stream, decides prop-firm outcomes, and a 3.4pp worse drawdown lands
+   directly on the rule that matters for an evaluation.
+3. **The grid is four points on one universe.** A Sharpe difference of
+   0.14 across adjacent K values on a single 2,880-day path is not a
+   measurement of the K surface.
+
+**Per the charter, the numbers go to the owner rather than being
+suppressed or acted on:** K=3 offers +3.3pp of CAGR and +0.14 of Sharpe
+for 3.4pp more drawdown. If that trade is wanted it needs its own
+pre-registration with a stated reason, and it should carry a prop-sim
+pass-rate comparison, because that is the objective the funded path is
+actually judged against.
+
+### 8.6 The live window says the opposite — and what that does NOT license
+
+`OBSERVATION` — replaying every cell over the live paper window
+(2026-07-10 → 2026-08-26, `data/lake-current`, L=90 as the paper account
+actually runs):
+
+| Book | live return | worst day | MDD |
+|---|---|---|---|
+| K=2 (incumbent) | **−6.06%** | −3.05% | **−15.48%** |
+| K=3 | −7.54% | −3.38% | −15.50% |
+| K=5 | −3.85% | −2.03% | −11.16% |
+| **K=8** | **−0.85%** | −1.58% | **−7.09%** |
+
+Live paper accounts over the same period: rotation-stop −7.44%, rotation
+−17.14%, vol-target (8 majors, all held) +5.84%.
+
+`OBSERVATION` — over these 48 days, return and drawdown both improve
+**monotonically with K** above K=3. K=8 lost 0.85% where K=2 lost 6.06%.
+This is the exact opposite of the eight-year backtest.
+
+`INTERPRETATION` — **this is a real answer to part of the H59 divergence
+question, and it is not a licence to change K.** In this window,
+concentration accounts for roughly five of the six points rotation-stop
+gave up: a more diversified version of the identical spec would have been
+close to flat. So the live drawdown is not purely bad luck in stock
+selection; it has a structural component, and that component is K.
+
+And yet **48 days cannot overturn 2,880.** Switching K because the last
+seven weeks favoured a different setting is textbook recency-chasing, and
+it is precisely how a validated spec gets destroyed. The backtest says K=8
+earns 27% a year against K=2's 43% with a worse drawdown; the live window
+says K=8 would have been flat instead of −6%. **Both are true, and the
+second is 1.7% of the evidence of the first.**
+
+`OBSERVATION` — **§6's pre-declared inference was too strong and is
+corrected here.** It said a Gate A failure would mean *"concentration is
+not what makes the live drawdown exceed backtest expectations, and the
+H59 divergence hunt must look elsewhere."* That inference does not follow:
+the bars are computed on the frozen backtest and cannot answer a question
+about the live window. The bars say concentration is not a defect **in
+sample**; the diagnostic says concentration **did** hurt in this
+out-of-sample window. Writing the inference into the disposition was a
+drafting error — it assumed one measurement could answer two questions.
+The verdict stands on the bars; the further claim is withdrawn.
+
+**What the divergence hunt should take from this:** concentration is a
+live contributor, the deployed setting is still the best one on the
+evidence we have, and the open question is now sharper — *is the live
+period an unrepresentative sample, or has the K surface actually moved?*
+That needs forward time, not another slice of the same history.
+
+### 8.7 Per-year, incumbent vs primary
+
+| Year | n | K=2 | K=5 |
+|---|---|---|---|
+| 2018 | 137 | −29.19% | −9.44% |
+| 2019 | 365 | +32.39% | +25.91% |
+| 2020 | 366 | +58.67% | +62.76% |
+| 2021 | 365 | +98.09% | +89.36% |
+| 2022 | 365 | −1.66% | −16.62% |
+| 2023 | 365 | +27.25% | +35.54% |
+| 2024 | 366 | +60.91% | +59.74% |
+| 2025 | 365 | −2.86% | −9.73% |
+| 2026 | 186 | **+92.80%** | +22.14% |
+
+`OBSERVATION` — K=5 beats K=2 in three of nine years and loses badly in
+2022 (−16.62% vs −1.66%) and 2026 (+22.14% vs +92.80%).
+
+`INTERPRETATION` — the incumbent's advantage is concentrated in the years
+when one or two names ran hard, which is the mechanism §8.4 describes.
+Note 2026 is the frozen lake's partial year ending 2026-07-05, and its
++92.80% is exactly the kind of single-window figure that should not be
+annualized in the reader's head.
+
+### 8.8 What this closes and what it costs
+
+- **The obvious explanation for the live drawdown is now measured rather
+  than assumed.** It is a real contributor and it is not a reason to act.
+- **K=2 keeps its place in the deployed spec**, and for the first time on
+  evidence rather than by the inheritance recorded in §2.
+- **Nothing is deployed, changed, or made paper-eligible by this
+  hypothesis.** The paper records continue unchanged, which is the
+  correct outcome of a vindication.
+- **Cost: three trials**, moving `DSR_global` for the deployed book from
+  0.9889 at N=167 to essentially the same figure at N=170 — the re-check
+  run alongside this hypothesis put rotation-stop at **0.9889** and
+  rotation at **0.9870**, both clearing 0.95.

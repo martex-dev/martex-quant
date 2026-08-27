@@ -92,6 +92,9 @@ NON_RESEARCH_SCRIPTS = {
     # Multi-venue OHLCV collector for the H68 cross-venue kill test.
     # Network fetch, cache write, no ledger number.
     "pull_venues",
+    # Refreshes data/lake-current only. A data pull, not research, and it
+    # deliberately cannot bump the frozen research epoch.
+    "refresh_current_lake",
     "dashboard_service",
     "freeze_research_baseline",
     # Meme layer: live data collectors and a report over data that is still

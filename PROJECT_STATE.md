@@ -436,7 +436,7 @@ that moves underneath them cannot serve as their witness.
 | Path | Contents | Role |
 |---|---|---|
 | `data/lake` | through **2026-07-09** | the FROZEN research lake. The input set every published figure was computed on. Immutable until a deliberate, recorded epoch bump. |
-| `data/lake-current` | through **2026-08-10** | the CURRENT lake. New research, and the divergence hunt. |
+| `data/lake-current` | through **2026-08-26** (refreshed 2026-08-28) | the CURRENT lake. New research, and the divergence hunt. |
 
 The frozen one keeps the plain name because every committed script points at
 `data/lake`; renaming would touch the whole corpus and would itself invalidate
@@ -503,6 +503,104 @@ material that invites post-hoc explanation.
 BEFORE the window is examined, per the standing project rule. The
 drawdown is recorded here as an observation so that it cannot later be
 presented as a discovery.
+
+---
+
+## H70 — K=2 VINDICATED, and the deployed book re-validated (2026-08-28)
+
+`OBSERVATION` — two things owed to the **deployed spec** rather than to a
+new family. Ledger 167 -> 170.
+
+### 1. The standing re-validation, honoured
+
+`family-expansion-program.md` §5 requires re-validating the deployed book
+as N grows. Last honoured at 125.
+
+| Book | Reproduced at its original N | DSR @167 | Bar |
+|---|---|---|---|
+| **rotation-stop (deployed)** | 0.9921 vs published 0.992 | **0.9889** | CLEARS |
+| rotation | 0.9905 vs published 0.990 | **0.9870** | CLEARS |
+
+Forty-two more trials cost 0.003 each. **The deployed book is still
+validated.** What it is not is profitable live — a different question.
+
+### 2. H70: was K=2 ever the right number?
+
+`OBSERVATION` — hypothesis 11 line 60 reads *"Long-only. **K=2 FIXED**"*.
+It was fixed by fiat and inherited untested by every descendant, including
+the H42b spec on paper today. H70 varied it and nothing else. The K=2
+recomputation reproduces the published deployed figures exactly
+(+42.91% / 1.47 / −29.01% vs +42.9% / 1.47 / −29.0%).
+
+| K | CAGR | Sharpe | MDD | DSR@170 |
+|---|---|---|---|---|
+| **2 (incumbent)** | +42.91% | 1.47 | **−29.01%** | 0.9994 |
+| **3** | **+46.23%** | **1.61** | −32.40% | 0.9998 |
+| 5 (primary) | +34.53% | 1.40 | −31.46% | 0.9979 |
+| 8 | +27.13% | 1.27 | −31.82% | 0.9931 |
+
+**Gate A fails on the primary and on every cell** — MDD is worse than
+K=2's at every higher K — so the verdict does not depend on which cell was
+primary. **K=2 is vindicated, on evidence for the first time.**
+
+`OBSERVATION` — all three pre-registered predictions were **wrong**.
+Sharpe and CAGR peak at K=3 and fall; MDD never improves.
+
+`INTERPRETATION` — **H66's carry finding does not transfer, and the
+mechanism is mechanical.** Carry *harvests* a premium paid by ~20
+near-independent funding streams, so averaging more cuts variance without
+cutting the mean. Rotation *selects*, and the 4th–8th ranked coins are
+worse assets, not more draws of the same edge. This is the first evidence
+that H65's select-vs-harvest distinction is real — arriving from the
+opposite direction after H66 withdrew it — and it stays a **hypothesis,
+not a rule**.
+
+### 3. K=3, presented and not acted on
+
+K=3 beats the incumbent on **Sharpe (1.61 vs 1.47) and CAGR (+46.23% vs
++42.91%)**, losing only on drawdown (−32.40% vs −29.01%). It is **not
+adopted**: it was not the declared primary, it fails the registered MDD
+bar — the bar meta-finding 8 says decides prop-firm outcomes — and 0.14
+of Sharpe across adjacent K on one path is not a measurement of the K
+surface. **The trade is +3.3pp CAGR and +0.14 Sharpe for 3.4pp more
+drawdown.** If wanted, it needs its own registration and a prop-sim
+pass-rate comparison.
+
+### 4. The live window says the opposite — the H59 divergence, partly answered
+
+Every cell replayed over the live paper window (2026-07-10 → 2026-08-26,
+`data/lake-current`, L=90 as the account actually runs):
+
+| K | live return | MDD |
+|---|---|---|
+| 2 (incumbent) | **−6.06%** | −15.48% |
+| 3 | −7.54% | −15.50% |
+| 5 | −3.85% | −11.16% |
+| **8** | **−0.85%** | **−7.09%** |
+
+`INTERPRETATION` — **concentration accounts for roughly five of the six
+points rotation-stop gave up live.** The live drawdown is not purely bad
+selection luck; it has a structural component and that component is K.
+
+**And this does not license changing K.** 48 days is 1.7% of the evidence
+behind the 2,880-day backtest, which says K=8 earns 27%/yr against K=2's
+43% with a worse drawdown. Switching because the last seven weeks favoured
+another setting is textbook recency-chasing.
+
+`OBSERVATION` — **a pre-declared inference was withdrawn.** §6 said a Gate
+A failure would mean concentration does not explain the live drawdown.
+That does not follow: the bars are computed on the frozen backtest and
+cannot answer a question about the live window. Drafting error, corrected
+in the verdict.
+
+**The sharpened open question for the divergence hunt: is the live period
+unrepresentative, or has the K surface moved? That needs forward time,
+not another slice of the same history.**
+
+`OBSERVATION` — `data/lake-current` was refreshed to 2026-08-26
+(`scripts/refresh_current_lake.py`). It touches only the current lake and
+proved rather than asserted that the frozen lake was untouched: BTCUSDT
+still 3,249 rows ending 2026-07-09, max |diff| 0.0 on all shared days.
 
 ---
 

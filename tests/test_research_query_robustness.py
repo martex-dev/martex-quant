@@ -110,7 +110,7 @@ def test_contradictions_are_surfaced_not_resolved(ledger) -> None:  # type: igno
 
 def test_summary_reads_as_plain_language(ledger) -> None:  # type: ignore[no-untyped-def]
     text = summarise(ledger)
-    assert "trials registered : 167" in text
+    assert "trials registered : 170" in text
     assert "kill rate" in text
 
 

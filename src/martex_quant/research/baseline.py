@@ -350,6 +350,25 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h70_rotation_concentration",
+        hypotheses="H70 rotation concentration, K grid vs the deployed spec (trials 168-170)",
+        seeds=(20260828,),
+        uses_universe=True,
+        reproducibility="time_dependent",
+        external_dependencies=(
+            "data/lake-current, which is refreshed by scripts/refresh_current_lake.py "
+            "and therefore moves; the Section 5.2 live-window diagnostic reads it, so "
+            "this script's stdout changes as the live window lengthens. The BARS read "
+            "only the frozen lake and are reproducible.",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260828 at 30-day blocks; the walk-forward "
+            "itself is deterministic. Reads BOTH lakes by design -- the frozen "
+            "lake for every pre-registered bar, the current lake for the live "
+            "diagnostic that is explicitly not a bar."
+        ),
+    ),
+    ScriptSpec(
         name="h69_cross_venue_strategy",
         hypotheses="H69 cross-venue premium, strategy grade (trials 165-167)",
         seeds=(20260827,),

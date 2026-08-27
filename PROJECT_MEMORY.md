@@ -3,7 +3,7 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 167 registered (166 run, 1 data-blocked: H54). Every new
+## Trial ledger: 170 registered (169 run, 1 data-blocked: H54). Every new
 ## spec raises the DSR bar. Do not test without a numbered doc FIRST.
 ##
 ## SOURCE OF TRUTH for the ledger is docs/research/ledger/trials.toml, not
@@ -14,7 +14,7 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 ## H62 as the carry spec), H64 cointegration KILLED, H65 wide-universe
 ## carry STANDALONE-VIABLE, H66 cross-sectional carry STANDALONE-VIABLE,
 ## H67 variance risk premium KILLED, H68 cross-venue dislocation SIGNAL,
-## H69 the strategy built on H68 KILLED.
+## H69 the strategy built on H68 KILLED, H70 K=2 VINDICATED.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
 
@@ -182,6 +182,36 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
     a hypothesis whose returns are concentrated before 2024 should say so
     in its verdict.
 
+14. **Breadth feeds edges that HARVEST and starves edges that SELECT —
+    now with evidence from both directions (H70).** H65 proposed this,
+    H66 withdrew it, and H70 supplies the missing half. Varying the
+    deployed rotation's slot count — the one number hypothesis 11 fixed
+    by fiat ("Long-only. **K=2 FIXED**") and every descendant inherited
+    untested — gives Sharpe **1.47 / 1.61 / 1.40 / 1.27** at K = 2/3/5/8
+    and MDD **worse than K=2 at every higher K**. All three
+    pre-registered predictions (Sharpe rising, CAGR falling, MDD
+    improving, all monotone) were **wrong**.
+    **The mechanism is mechanical:** carry harvests a premium paid by ~20
+    near-independent funding streams, so averaging more cuts variance
+    without cutting the mean. Rotation *selects*, and the 4th-8th ranked
+    coins are worse assets rather than additional independent draws of
+    the same edge. Diluting a selection edge lowers the mean faster than
+    the variance. **Still a hypothesis, not a rule** — one measurement in
+    each of two families is precisely the evidential state that produced
+    the withdrawn refinement last time.
+    **K=2 is vindicated on evidence for the first time.** K=3 beats it on
+    return (Sharpe 1.61, CAGR +46.23%) and loses on drawdown; it was not
+    the declared primary, it fails the registered MDD bar, and it is
+    **not adopted** — acting on it needs a fresh registration.
+    **And the live window says the opposite:** over 2026-07-10..08-26 the
+    same cells give K=2 −6.06%, K=5 −3.85%, K=8 **−0.85%**, with MDD
+    improving monotonically. So concentration is a **real contributor to
+    the live drawdown** — about five of the six points — and 48 days is
+    1.7% of the evidence behind the 2,880-day backtest. Both facts are
+    true; neither licenses changing K. **The sharpened open question:
+    is the live period unrepresentative, or has the K surface moved?
+    That needs forward time, not another slice of the same history.**
+
 13. **A significant spread is not a Sharpe — the info bar has no
     variance term (H69).** H68's S2 spread was **+3.17% per 7 days**, CI
     excluding zero, breadth 17/20, on 31,752 symbol-days. The strategy
@@ -242,6 +272,21 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
     whole time while the naive screen showed 4.55. General form: **screen
     in the units the position actually pays in, not the units the
     phenomenon is quoted in.**
+
+## DSR re-check at 170 trials (2026-08-28) — the standing commitment, honoured
+
+`family-expansion-program.md` §5 requires re-validating the deployed book
+as N grows. Last honoured at 125; run again at 167/170.
+
+| Book | Reproduced at its original N | DSR @167 | Bar 0.95 |
+|---|---|---|---|
+| rotation-stop (deployed) | 0.9921 vs published 0.992 | **0.9889** | CLEARS |
+| rotation | 0.9905 vs published 0.990 | **0.9870** | CLEARS |
+
+Forty-two more trials cost **0.003** each. Third confirmation that the
+DSR bar is far less sensitive to ledger growth than was once feared. The
+deployed book remains validated; what it is not is profitable live, which
+is a different question and the one H59 opened.
 
 ## DSR re-check at 125 trials (2026-08-11, scripts/dsr_recheck.py)
 
