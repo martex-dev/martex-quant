@@ -253,9 +253,7 @@ def run_carry(
 
     frame = pl.DataFrame(rows)
     return CarryResult(
-        daily=frame.select(
-            "timestamp", "ret", "funding_ret", "basis_ret", "cost_ret", "n_symbols"
-        ),
+        daily=frame.select("timestamp", "ret", "funding_ret", "basis_ret", "cost_ret", "n_symbols"),
         equity=frame.select(
             "timestamp",
             "equity",

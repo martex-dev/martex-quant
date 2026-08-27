@@ -82,6 +82,9 @@ def test_spec_names_are_unique() -> None:
 NON_RESEARCH_SCRIPTS = {
     "pull_frontier",
     "pull_intraday",
+    # Data collector for the H65 wide carry universe. Hits the network and
+    # writes caches; it produces no research output to freeze.
+    "pull_carry_universe",
     "dashboard_service",
     "freeze_research_baseline",
     # Meme layer: live data collectors and a report over data that is still

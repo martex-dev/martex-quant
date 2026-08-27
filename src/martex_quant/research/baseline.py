@@ -350,6 +350,24 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h65_wide_carry_study",
+        hypotheses="H65 wide-universe carry, 3-cell grid (trials 142-144)",
+        seeds=(20260827,),
+        uses_universe=True,
+        data_files=(
+            "data/funding/BTCUSDT.parquet",
+            "data/perp/BTCUSDT.parquet",
+            "data/funding/LINKUSDT.parquet",
+            "data/perp/LINKUSDT.parquet",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260827; the carry engine is "
+            "deterministic. LINK is fingerprinted alongside BTC because it is "
+            "one of the 27 symbols this hypothesis added -- a refetch of the "
+            "wide caches must be visible here."
+        ),
+    ),
+    ScriptSpec(
         name="h64_pairs_study",
         hypotheses="H64 cointegrated pairs, family F4, 12-cell grid (trials 130-141)",
         seeds=(20260827,),

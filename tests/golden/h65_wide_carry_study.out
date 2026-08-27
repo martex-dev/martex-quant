@@ -1,0 +1,54 @@
+==============================================================================
+H65 — WIDE-UNIVERSE CARRY (3 cells, trials 142-144 -> 144)
+==============================================================================
+
+Wide universe: 34 symbols with spot + perp + funding
+  AAVE, ADA, ARB, BNB, BTC, DEXE, DOGE, ENA, ETH, HBAR, HMSTR, LINK, LTC, MMT, NEAR, OPN, PARTI, SKL, SOL, SUI, SXT, SYN, TAO, TREE, TRX, T, UNI, VANRY, VIRTUAL, WLD, XLM, XPL, XRP, ZEC
+Incumbent: 8 majors, re-run in union mode on the shared window
+
+Shared comparison window: 2019-09-11 -> 2026-07-09
+
+Incumbent (8 majors, L=30, THIS window): Sharpe 5.91   CAGR +4.64%   MDD -0.84%
+  (differs from H63's published 2.29 / +4.51% because the window differs
+   -- see the pre-registration; this is the like-for-like comparison)
+
+--- the declared 3-cell grid (ALL cells reported) ---
+
+  L=7
+    Sharpe   4.23   CAGR   +4.15%   MDD  -2.62%   DSR 1.0000
+    mean +1.113bp/day CI low +0.559bp   avg symbols held-eligible 20.0
+
+  L=30 (PRIMARY)
+    Sharpe   5.60   CAGR   +4.36%   MDD  -0.76%   DSR 1.0000
+    mean +1.170bp/day CI low +0.669bp   avg symbols held-eligible 20.0
+
+  L=90
+    Sharpe   5.71   CAGR   +3.95%   MDD  -0.53%   DSR 1.0000
+    mean +1.060bp/day CI low +0.600bp   avg symbols held-eligible 20.0
+
+--- symbol count over time (the ragged-history caveat, 7) ---
+    2019  symbols~  1.3  net   +1.49%/yr
+    2020  symbols~ 11.1  net   +6.17%/yr
+    2021  symbols~ 16.8  net  +16.72%/yr
+    2022  symbols~ 17.0  net   -0.14%/yr
+    2023  symbols~ 19.8  net   +1.96%/yr
+    2024  symbols~ 23.9  net   +4.48%/yr
+    2025  symbols~ 30.0  net   -0.08%/yr
+    2026  symbols~ 33.7  net   -0.78%/yr
+
+------------------------------------------------------------------------------
+GATES (primary cell L=30)
+------------------------------------------------------------------------------
+  A1 CI excludes zero        : +0.669bp  PASS
+  A2 CAGR >= 2%/yr          : +4.36%  PASS
+  A3 Sharpe >= 1.0           : 5.60  PASS
+  A4 DSR >= 0.95 @ 144     : 1.0000  PASS
+  B5 Sharpe > 5.91 (8-sym)   : 5.60  FAIL
+  B6 CAGR > +4.64% (8-sym)   : +4.36%  FAIL
+  C7 |corr| rot-stop < 0.30   : -0.0040 (n=2490)  PASS
+
+==============================================================================
+VERDICT: STANDALONE-VIABLE — real, but breadth did NOT help.
+H63's 8-symbol spec remains the carry spec. Meta-finding 3 does not
+extend to carry. Per docs/research/standalone-viable-amendment.md.
+==============================================================================

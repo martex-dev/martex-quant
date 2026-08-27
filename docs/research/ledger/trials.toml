@@ -19,8 +19,8 @@
 # distributed by guess.
 
 period = "2026"
-ledger_total_claimed = 141
-ledger_run_claimed = 140
+ledger_total_claimed = 144
+ledger_run_claimed = 143
 ledger_data_blocked_claimed = 1
 
 [[entries]]
@@ -320,6 +320,20 @@ maturity = "L3"
 source = "docs/hypotheses/64-cointegration-pairs.md"
 evidence = "Ledger: +12 -> 141 (declared 12-cell grid, ALL cells reported). Gate A failed on all four bars at the primary cell (z_in 2.0, z_out 0.5, hold 30): mean -0.509bp/day CI low -3.429bp, CAGR -2.82%, Sharpe -0.15, DSR 0.0783 @141. No cell in the grid exceeds Sharpe 0.21; nine of twelve are negative; every cell carries a -29% to -38% MDD on a book with no net directional exposure."
 notes = "First hypothesis of family F4 (stat-arb). Gate B PASSED -- corr -0.0674 with rotation-stop and -0.0627 with H63 carry -- so the book was genuinely market-neutral and this is a validated machine finding no edge, not a broken one. Cointegration was found consistently (12.8 qualifying pairs on average) and the Engle-Granger implementation is calibrated (4.0% false positives on 300 simulated independent random walks vs nominal 5%). The mechanism is the link-break named in the pre-registration: cointegration measured over 365 days does not survive the next 180. SECOND INDEPENDENT CONFIRMATION that crypto does not mean-revert at retail cost, after H04 on absolute prices; with H44/H45/H53/H57 intraday (real but sub-cost) the reversion family is closed. Specification gap filled at implementation: the pre-registration caps concurrent pairs at 10 but does not say which 10, so candidates are ranked by strongest formation-window ADF statistic -- a formation-time quantity, no look-ahead, no alternative tested. All §7 limitations bias TOWARD the strategy, so the kill needs no pessimistic re-run. Pre-registered and committed (2bdf61d) before any code existed."
+
+[[entries]]
+hypothesis = "H65"
+family = "strategy.carry.wide_universe"
+trial_count = 3
+grade = "strategy"
+protocol = "confirmatory"
+verdict = "candidate"
+maturity = "L4"
+dsr = 1.0
+dsr_n_trials = 144
+source = "docs/hypotheses/65-wide-universe-carry.md"
+evidence = "Ledger: +3 -> 144 (declared 3-cell grid L in {7,30,90}, ALL cells reported). STANDALONE-VIABLE: Gate A and Gate C pass, Gate B fails. Wide book (34 symbols, L=30) Sharpe 5.60, CAGR +4.36%, MDD -0.76%, DSR 1.0000 @144, mean +1.170bp/day CI low +0.669bp, corr with rotation-stop -0.0040. The 8-symbol incumbent recomputed in the SAME run on the SAME window: Sharpe 5.91, CAGR +4.64%. Grid: L=7 Sharpe 4.23, L=30 5.60, L=90 5.71."
+notes = "FIRST USE of docs/research/standalone-viable-amendment.md. Under the pre-2026-08-27 rule this would have been recorded KILLED alongside H04 mean-reversion, which had no edge at all; it clears every absolute bar and merely loses to the incumbent. NOT deployed, and it does NOT count toward the eight-edge target -- it is the same edge as H63 harvested more widely, not an independent one. FINDING: meta-finding 3 (breadth feeds cross-sectional edges) does NOT extend to carry. Going 8 -> 34 symbols LOWERED Sharpe. Proposed refinement, offered as a hypothesis and not an established rule: breadth feeds edges that SELECT and dilutes edges that HARVEST. CONFOUND recorded honestly -- symbol count rises monotonically (11 in 2020 to 34 in 2026) while returns fall, and the extra symbols exist mostly in the thin-funding years, so dilution cannot be fully separated from timing; a clean test needs a universe held constant through time. The 7 cost caveat did not need invoking: Gate B failed under the OPTIMISTIC cost model, so honest wider spreads on thin listings would only widen the gap. Third confirmation that carry earns ~nothing today (2025 -0.08%/yr, 2026 -0.78%/yr). Pre-registered and committed (8cb096f) before the study existed."
 
 # The remainder the committed documents do not allocate. Carried explicitly
 # rather than distributed by guess: assigning it would be fabrication, and
