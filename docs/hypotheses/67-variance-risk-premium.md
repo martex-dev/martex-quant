@@ -1,7 +1,10 @@
 # Hypothesis 67 — Variance Risk Premium (family F3 kill test)
 
-Status: **PRE-REGISTERED 2026-08-27. NO RESULT EXISTS.** Trials declared:
-**+5 → 152.** Verdict will be written into §8 and nowhere else.
+Status: **KILLED (2026-08-27).** Trials: **+5 → 152.** Verdict in §8.
+Gate A fails, Gate B fails, Gate C passes — but §8.4 shows Gate C passed
+the letter and failed the spirit, which is the most useful thing this
+test produced. The premium is real and large *gross*; it is not
+harvestable at retail, and it has been decaying toward zero since 2023.
 
 First hypothesis in family **F3 (options / variance risk premium)** of
 `docs/research/family-expansion-program.md`. Per CLAUDE.md this is a
@@ -236,6 +239,164 @@ This is a condition on how we would proceed, not a bar that can fail.
 
 ---
 
-## 8. VERDICT
+## 8. VERDICT (2026-08-27, scripts/h67_vrp_killtest.py, +5 → 152)
 
-*(Not yet run. This section is written only when the study executes.)*
+**KILLED.** Gate A fails on all four bars. Gate B fails on both. Gate C
+passes at +0.0237 — and §8.4 explains why that number is misleading.
+
+Window 2021-04-23 → 2026-07-09 (1,904 days after the 30-day ladder
+warm-up), bounded by the frozen lake as §4.1 declared.
+
+### 8.1 The five declared cells — all reported
+
+| # | Cell | mean bp/day | 95% CI (60d block) | CAGR | Sharpe | MDD | DSR@152 |
+|---|---|---|---|---|---|---|---|
+| 1 | BTC only, h=3.0 | +2.237 | [−0.183, +4.989] | +8.05% | 0.95 | −14.51% | 0.9205 |
+| 2 | ETH only, h=3.0 | −1.328 | [−4.513, +3.177] | −5.64% | −0.37 | −39.26% | 0.0379 |
+| **3** | **Combined 50/50 — PRIMARY** | **+0.455** | **[−2.141, +3.930]** | **+1.09%** | **0.16** | **−24.31%** | **0.4078** |
+| 4 | Combined, non-overlapping | +1.230 | [−1.519, +4.643] | +3.96% | 0.43 | −27.76% | 0.6307 |
+| 5 | Combined, h=6.0 (2× cost) | −1.833 | [−4.429, +1.643] | −7.01% | −0.67 | −38.40% | 0.0082 |
+
+### 8.2 The seven bars
+
+| Gate | Bar | Measured | Result |
+|---|---|---|---|
+| A1 | mean > 0, CI excludes zero | +0.455bp, CI low **−2.141bp** | **FAIL** |
+| A2 | CAGR ≥ 2%/yr | +1.09% | **FAIL** |
+| A3 | Sharpe ≥ 1.0 | 0.16 | **FAIL** |
+| A4 | DSR ≥ 0.95 @152 | 0.4078 | **FAIL** |
+| B5 | 2× cost still > 0, CI excludes zero | −1.833bp | **FAIL** |
+| B6 | non-overlap CAGR > 0 **and** Sharpe ≥ 1.0 | +3.96%, **0.43** | **FAIL** |
+| C7 | \|corr\| rotation-stop < 0.30 | **+0.0237** (n=1,900) | **PASS** |
+
+Per §6, **A fails → KILLED.** No F3 build is authorized. The Deribit
+option-chain collector and the Greeks layer are **not** built.
+
+### 8.3 The premium is real. The harvest is not. Two separate reasons.
+
+`OBSERVATION` — gross, the premium is large and persistent:
+
+| | mean IV | mean subsequent RV | **IV − RV** | days IV > RV |
+|---|---|---|---|---|
+| BTC | 61.07 | 52.35 | **+8.72 vol pts** | **72.3%** |
+| ETH | 75.09 | 70.53 | **+4.55 vol pts** | 63.8% |
+
+`INTERPRETATION` — §1's claim about the *existence* of a crypto variance
+risk premium is **confirmed, and not weakly**. BTC implied vol exceeded
+subsequent realized vol on nearly three days in four over five years.
+Nothing in this verdict disputes that.
+
+Two things stand between that premium and a return, and the second is the
+finding worth keeping.
+
+**Reason 1 — the convexity tax.** A variance position does not earn
+`K − RV`. It earns `(K² − RV²)/(2K)`, and because realized *variance* is
+right-skewed, the mean of the second is much smaller than the first. §5
+required this gap be reported; it is larger than expected:
+
+| | simple `K − RV` | variance form `(K²−RV²)/2K` | **tax** |
+|---|---|---|---|
+| BTC | 8.72 | **6.01** | −2.71 vol pts |
+| ETH | 4.55 | **1.24** | −3.31 vol pts |
+
+`INTERPRETATION` — **a screen that measures `IV − RV` overstates the
+harvestable premium by about a third on BTC and by 73% on ETH.** ETH's
+true harvestable premium is 1.24 vol points against a 3.0 vol-point cost:
+ETH variance was *never* sellable at retail in this window, and the naive
+screen would have called it worth 4.55. This is the most transferable
+lesson here and it generalizes to any future options work.
+
+**Reason 2 — the cost.** After the convexity tax the harvestable premium
+is 6.01 (BTC) and 1.24 (ETH) vol points against the §4.3 haircut of
+**3.0**. Costs consume 50% of BTC's premium and 242% of ETH's. The
+combined book nets +1.09%/yr, with a CI spanning zero.
+
+### 8.4 Gate C passed the letter and failed the spirit — the real finding
+
+`OBSERVATION` — §2 recorded the prior that short vol *should* correlate
+with the long-momentum book, and flagged Gate C as "not a formality."
+Measured full-sample linear correlation: **+0.0237**. By the bar as
+written that is a comfortable pass, and the §2 prior looks wrong.
+
+`OBSERVATION` — it is not wrong. Conditioning on rotation-stop's own bad
+days (a diagnostic on cell 3 — not a new cell and not a new trial):
+
+| rotation-stop day bucket | n | mean VRP return |
+|---|---|---|
+| all days | 1,900 | **+0.004%** |
+| worst decile | 191 | **−0.237%** |
+| worst 5% | 96 | **−0.417%** |
+| **worst 1%** | **20** | **−1.296%** |
+
+Joint-loss *frequency* is 9.8% against an independence expectation of
+10.4% — indistinguishable. The dependence is not in how often the two
+books lose together; it is entirely in **how much**. On momentum's worst
+1% of days the VRP book loses 300× its unconditional mean.
+
+`INTERPRETATION` — **the project's `|corr| < 0.30` bar cannot see this.**
+Pearson correlation measures linear co-movement, and the VRP stream is
+driven by *squared* returns, which are direction-blind. A short-convexity
+edge will therefore pass the correlation gate almost automatically while
+being exactly the thing that blows up when the rest of the book does.
+`family-expansion-program.md` §2 adds uncorrelated edges in quadrature
+(`Sharpe_total = √(Σ Sharpe_i²)`); that arithmetic assumes independence,
+and this book would have been admitted into it on a number that does not
+establish independence.
+
+**Proposed amendment to the standard bar set** (a proposal, not adopted
+here — it needs its own decision): any hypothesis whose payoff is
+asymmetric or short-convexity must clear a **tail-conditional** bar — mean
+return on the incumbent book's worst-decile days — in addition to
+`|corr| < 0.30`. Had that bar existed, H67 would have failed Gate C too.
+
+### 8.5 The regime decay: a fourth confirmation, on an unrelated premium
+
+| Year | n | net %/yr | Sharpe | worst day |
+|---|---|---|---|---|
+| 2021 | 253 | **+15.66** | 1.15 | −8.41% |
+| 2022 | 365 | +9.30 | 0.78 | −5.52% |
+| 2023 | 365 | +6.79 | 1.14 | −2.29% |
+| 2024 | 366 | −0.53 | −0.07 | −3.73% |
+| 2025 | 365 | −8.60 | −0.95 | −4.27% |
+| **2026** | 190 | **−17.59** | −1.42 | −6.80% |
+
+`OBSERVATION` — monotone decay from +15.66%/yr to −17.59%/yr, sign
+flipping in 2024. **H62, H63 and H65 each independently found carry
+earning approximately nothing in 2025–2026.** Funding carry and the
+variance risk premium share no mechanism: one is a perpetual-swap
+financing rate, the other is options pricing.
+
+`INTERPRETATION` — two structurally unrelated crypto premia went to zero
+over the same two years. That is more consistent with **market-wide
+maturation** — professional capital arriving to sell both insurances —
+than with anything specific to either edge. Offered as a hypothesis about
+the market, not an established finding: two premia is two data points,
+both measured on the same calendar window, which is exactly the confound
+that would produce this pattern spuriously. It is worth testing directly,
+and worth knowing before any future edge is sized on 2021–2023 history.
+
+### 8.6 What was NOT done, deliberately
+
+`OBSERVATION` — cell 1 (BTC alone) is the best cell: +8.05%/yr, Sharpe
+0.95, DSR 0.9205. It still fails A3 and A4 on its own numbers, and cell 5
+shows the combined book dies under a doubled cost estimate.
+
+`INTERPRETATION` — the primary was declared as the 50/50 book in §4.4
+**before** anyone knew ETH would be the weak leg. Promoting BTC-alone now
+because it looks better is selecting the best of two after seeing both,
+which is the exact failure pre-registration exists to prevent. **The
+verdict stands on cell 3.** Per the standing rule near-misses stay closed;
+a BTC-only VRP spec would need a fresh pre-registration and a stated
+reason, and §8.5's decay is a strong reason not to bother.
+
+`OBSERVATION` — the §5 tail condition was **not** breached: primary MDD
+−24.31% against the −40% threshold. Skew −6.69, excess kurtosis +68.4,
+worst day −8.41% (2021-05-19), worst 30-day window −19.95%. No modelled
+day reached −100%, so the linearized proxy did not visibly break.
+
+`INTERPRETATION` — this is the one number that flatters the hypothesis,
+and §7 already said why it should not be trusted: **March 2020 is outside
+the window.** A −24% modelled drawdown on a sample that excludes the worst
+short-vol event in crypto's history is not evidence of a −24% worst case.
+The kill does not rest on this figure, which is fortunate, because it is
+the least trustworthy one in the study.

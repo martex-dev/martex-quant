@@ -126,11 +126,18 @@ uncorrelated with everything in the ledger.** **Data needed:** synchronized
 order-book or trade data from 2+ venues — the single most valuable dataset
 this project does not have.
 
-**F3. Options / variance risk premium** *(~25 trials)*
-Implied volatility exceeds realized volatility on average — the most robust
-premium documented in any market. Deribit publishes the history. Requires
-options pricing and Greeks. **Data needed:** Deribit IV surface history.
-Already on the backlog and never started.
+**F3. Options / variance risk premium** — **CLOSED 2026-08-27, 5 of ~25
+trials spent.** `docs/hypotheses/67-variance-risk-premium.md` killed it at
+the kill-test stage, so the option-chain collector and Greeks layer named
+below were never built. The premium is real and large gross (BTC IV−RV
++8.72 vol points, IV>RV on 72.3% of days) and unreachable after a derived
+3.0 vol-point cost; it also decays monotonically to −17.59%/yr by 2026.
+Two findings survive: the correlation bar cannot see tail dependence
+(§8.4 of that document), and an `IV − RV` screen overstates the
+harvestable premium by a third because a variance position pays
+`(K²−RV²)/(2K)`. **Structural limit found:** only BTC and ETH publish
+DVOL, so this family could never have been broad. Reopening needs a new
+pre-registration and a stated reason.
 
 ### Tier 2 — new structure, existing or cheap data
 
@@ -173,9 +180,12 @@ Liquidation events are mechanically forced selling with a known trigger.
    by construction. Best effort-to-information ratio available today.
 3. **F1 carry expansion** — extend funding/perp collection from 8 to 40+
    symbols. Mostly a data-collection task.
-4. **F3 options/VRP** — highest expected value in Tier 1, largest build.
+4. ~~**F3 options/VRP**~~ — **done and closed 2026-08-27 (H67), no build.**
+   It was run ahead of F1's data-collection tail because its kill test was
+   cheap (a free index, no chain needed) and it gated the largest build in
+   Tier 1. That gate is now shut.
 5. **F2 cross-exchange** — highest structural independence, needs the
-   multi-venue dataset.
+   multi-venue dataset. **Now the top unstarted Tier-1 family.**
 
 Tier 3 waits until Tier 1–2 is exhausted; it is gated on infrastructure,
 not on ideas.

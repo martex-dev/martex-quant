@@ -1,0 +1,68 @@
+====================================================================================================
+H67 - VARIANCE RISK PREMIUM KILL TEST (family F3, trials 148-152)
+====================================================================================================
+  BTC: n=1934  2021-03-24 -> 2026-07-09  mean DVOL 60.8
+  ETH: n=1934  2021-03-24 -> 2026-07-09  mean DVOL 74.8
+
+  Proxy: rolling 30d short-variance ladder, 1x notional, delta-hedged (§4.2)
+  Straddle vega V = 0.228746 / unit notional / 1.00 vol; haircut 3.0 vol pts = 2.287 bp/day = 8.35 %/yr
+
+--- gross premium: implied vs subsequent realized (vol points) ---
+             mean IV   mean RV     K-RV   days IV>RV   (K^2-RV^2)/2K   convexity tax
+    BTC        61.07     52.35     8.72        72.3%            6.01           -2.71
+    ETH        75.09     70.53     4.55        63.8%            1.24           -3.31
+    (the §4.3 cost haircut is 3.0 vol points)
+
+--- the five declared cells (§4.4) ---
+  1. BTC only, h=3.0                 n=1904  mean= +2.237bp  CI[ -0.183, +4.989]  CAGR=   +8.05%  Sharpe=  0.95  MDD= -14.51%  DSR=0.9205
+  2. ETH only, h=3.0                 n=1904  mean= -1.328bp  CI[ -4.513, +3.177]  CAGR=   -5.64%  Sharpe= -0.37  MDD= -39.26%  DSR=0.0379
+  3. Combined 50/50, h=3.0           n=1904  mean= +0.455bp  CI[ -2.141, +3.930]  CAGR=   +1.09%  Sharpe=  0.16  MDD= -24.31%  DSR=0.4078 <== PRIMARY
+  4. Combined, non-overlapping       n=1904  mean= +1.230bp  CI[ -1.519, +4.643]  CAGR=   +3.96%  Sharpe=  0.43  MDD= -27.76%  DSR=0.6307
+  5. Combined, h=6.0 (2x cost)       n=1904  mean= -1.833bp  CI[ -4.429, +1.643]  CAGR=   -7.01%  Sharpe= -0.67  MDD= -38.40%  DSR=0.0082
+
+--- the seven pre-registered bars (§5) ---
+  A1. mean daily net > 0, CI excludes zero       +0.455bp, low -2.141bp       -> FAIL
+  A2. net CAGR >= 2%/yr                          +1.09%                       -> FAIL
+  A3. Sharpe >= 1.0                              0.16                         -> FAIL
+  A4. DSR_global >= 0.95 @ 152                   0.4078                       -> FAIL
+  B5. 2x-cost cell mean > 0, CI excludes zero    -1.833bp, low -4.429bp       -> FAIL
+  B6. non-overlap CAGR > 0 and Sharpe >= 1.0     +3.96%, 0.43                 -> FAIL
+  C7. |corr| rotation-stop < 0.30                +0.0237 (n=1900)             -> PASS
+
+  Gate A FAIL   Gate B FAIL   Gate C PASS
+
+--- reported, not gated (§5) ---
+  skew -6.687   excess kurtosis +68.36   worst day -8.41%   best day +0.47%
+  MDD -24.31%  (tail condition -40% not breached)
+
+--- tail dependence on rotation-stop (diagnostic, not a bar) ---
+    rotation-stop bucket           n    mean VRP return
+    all days                    1900            +0.004%
+    worst decile                 191            -0.237%
+    worst 5%                      96            -0.417%
+    worst 1%                      20            -1.296%
+    both books lose: 9.8% of days vs 10.4% under independence -> the dependence is in MAGNITUDE, not frequency
+  worst 30-day window: -19.95%
+  worst 90-day window: -14.77%
+
+  10 worst days (the episodes this strategy is short):
+    2021-05-19     -8.41%
+    2026-02-05     -6.80%
+    2022-11-09     -5.52%
+    2022-06-13     -4.27%
+    2025-05-08     -4.27%
+    2021-05-24     -3.77%
+    2026-02-06     -3.77%
+    2024-05-20     -3.73%
+    2025-03-03     -3.46%
+    2024-08-08     -3.41%
+
+  per-year:
+    2021  n= 253  net=  +15.66%/yr  Sharpe=  1.15  worst day   -8.41%
+    2022  n= 365  net=   +9.30%/yr  Sharpe=  0.78  worst day   -5.52%
+    2023  n= 365  net=   +6.79%/yr  Sharpe=  1.14  worst day   -2.29%
+    2024  n= 366  net=   -0.53%/yr  Sharpe= -0.07  worst day   -3.73%
+    2025  n= 365  net=   -8.60%/yr  Sharpe= -0.95  worst day   -4.27%
+    2026  n= 190  net=  -17.59%/yr  Sharpe= -1.42  worst day   -6.80%
+
+====================================================================================================

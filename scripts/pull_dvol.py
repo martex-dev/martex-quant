@@ -51,9 +51,7 @@ def pull(currency: str) -> pl.DataFrame:
     while year <= now.year:
         start = dt.datetime(year, 1, 1, tzinfo=dt.UTC)
         end = dt.datetime(year + 1, 1, 1, tzinfo=dt.UTC)
-        chunk = _fetch(
-            currency, int(start.timestamp() * 1000), int(end.timestamp() * 1000)
-        )
+        chunk = _fetch(currency, int(start.timestamp() * 1000), int(end.timestamp() * 1000))
         print(f"  {currency} {year}: {len(chunk)} bars")
         rows.extend(chunk)
         year += 1

@@ -52,8 +52,12 @@ single venue, daily-ish cadence)?
 
 ## Tier B — parked pending data decisions
 
-- **Options implied vol (Deribit DVOL)**: free API, history from ~2021.
-  Vol-risk-premium / regime signal. Prior 0.15. Park until Tier A clears.
+- ~~**Options implied vol (Deribit DVOL)**~~: **CLOSED 2026-08-27 by H67
+  (KILLED).** Data collected and kept (`data/dvol/`, BTC+ETH, 2021-03-24
+  on). The premium is real (BTC +8.72 vol points gross) and dies on cost;
+  it is also decaying (−17.59%/yr in 2026). The prior of 0.15 was, for
+  once, roughly calibrated. Only BTC and ETH publish DVOL, so no breadth
+  remedy exists. Not reopened without a new pre-registration.
 - **Term structure (quarterly futures curve)**: pullable; thin history
   pre-2020, contango/backwardation as regime. Prior 0.15.
 - **BTC ETF flows**: public data but only since 2024-01 — statistically

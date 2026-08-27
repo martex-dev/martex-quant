@@ -3,8 +3,17 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 125 registered (124 run, 1 data-blocked: H54). Every new
+## Trial ledger: 152 registered (151 run, 1 data-blocked: H54). Every new
 ## spec raises the DSR bar. Do not test without a numbered doc FIRST.
+##
+## SOURCE OF TRUTH for the ledger is docs/research/ledger/trials.toml, not
+## this file. H60-H67 are recorded there in full; the table below stops at
+## H59 and is kept as written rather than back-filled. Recent verdicts:
+## H62 carry ELIGIBLE (Sharpe 2.29, corr +0.004 -- first edge outside the
+## momentum family), H63 conditional carry ELIGIBLE (Sharpe 6.00, replaces
+## H62 as the carry spec), H64 cointegration KILLED, H65 wide-universe
+## carry STANDALONE-VIABLE, H66 cross-sectional carry STANDALONE-VIABLE,
+## H67 variance risk premium KILLED.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
 
@@ -129,6 +138,59 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
    the eval bars because its variance lands on post-crash days that
    trip the 3% daily rule. Eval-fit and own-capital-fit are different
    objectives; H41's book is archived for the own-capital stage.
+
+   *(Numbering note: 7 and 8 each appear twice above. That is a
+   pre-existing defect in this list. Renumbering would silently rewrite
+   references made elsewhere, so it is flagged rather than fixed, and new
+   findings continue from 9.)*
+
+9. **Linear correlation cannot see tail dependence, and the project's
+   `|corr| < 0.30` bar is therefore blind to exactly the edges most
+   likely to hurt (H67).** H67's short-variance book measured +0.0237
+   against rotation-stop over 1,900 days — a comfortable pass. Conditioned
+   on rotation-stop's own worst days it returns **−0.237%/day at the worst
+   decile, −0.417% at the worst 5%, and −1.296% at the worst 1%**, against
+   an unconditional +0.004%. Joint-loss FREQUENCY was 9.8% versus 10.4%
+   under independence: the dependence is entirely in MAGNITUDE, which is
+   the one thing Pearson correlation on daily returns does not measure.
+   The mechanism is general, not specific to H67 — a short-convexity
+   payoff is driven by SQUARED returns and is direction-blind, so it will
+   pass a correlation gate against any directional book almost
+   automatically. This matters because
+   `family-expansion-program.md` §2 adds edges in quadrature
+   (`Sharpe_total = √(Σ Sharpe_i²)`), and that arithmetic assumes
+   independence the correlation bar did not establish.
+   **Standing consequence, proposed and not yet adopted:** any hypothesis
+   with an asymmetric or short-convexity payoff must clear a
+   **tail-conditional bar** — mean return on the incumbent book's
+   worst-decile days — alongside `|corr| < 0.30`. It needs its own
+   decision before it becomes a rule.
+
+10. **Two unrelated crypto premia died over the same two years (H62/H63/
+    H65 carry, H67 VRP).** Funding carry earns ~0%/yr in 2025-2026 across
+    three independent hypotheses. The variance risk premium decays
+    monotonically over the identical window: 2021 +15.66%/yr, 2022 +9.30,
+    2023 +6.79, 2024 −0.53, 2025 −8.60, 2026 −17.59. The two share no
+    mechanism — one is a perpetual-swap financing rate, the other is
+    options pricing — which makes market-wide maturation the natural
+    reading. **Held as a hypothesis, not a finding:** two premia is two
+    data points measured on the same calendar window, and that is exactly
+    the confound that would manufacture this pattern from nothing. The
+    operational consequence is real regardless of cause: **any edge sized
+    on 2021-2023 history is sized on a regime that no longer exists**, and
+    a hypothesis whose returns are concentrated before 2024 should say so
+    in its verdict.
+
+11. **A screen in the wrong units overstates the edge — the convexity tax
+    (H67).** BTC implied vol exceeded subsequent realized vol by 8.72 vol
+    points on average, on 72.3% of days over five years. A variance
+    position does not earn that. It earns `(K²−RV²)/(2K)`, and because
+    realized VARIANCE is right-skewed the harvestable figure is **6.01**
+    on BTC and **1.24** on ETH — an overstatement of a third and of 73%
+    respectively. ETH's true premium sat below the 3.0 vol-point cost the
+    whole time while the naive screen showed 4.55. General form: **screen
+    in the units the position actually pays in, not the units the
+    phenomenon is quoted in.**
 
 ## DSR re-check at 125 trials (2026-08-11, scripts/dsr_recheck.py)
 

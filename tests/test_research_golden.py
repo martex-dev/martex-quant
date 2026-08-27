@@ -85,6 +85,10 @@ NON_RESEARCH_SCRIPTS = {
     # Data collector for the H65 wide carry universe. Hits the network and
     # writes caches; it produces no research output to freeze.
     "pull_carry_universe",
+    # Deribit DVOL collector for the H67 variance-risk-premium kill test.
+    # Same shape as pull_carry_universe: network fetch, cache write, no
+    # ledger number. The study that consumes it IS in the baseline.
+    "pull_dvol",
     "dashboard_service",
     "freeze_research_baseline",
     # Meme layer: live data collectors and a report over data that is still

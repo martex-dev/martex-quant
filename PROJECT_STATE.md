@@ -506,6 +506,65 @@ presented as a discovery.
 
 ---
 
+## H67 — variance risk premium KILLED; family F3 closed without a build (2026-08-27)
+
+`OBSERVATION` — pre-registered (commit afa6c3e) before any study code
+existed; run the same day. **Ledger 147 -> 152.** First hypothesis of
+family F3 (options/VRP) and a KILL TEST, not a strategy build: its job
+was to decide whether a Deribit option-chain collector and a Greeks layer
+were worth building. **They are not, and were not built.**
+
+New data collected and kept: `data/dvol/{BTC,ETH}.parquet` — Deribit
+DVOL, the 30-day model-free implied-vol index, 1,983 daily bars each from
+2021-03-24, free and unauthenticated (`scripts/pull_dvol.py`).
+**Structural limit:** only BTC and ETH publish usable DVOL history, so
+this family can never be broad the way carry's universe is.
+
+| | gross `IV − RV` | harvestable `(K²−RV²)/2K` | vs 3.0 vol-pt cost |
+|---|---|---|---|
+| BTC | +8.72 vol pts (IV>RV on 72.3% of days) | **+6.01** | clears, then halved by cost |
+| ETH | +4.55 | **+1.24** | **never cleared it** |
+
+`OBSERVATION` — the primary book (50/50, declared in advance) nets CAGR
++1.09%, Sharpe 0.16, CI [−2.14, +3.93] bp/day. Gate A fails all four
+bars; Gate B fails both; Gate C passes at +0.0237.
+
+`INTERPRETATION` — **the premium is real and the harvest is not.** That
+is the intraday-reversion pattern for the fifth time: a genuine,
+statistically clear premium sitting below what retail execution costs to
+reach.
+
+**Two findings outlive the kill** (both now in PROJECT_MEMORY meta-findings
+9 and 11):
+
+1. **The correlation bar is blind to tail dependence.** Full-sample corr
+   with rotation-stop is +0.0237, but on rotation-stop's worst 1% of days
+   this book returns **−1.296%/day** against +0.004% unconditional.
+   Joint-loss frequency is at independence; the dependence is entirely in
+   magnitude. Any short-convexity edge passes `|corr| < 0.30` almost
+   automatically. **Open decision, not yet adopted:** add a
+   tail-conditional bar for asymmetric payoffs.
+2. **Screen in the units the position pays in.** The naive `IV − RV`
+   screen overstates the harvestable premium by a third on BTC and 73% on
+   ETH.
+
+`OBSERVATION` — regime decay, monotone: 2021 +15.66%/yr, 2022 +9.30,
+2023 +6.79, **2024 −0.53, 2025 −8.60, 2026 −17.59**. Carry died over the
+same window across three independent hypotheses.
+
+`INTERPRETATION` — two mechanically unrelated premia going to zero
+together reads as market maturation, but both are measured on the same
+calendar window and that is the confound that would fake it. Held as a
+hypothesis. The operational consequence stands either way: **anything
+sized on 2021-2023 history is sized on a regime that is gone.**
+
+`OBSERVATION` — honest caveat, stated in the pre-registration before the
+run: **March 2020 is outside the DVOL window.** The reported MDD of
+−24.31% excludes the worst short-vol event in crypto's history and is the
+least trustworthy figure in the study. The kill does not rest on it.
+
+---
+
 ## H62 — carry: first validated edge outside the momentum family (2026-08-27)
 
 `OBSERVATION` — pre-registered 2026-08-27 before any code was written;
@@ -624,7 +683,9 @@ pre-registered hypothesis before anything runs.
 
 ## Backlog (unchanged, docs/research/backlog.md)
 
-Options/Deribit VRP data project; correlation-spike de-risking; carry
+~~Options/Deribit VRP data project~~ — **CLOSED 2026-08-27 by H67**:
+DVOL collected, premium measured and real, harvest killed on cost. No
+option-chain collector is owed. Correlation-spike de-risking; carry
 infrastructure (post-eval, own-capital); own-capital book = rotation-stop
 + crash-bounce overlay (43a: Sharpe 1.55, +79%/yr, fails only eval
 geometry) — own-capital bars to be registered post-funding.

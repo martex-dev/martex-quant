@@ -350,6 +350,24 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h67_vrp_killtest",
+        hypotheses="H67 variance risk premium, family F3 kill test (trials 148-152)",
+        seeds=(20260827,),
+        daily_symbols=("BTCUSDT", "ETHUSDT"),
+        data_files=(
+            "data/dvol/BTC.parquet",
+            "data/dvol/ETH.parquet",
+            "data/tmp/h4x_streams/rot_stop_stream.parquet",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260827 at 60-day blocks (double the "
+            "30-day tranche life); the variance ladder itself is a closed-form "
+            "accrual and carries no randomness. The DVOL caches are "
+            "fingerprinted because they are the only input the frozen lake "
+            "does not cover -- a refetch from Deribit must be visible here."
+        ),
+    ),
+    ScriptSpec(
         name="h66_cross_sectional_carry_study",
         hypotheses="H66 cross-sectional carry, top-K grid (trials 145-147)",
         seeds=(20260827,),

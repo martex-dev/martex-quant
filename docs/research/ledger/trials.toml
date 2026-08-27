@@ -19,8 +19,8 @@
 # distributed by guess.
 
 period = "2026"
-ledger_total_claimed = 147
-ledger_run_claimed = 146
+ledger_total_claimed = 152
+ledger_run_claimed = 151
 ledger_data_blocked_claimed = 1
 
 [[entries]]
@@ -348,6 +348,20 @@ dsr_n_trials = 147
 source = "docs/hypotheses/66-cross-sectional-carry.md"
 evidence = "Ledger: +3 -> 147 (declared K grid {3,5,10}, ALL cells reported). STANDALONE-VIABLE: Gate A passes, Gate B fails, Gate C bar 8 fails. Primary K=5: Sharpe 2.99, CAGR +3.50%, MDD -5.52%, DSR 1.0000 @147, mean +0.944bp/day CI low +0.263bp, corr rotation-stop +0.0076. Incumbents recomputed in the same run on the same window: harvest-34 Sharpe 5.60 / CAGR +4.36% / MDD -0.76%; harvest-8 Sharpe 5.91 / CAGR +4.64% / MDD -0.84%. Grid monotone: K=3 2.27, K=5 2.99, K=10 4.06."
 notes = "REFUTES the select/harvest refinement proposed in H65 8.1 one hypothesis earlier. H66 was registered specifically to test it and predicted top-K would beat harvest-all; it loses monotonically -- the less you select, the better it gets. H65's verdict and figures stand; only its speculative refinement is withdrawn, and H65 is annotated in place. BETTER EXPLANATION: carry's high Sharpe is a DIVERSIFICATION property, not a premium-size one. K=10 keeps nearly the same mean (+3.93% vs +4.36%) while MDD grows fivefold (-4.17% vs -0.76%); at K=3 MDD is -7.65%, ten times the harvest book. Averaging ~20 near-independent small funding streams is what produces Sharpe 5.9, not the size of any premium. This also undercuts H65's dilution story: if the extra 26 symbols were dilution, concentrating should have helped. Section 3's squeeze prediction -- 'will show up as drawdown, not as mean' -- was written before the run and is exactly what happened; bar 8 was set at 3 points before any drawdown was seen and fails at 4.76. IMPLEMENTATION DEFECT found and corrected before recording: the first run divided capital by symbols PRESENT rather than symbols HELD, contradicting this hypothesis's own specification and deploying only 5/34 of the book, which produced a spurious Gate A failure (CAGR +1.29%). Fixed via an explicit allocate_over setting defaulting to the harvest behaviour; h62/h63/h65 goldens verified byte-identical. Not deployed; does NOT count toward the eight-edge target. Recent window is worse than any prior carry hypothesis: last 365 days -2.04%/yr. Pre-registered and committed (cce944d) before any code existed."
+
+[[entries]]
+hypothesis = "H67"
+family = "strategy.options.variance_risk_premium"
+trial_count = 5
+grade = "strategy"
+protocol = "confirmatory"
+verdict = "killed"
+maturity = "L3"
+dsr = 0.4078
+dsr_n_trials = 152
+source = "docs/hypotheses/67-variance-risk-premium.md"
+evidence = "Ledger: +5 -> 152 (declared 5-cell design, ALL cells reported). First hypothesis of family F3 (options/VRP) and a KILL TEST, not a strategy build. Gate A fails all four bars at the primary cell (combined 50/50 BTC+ETH, 30d short-variance ladder, 3.0 vol-point haircut): mean +0.455bp/day CI [-2.141,+3.930], CAGR +1.09%, Sharpe 0.16, DSR 0.4078 @152. Gate B fails both: 2x-cost cell -1.833bp/day (CAGR -7.01%), non-overlapping cell Sharpe 0.43 < 1.0. Gate C passes at +0.0237. Cells: BTC-only Sharpe 0.95 / CAGR +8.05%; ETH-only Sharpe -0.37 / CAGR -5.64%; combined 0.16; non-overlapping 0.43; 2x-cost -0.67. Window 2021-04-23..2026-07-09, 1,904 days, Deribit DVOL vs frozen-lake realized vol."
+notes = "THE PREMIUM EXISTS AND IS LARGE; THE HARVEST DOES NOT. Gross BTC IV-RV = +8.72 vol points with IV > RV on 72.3% of days over five years, ETH +4.55 on 63.8%. Two things stand between that and a return. (1) THE CONVEXITY TAX, the most transferable finding here: a variance position earns (K^2-RV^2)/(2K), not K-RV, and because realized VARIANCE is right-skewed the harvestable premium is 6.01 vol points on BTC (tax -2.71) and 1.24 on ETH (tax -3.31). An IV-RV screen overstates the harvestable premium by a third on BTC and by 73% on ETH; ETH variance was never sellable at retail in this window against a 3.0-point cost. (2) COST: the derived haircut consumes 50% of BTC's premium and 242% of ETH's. GATE C PASSED THE LETTER AND FAILED THE SPIRIT, and this is the finding worth acting on: full-sample linear correlation with rotation-stop is +0.0237, but conditioned on rotation-stop's worst decile the VRP book returns -0.237%/day, worst 5% -0.417%, worst 1% -1.296% against an unconditional +0.004%. Joint-loss FREQUENCY is 9.8% vs 10.4% under independence -- the dependence is entirely in MAGNITUDE. Pearson correlation cannot see it because the VRP stream is driven by SQUARED returns and is direction-blind, so any short-convexity edge passes the |corr| < 0.30 bar almost automatically while being precisely what blows up when the rest of the book does. PROPOSED AMENDMENT (needs its own decision, not adopted by this verdict): asymmetric or short-convexity hypotheses must also clear a tail-conditional bar on the incumbent's worst-decile days; H67 would have failed Gate C under it. FOURTH CONFIRMATION OF THE REGIME DECAY, on a premium sharing no mechanism with carry: monotone 2021 +15.66%/yr, 2022 +9.30, 2023 +6.79, 2024 -0.53, 2025 -8.60, 2026 -17.59. Funding carry (H62/H63/H65) and the variance risk premium both went to zero over 2024-2026; offered as a market-maturation hypothesis, NOT an established finding, since both are measured on the same calendar window and that is exactly the confound that would produce this spuriously. NOT DONE DELIBERATELY: BTC-only is the best cell (+8.05%/yr, Sharpe 0.95, DSR 0.9205) and was not promoted, because the 50/50 primary was declared before anyone knew ETH would be the weak leg; selecting the better of two after seeing both is the failure pre-registration exists to prevent. The -40% tail condition was not breached (MDD -24.31%, skew -6.69, excess kurtosis +68.4) and that is the LEAST trustworthy number in the study: March 2020, the worst short-vol event in crypto history, is outside the DVOL window and cannot be added. No F3 build is authorized; the Deribit option-chain collector and Greeks layer are not built. Pre-registered and committed (afa6c3e) before any study code existed."
 
 # The remainder the committed documents do not allocate. Carried explicitly
 # rather than distributed by guess: assigning it would be fabrication, and

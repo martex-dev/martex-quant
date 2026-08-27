@@ -58261,6 +58261,368 @@
       20260827
     ]
   },
+  "h67_vrp_killtest": {
+    "code": {
+      "git_rev": "afa6c3e",
+      "package_sha256": "f107bed5b847af9e62005a8acc577c8a6f6a09d661904d543e5e37345f41c31a",
+      "script_sha256": "2126c4f48fbe1bee3ef52f52931dc422206cb50a49fba969f812ceab10837c5c"
+    },
+    "config": {
+      "config/universe.json": {
+        "n_symbols": 40,
+        "present": true,
+        "read_by_script": false,
+        "rule": "top40 by 24h quote volume, 2026-07-12, union legacy 8, stables/leveraged excluded",
+        "sha256": "87364003919c6a3dc3dff52f3e2be579e88044fa9b9402fd0959e33cc47e3bb0"
+      }
+    },
+    "environment": {
+      "implementation": "CPython",
+      "packages": {
+        "ccxt": "4.5.64",
+        "numpy": "2.5.1",
+        "polars": "1.42.1",
+        "pyarrow": "25.0.0",
+        "pydantic": "2.13.4"
+      },
+      "python": "3.12.10",
+      "python_hash_seed": "0"
+    },
+    "external_dependencies": [],
+    "hypotheses": "H67 variance risk premium, family F3 kill test (trials 148-152)",
+    "inputs": {
+      "data/dvol/BTC.parquet": {
+        "bytes": 33946,
+        "present": true,
+        "rows": 1983,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "c6f82d44b74145fe079a576cf82d5f3105aa593ec602e704b02ab10a62cef5a7"
+      },
+      "data/dvol/ETH.parquet": {
+        "bytes": 34161,
+        "present": true,
+        "rows": 1983,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "61b33458bb4fcf19feeb3bcff1e7a3aa0e39f97d0835a0c97e7f4ced248c11f5"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2017/data.parquet": {
+        "bytes": 6084,
+        "present": true,
+        "rows": 137,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "7141450c5da224a0b10c16abfa927d011c3fe9c98b5b8b78b458f688c2bb98e3"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 11901,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f256b0d9f4d00d44b6ae21cafe68189526fbe128f6161ad5c8262f140851b91a"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 12044,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1188623eebab9c5cad1069ea2df026a9c360ad4184fb889aefe5b663dda608fd"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 12151,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "85445b4e7832a0b1127d2ad6f4e603d6cfdffab655c5e14a3bd058e6d0262930"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 12389,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d51ec547872b934a51a46fa2519c9674db38a543a30f46675fec402410fd4e63"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 12412,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f7573656081b3e632ebde7bfea99c2a78cad988d051e1d644479ab8e47e67b30"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 12327,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d5ce70aabc913a4e6616434f1fea77e8168e0d9f0c6d572107edd866397dd8ec"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 12326,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e5343fbe2775c7c23de69f24152ba99390e416de66f15941b630a98686e442de"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 12321,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "aa1dba2b84df2e5a7484167e48029593a1baf13d5277a38d34f7048edb04c358"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7643,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "dec295c6b998d944be0f81344f0ade7d3ad24cf8c14df3fdf61c0a09312261c1"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2017/data.parquet": {
+        "bytes": 5821,
+        "present": true,
+        "rows": 137,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "fbdb9136ceea1a4787bbda2d42f96c33c57744d73295eeec6d1ee9d215724e49"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 11231,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b385f52d7272d11a4f3f71ce809a846fae64cc9858b9cc8a251a1451e0002e78"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 11183,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "fe3b616d57a58ce3618c5810ea426beb44d810c7056cc8ee612402afe868655c"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 11215,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e79c590e7aa2b761da38332677da8576981e97c9b0e8bde68f95316b930d2795"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 11816,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "7cf8a1df05ee897fd81a8b5df9c5f7478e5ad34ae693fcbf3cf6c1163d4071e8"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 11488,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "9cfb4d52932c0e47ac4677f694451d401661b1969a72a171c9e72a8186964aa6"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 11132,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "a6a69fc9aa1f3a0ca8b764fb8ed606ee3ea66219915eaf71e3cc108dd5023cfb"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 11787,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "ac134b31082a82437408660e46487607af4d33ff63461495d028f020617e5971"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 11911,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "95f523e7d32a8bc99485ae11d3ca8a4c6242b314139c561308df42e76c029d9d"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7379,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "ae008b7876f468e65873397f59da4024cdf59f7cb69e2f214568a07705c6348f"
+      },
+      "data/tmp/h4x_streams/rot_stop_stream.parquet": {
+        "bytes": 46660,
+        "present": true,
+        "rows": 2880,
+        "schema": {
+          "equity": "Float64",
+          "exposure": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "a71c6fd73a231841599f0ff97ca0feb75bbe7592d6fd35cf7f64dbb234eb30b4"
+      }
+    },
+    "reproducibility": "deterministic",
+    "reproducibility_defect": "",
+    "rng": {
+      "n_draws": 512,
+      "probe_seed": 20260810,
+      "sha256": "b76b24ee69e7e28c51266e2bab73cf87a793674294488e5ff6411df288f1a62b",
+      "upper_bound": 9999
+    },
+    "script": "h67_vrp_killtest",
+    "seed_note": "Block bootstrap seeded 20260827 at 60-day blocks (double the 30-day tranche life); the variance ladder itself is a closed-form accrual and carries no randomness. The DVOL caches are fingerprinted because they are the only input the frozen lake does not cover -- a refetch from Deribit must be visible here.",
+    "seeds": [
+      20260827
+    ]
+  },
   "july_sprint_study": {
     "code": {
       "git_rev": "b587923",
@@ -69689,9 +70051,9 @@
   },
   "research_graph_report": {
     "code": {
-      "git_rev": "34a8588",
-      "package_sha256": "1820f9589ca35f860f82c245943d03bb31eaae0aa9fd7dcca785c50b495417ae",
-      "script_sha256": "dad49f568242494a747da3dda953caff8c60e3347548e7fd1f0f2fafc726a94a"
+      "git_rev": "afa6c3e",
+      "package_sha256": "f107bed5b847af9e62005a8acc577c8a6f6a09d661904d543e5e37345f41c31a",
+      "script_sha256": "67c97dfbe7e74d7961806027c63b1fa365ec0dabb8737509a726fd0b7bc22e23"
     },
     "config": {
       "config/universe.json": {
@@ -69718,9 +70080,9 @@
     "hypotheses": "Stage 12 research graph over the load-bearing spine",
     "inputs": {
       "PROJECT_MEMORY.md": {
-        "bytes": 16640,
+        "bytes": 20555,
         "present": true,
-        "sha256": "e34ca6324a97099a006e913c38276070d1e31ce0bcded5d874d1708edb1605b1"
+        "sha256": "0995129c80a33de7720028cb8641fb0e6694b5cae4d8621d77bc72e34bbc3427"
       },
       "docs/hypotheses/58-learned-indicator-ensemble.md": {
         "bytes": 10610,
@@ -69728,9 +70090,9 @@
         "sha256": "e459b27bcd8b302dcb213f7bea1cfdd21cb16110df2852da51b3509223e59a9a"
       },
       "docs/hypotheses/59-live-drawdown-consistency.md": {
-        "bytes": 14101,
+        "bytes": 14165,
         "present": true,
-        "sha256": "1b527cf44800f3e2e2ed5fd63757f0d42e8cc58dda9aa4f557f34ac0f712f4e7"
+        "sha256": "460dc1ed7010079b9df9b7e5d82abaec49d70083670213fe99b6acc70fbc09c3"
       }
     },
     "reproducibility": "deterministic",
