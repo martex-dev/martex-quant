@@ -58623,6 +58623,106 @@
       20260827
     ]
   },
+  "h68_cross_venue_killtest": {
+    "code": {
+      "git_rev": "3eb0fbc",
+      "package_sha256": "1c60d085c2bb9fdcb523e508b5b852a15ab3d2e0e09457fa70f24f681c785ca3",
+      "script_sha256": "b1910cb7332f7211b5aefc2f9c1c22cdf440d63c7feee91fa599a33974e2ba00"
+    },
+    "config": {
+      "config/universe.json": {
+        "n_symbols": 40,
+        "present": true,
+        "read_by_script": false,
+        "rule": "top40 by 24h quote volume, 2026-07-12, union legacy 8, stables/leveraged excluded",
+        "sha256": "87364003919c6a3dc3dff52f3e2be579e88044fa9b9402fd0959e33cc47e3bb0"
+      }
+    },
+    "environment": {
+      "implementation": "CPython",
+      "packages": {
+        "ccxt": "4.5.64",
+        "numpy": "2.5.1",
+        "polars": "1.42.1",
+        "pyarrow": "25.0.0",
+        "pydantic": "2.13.4"
+      },
+      "python": "3.12.10",
+      "python_hash_seed": "0"
+    },
+    "external_dependencies": [],
+    "hypotheses": "H68 cross-venue dislocation, family F2 kill test (trials 153-164)",
+    "inputs": {
+      "data/venues/binance_BTC.parquet": {
+        "bytes": 44682,
+        "present": true,
+        "rows": 2796,
+        "schema": {
+          "close": "Float64",
+          "quote_volume": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "108f6124d6bee67fe17c431bdbdeef96c5c2dc37ad9799af4ae2f17f5f435452"
+      },
+      "data/venues/coinbaseexchange_BTC.parquet": {
+        "bytes": 44716,
+        "present": true,
+        "rows": 2796,
+        "schema": {
+          "close": "Float64",
+          "quote_volume": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "d906324ed009b28ea90b8739f69c976c422ef5bf1e4055f9617c0db5379e1e57"
+      },
+      "data/venues/coinbaseexchange_XRP.parquet": {
+        "bytes": 29825,
+        "present": true,
+        "rows": 1836,
+        "schema": {
+          "close": "Float64",
+          "quote_volume": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "ec82b12b7911985435befb8d2a16b64edada05d7ac35827c0a7e6cf9652e75ed"
+      },
+      "data/venues/okx_BTC.parquet": {
+        "bytes": 42663,
+        "present": true,
+        "rows": 2796,
+        "schema": {
+          "close": "Float64",
+          "quote_volume": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "597d06c48d4cc41b0d622cbdd5cb873257f0a015bb93cec00a3ddc234301fb57"
+      },
+      "data/venues/peg_usdt_usd.parquet": {
+        "bytes": 38610,
+        "present": true,
+        "rows": 2796,
+        "schema": {
+          "close": "Float64",
+          "quote_volume": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "8554ff80f85ad450a4448b1a8383fad683c4fe85425ffbfd8d8dd8e6e93ec02c"
+      }
+    },
+    "reproducibility": "deterministic",
+    "reproducibility_defect": "",
+    "rng": {
+      "n_draws": 512,
+      "probe_seed": 20260810,
+      "sha256": "b76b24ee69e7e28c51266e2bab73cf87a793674294488e5ff6411df288f1a62b",
+      "upper_bound": 9999
+    },
+    "script": "h68_cross_venue_killtest",
+    "seed_note": "Block bootstrap seeded 20260827 at 30-day blocks, matching h08 and h10 so this trial is comparable to them. The venue caches are fingerprinted rather than the lake because this study reads no lake series at all; Coinbase XRP is named explicitly because it carries the 904-day SEC-delisting halt that the segmenting logic exists to handle.",
+    "seeds": [
+      20260827
+    ]
+  },
   "july_sprint_study": {
     "code": {
       "git_rev": "b587923",
@@ -70051,8 +70151,8 @@
   },
   "research_graph_report": {
     "code": {
-      "git_rev": "afa6c3e",
-      "package_sha256": "f107bed5b847af9e62005a8acc577c8a6f6a09d661904d543e5e37345f41c31a",
+      "git_rev": "3eb0fbc",
+      "package_sha256": "1c60d085c2bb9fdcb523e508b5b852a15ab3d2e0e09457fa70f24f681c785ca3",
       "script_sha256": "67c97dfbe7e74d7961806027c63b1fa365ec0dabb8737509a726fd0b7bc22e23"
     },
     "config": {
@@ -70080,9 +70180,9 @@
     "hypotheses": "Stage 12 research graph over the load-bearing spine",
     "inputs": {
       "PROJECT_MEMORY.md": {
-        "bytes": 20555,
+        "bytes": 22002,
         "present": true,
-        "sha256": "0995129c80a33de7720028cb8641fb0e6694b5cae4d8621d77bc72e34bbc3427"
+        "sha256": "92bab90eb3ca3bbd44bf2556019a522f10685c7dd42d887eaabf64be81b3c469"
       },
       "docs/hypotheses/58-learned-indicator-ensemble.md": {
         "bytes": 10610,

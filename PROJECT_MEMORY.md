@@ -3,7 +3,7 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 152 registered (151 run, 1 data-blocked: H54). Every new
+## Trial ledger: 164 registered (163 run, 1 data-blocked: H54). Every new
 ## spec raises the DSR bar. Do not test without a numbered doc FIRST.
 ##
 ## SOURCE OF TRUTH for the ledger is docs/research/ledger/trials.toml, not
@@ -13,7 +13,7 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 ## momentum family), H63 conditional carry ELIGIBLE (Sharpe 6.00, replaces
 ## H62 as the carry spec), H64 cointegration KILLED, H65 wide-universe
 ## carry STANDALONE-VIABLE, H66 cross-sectional carry STANDALONE-VIABLE,
-## H67 variance risk premium KILLED.
+## H67 variance risk premium KILLED, H68 cross-venue dislocation SIGNAL.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
 
@@ -180,6 +180,28 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
     on 2021-2023 history is sized on a regime that no longer exists**, and
     a hypothesis whose returns are concentrated before 2024 should say so
     in its verdict.
+
+12. **The Coinbase premium is not the tether peg, and cross-venue
+    dislocation is the first new INFO signal in a long time (H68).** The
+    peg-adjusted premium between a USD venue (Coinbase) and USDT venues
+    (Binance, OKX) predicts forward returns: **+3.17% at 7 days**, CI
+    [+0.51%, +6.08%], breadth 17/20 symbols, on 31,752 symbol-days. The
+    peg *alone* is NOISE at every horizon, which answers the obvious
+    objection — the signal is in the asset dislocation, not the
+    stablecoin. It is not momentum (correlations 0.02-0.09; survives
+    removing the trailing-return extremes) and not concentration
+    (dropping the two biggest contributors leaves +2.85%).
+    **Sixth confirmation of meta-finding 1**, and the first from data
+    outside the Binance price/derivative complex: every signalling cell
+    is positive, i.e. continuation.
+    **The crucial framing:** the premium is only **11bp at its 90th
+    percentile** while the forward spread is **3.17%**. Nothing is being
+    arbitraged — the dislocation is an *indicator* whose information is
+    ~30x its own width. Cross-venue arbitrage remains untested and out of
+    reach. **Weak point to confront, not average away: 2025 is the
+    weakest year** (S1 −1.32%), though there is no monotone decay like
+    carry or VRP. Info grade only; a strategy hypothesis is owed and
+    faces the incremental bar.
 
 11. **A screen in the wrong units overstates the edge — the convexity tax
     (H67).** BTC implied vol exceeded subsequent realized vol by 8.72 vol

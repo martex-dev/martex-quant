@@ -1,0 +1,99 @@
+========================================================================================================
+H68 - CROSS-VENUE PRICE DISLOCATION (family F2 kill test, trials 153-164)
+========================================================================================================
+
+Panel: 20 symbols, 31,752 symbol-days, 2019-01-01 -> 2026-08-27
+  kept    : AAVE, ADA, ARB, BNB, BTC, DOGE, ENA, ETH, HBAR, LINK, LTC, NEAR, PEPE, SOL, SUI, UNI, WLD, XLM, XRP, ZEC
+  rejected by the $1M/day floor: SKL ($0.20M), TAO ($0.96M), VIRTUAL ($0.28M), XPL ($0.54M)
+
+--- signal levels (basis points) ---
+    signal                                mean        sd       p10       p90
+    S1 raw premium  c - b                 1.04     18.44    -10.59     11.42
+    S2 peg-adjusted  c - (b+g)           -6.89     30.06    -20.45      8.81
+    S3 dispersion  sd{c, b+g, o+g}        7.84     16.51      1.46     13.35
+    S4 peg deviation  g                   7.93     22.93     -3.00     18.98
+    identity check  max |S1 - S2 - S4| = 8.857e-16  (must be ~0)
+
+--- the twelve declared cells: E[fwd|HIGH] - E[fwd|LOW], primary h=7 ---
+    signal                   h     diff                95% CI   breadth        n  verdict
+    S1 raw premium  c - b   1d   0.81%      [+0.35%, +1.18%]     19/20   29,841  SIGNAL
+    S1 raw premium  c - b   7d   3.25%      [+0.69%, +5.73%]     19/20   29,715  SIGNAL  <- PRIMARY
+    S1 raw premium  c - b  30d   4.21%     [-4.00%, +11.67%]     18/20   29,232  NOISE
+    S2 peg-adjusted  c - (  1d   0.42%      [-0.09%, +0.87%]     15/20   29,841  NOISE
+    S2 peg-adjusted  c - (  7d   3.17%      [+0.51%, +6.08%]     17/20   29,715  SIGNAL  <- PRIMARY
+    S2 peg-adjusted  c - ( 30d  13.36%     [+2.53%, +26.17%]     18/20   29,232  SIGNAL
+    S3 dispersion  sd{c, b  1d   0.08%      [-0.33%, +0.56%]     11/20   29,841  NOISE
+    S3 dispersion  sd{c, b  7d  -0.24%      [-2.34%, +1.90%]     11/20   29,715  NOISE  <- PRIMARY
+    S3 dispersion  sd{c, b 30d  -6.65%     [-16.81%, +2.24%]     15/20   29,232  NOISE
+    S4 peg deviation  g     1d   0.15%      [-0.39%, +0.63%]     13/20   29,841  NOISE
+    S4 peg deviation  g     7d   0.12%      [-2.60%, +2.75%]     10/20   29,715  NOISE  <- PRIMARY
+    S4 peg deviation  g    30d  -8.86%     [-21.43%, +2.96%]     17/20   29,232  NOISE
+
+--- Section 5.4 diagnostic: is it just momentum? (need |corr| small) ---
+    signal                            corr trail-1d  corr trail-7d
+    S1 raw premium  c - b                   -0.0035         0.0532
+    S2 peg-adjusted  c - (b+g)               0.0198         0.0896
+    S3 dispersion  sd{c, b+g, o+g}          -0.0422        -0.0407
+    S4 peg deviation  g                     -0.0303        -0.0774
+
+    same test with the top/bottom trailing-7d return deciles REMOVED:
+    S1 raw premium  c - b               2.16%  CI[-0.48%, +4.46%]   (full panel +3.25%)
+    S2 peg-adjusted  c - (b+g)          2.47%  CI[+0.13%, +4.74%]   (full panel +3.17%)
+    S3 dispersion  sd{c, b+g, o+g}      0.02%  CI[-2.14%, +2.24%]   (full panel -0.24%)
+    S4 peg deviation  g                -0.69%  CI[-3.50%, +2.03%]   (full panel +0.12%)
+
+--- Section 5.3 reachability rule (>= 0.5% at h=7 to proceed) ---
+    S1 raw premium  c - b           |3.25%| vs 0.50%  -> clears
+    S2 peg-adjusted  c - (b+g)      |3.17%| vs 0.50%  -> clears
+    S3 dispersion  sd{c, b+g, o+g}  |-0.24%| vs 0.50%  -> does NOT clear
+    S4 peg deviation  g             |0.12%| vs 0.50%  -> does NOT clear
+
+--- diagnostic: does it survive by year? (h=7, declared cells) ---
+    year    symbols    S1 diff                 S1 CI    S2 diff                 S2 CI
+    2019          2     1.38%     [-6.40%, +13.84%]     1.47%     [-6.87%, +11.67%]
+    2020          7     1.12%      [-3.65%, +7.57%]     6.09%     [+0.74%, +10.11%]
+    2021         11     0.72%      [-6.13%, +6.94%]     0.15%      [-8.46%, +8.09%]
+    2022         12     1.84%      [-2.21%, +5.44%]     2.90%      [-1.51%, +7.02%]
+    2023         15     4.51%      [+0.71%, +8.13%]     2.58%      [-0.04%, +4.80%]
+    2024         15     6.75%     [+1.98%, +12.95%]     6.59%     [+0.95%, +14.47%]
+    2025         19    -1.32%      [-4.96%, +3.96%]     0.53%      [-5.29%, +5.78%]
+    2026         20     4.92%      [-1.43%, +8.65%]     0.73%      [-3.31%, +6.19%]
+
+--- diagnostic: is it a few symbols? (h=7, leave-out) ---
+    S1 raw premium  c - b           drop ZEC, XRP     ->   2.95% CI[+0.50%, +5.27%]   (full +3.25%)
+    S2 peg-adjusted  c - (b+g)      drop ZEC, XLM     ->   2.85% CI[+0.34%, +5.46%]   (full +3.17%)
+
+--- reported, not gated: panel composition by year ---
+    2019  symbols=  2  symbol-days=   730  mean S2  -94.75bp  mean S4  +90.27bp
+    2020  symbols=  7  symbol-days= 2,300  mean S2   -2.13bp  mean S4  +10.06bp
+    2021  symbols= 11  symbol-days= 3,273  mean S2   +2.61bp  mean S4   +4.13bp
+    2022  symbols= 12  symbol-days= 3,852  mean S2   -4.09bp  mean S4   +3.25bp
+    2023  symbols= 15  symbol-days= 5,064  mean S2   -3.12bp  mean S4   +6.23bp
+    2024  symbols= 15  symbol-days= 5,490  mean S2   -8.09bp  mean S4   +8.42bp
+    2025  symbols= 19  symbol-days= 6,263  mean S2   -7.27bp  mean S4   +8.61bp
+    2026  symbols= 20  symbol-days= 4,780  mean S2   -6.63bp  mean S4   +1.04bp
+
+--- per-symbol HIGH-minus-LOW at h=7 ---
+    symbol             S1          S2          S3          S4
+    AAVE           +3.51%      +1.92%      -1.56%      -2.53%
+    ADA            +1.30%      +3.19%      +0.76%      +0.53%
+    ARB            +4.29%      +1.98%      -0.11%      +4.23%
+    BNB            +7.65%      +0.91%      -1.95%      +6.06%
+    BTC            +2.93%      +2.71%      -1.25%      -0.22%
+    DOGE           +3.30%      +3.65%      +1.10%      -0.93%
+    ENA            +1.13%      -0.60%      +5.82%     +11.59%
+    ETH            +3.24%      +3.72%      -1.62%      -0.95%
+    HBAR           +1.84%      +3.80%      -0.66%      +0.67%
+    LINK           +2.74%      +3.14%      -0.34%      -0.20%
+    LTC            +3.07%      +1.78%      -2.79%      +0.59%
+    NEAR           +3.67%      +3.73%      +2.29%      -0.82%
+    PEPE           -3.46%      -0.70%      +0.70%      +4.10%
+    SOL            +3.35%      +4.18%      +0.43%      -0.89%
+    SUI            +2.65%      +3.82%      -0.60%      -0.24%
+    UNI            +2.09%      +0.94%      -1.79%      -0.28%
+    WLD            +0.73%      -8.75%      +4.52%      +4.90%
+    XLM            +5.24%      +6.25%      +2.05%      -0.56%
+    XRP            +8.42%      +6.13%      +2.70%      +2.11%
+    ZEC           +10.80%     +14.49%     -12.98%      +2.78%
+
+========================================================================================================

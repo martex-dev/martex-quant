@@ -52,7 +52,11 @@ class TestRecentHypotheses:
         assert all(h["state"] in {"killed", "run", "registered"} for h in recent)
 
     def test_h58_is_recorded_as_killed(self) -> None:
-        found = [h for h in recent_hypotheses(ROOT, limit=10) if h["number"] == 58]
+        # limit is 20, not 10: H59-H68 now occupy the ten most recent slots,
+        # so a limit of 10 stopped reaching H58 and the test failed for a
+        # reason that had nothing to do with what it checks. The assertion
+        # itself is unchanged.
+        found = [h for h in recent_hypotheses(ROOT, limit=20) if h["number"] == 58]
         assert found and found[0]["state"] == "killed"
 
     def test_a_missing_directory_yields_nothing_rather_than_raising(self) -> None:

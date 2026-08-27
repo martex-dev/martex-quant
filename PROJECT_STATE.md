@@ -506,6 +506,75 @@ presented as a discovery.
 
 ---
 
+## H68 — cross-venue dislocation SIGNALS; F2 is open and owes a strategy (2026-08-27)
+
+`OBSERVATION` — pre-registered (commit 3eb0fbc) before any study code
+existed; run the same day. **Ledger 152 -> 164.** Family F2's kill test.
+
+**New dataset, kept:** `data/venues/` — 20 universe bases on Binance
+(USDT), OKX (USDT) and Coinbase Exchange (USD), plus a Bitfinex USDT/USD
+peg reaching 2018-11-27. **31,752 symbol-days, 2019-01-01 onward**, all
+venues stamping 00:00 UTC so closes are synchronous. A fresh Binance
+BTC/USDT pull is **byte-identical** to the frozen lake on all 2,747
+overlapping days. Collector: `scripts/pull_venues.py`.
+
+**Four of twelve cells signal, all in the pre-registered direction:**
+
+| Signal | h | diff | 95% CI | breadth |
+|---|---|---|---|---|
+| S1 raw premium | 1d | +0.81% | [+0.35%, +1.18%] | 19/20 |
+| S1 raw premium | 7d | +3.25% | [+0.69%, +5.73%] | 19/20 |
+| **S2 peg-adjusted** | **7d** | **+3.17%** | **[+0.51%, +6.08%]** | **17/20** |
+| S2 peg-adjusted | 30d | +13.36% | [+2.53%, +26.17%] | 18/20 |
+
+**S3 dispersion and S4 peg deviation are NOISE in all six of their cells
+and are CLOSED.**
+
+`INTERPRETATION` — three things make this worth acting on:
+
+1. **The premium is not the tether peg.** The peg-adjusted premium
+   signals; the peg alone does not, at any horizon. The objection that
+   sinks most versions of this folk signal does not apply.
+2. **It is not momentum.** Signal-to-trailing-return correlations run
+   0.02-0.09, and S2 survives removing the top and bottom trailing-7d
+   return deciles (+2.47%, CI [+0.13%, +4.74%]). S1 does **not** survive
+   that trim, so **S2 is the cell to carry forward** despite S1's larger
+   headline.
+3. **It is not a few symbols.** Dropping each signal's two largest
+   contributors leaves +2.95% and +2.85%, CIs still excluding zero.
+
+`OBSERVATION` — **the framing that matters most.** The premium at its
+90th percentile is **11.42bp**. The 7-day forward spread is **3.17%**.
+
+`INTERPRETATION` — you cannot turn 11bp into 3.17% by closing a gap.
+This is a **flow indicator**, not an arbitrage, and **cross-venue
+arbitrage remains untested and out of retail reach.** Nothing in H68 may
+later be cited as evidence about it.
+
+`OBSERVATION` — the honest weak point: by year, S2 is positive 8/8 and S1
+7/8, but only 4 of 16 year-cells have a CI excluding zero and **2025 is
+the weakest year** (S1 −1.32%). There is **no monotone decay** of the
+carry/VRP kind — 2024 is the strongest year and 2026 positive.
+
+`INTERPRETATION` — one year is too little power for year-level
+significance, so the consistent sign is the meaningful part. But 2025 is
+a real wobble and the strategy follow-up must confront it rather than
+average it away.
+
+### What F2 owes next
+
+**A pre-registered strategy hypothesis on S2.** It faces the
+**incremental** bar against the deployed book, not zero. Open questions
+it must answer: Sharpe after costs; correlation with rotation-stop; and
+whether the h=1 cell — cheapest to trade at ~22bp round trip — survives
+once it is a return stream rather than a bucketed mean.
+
+**H68 deploys nothing and makes nothing paper-eligible.** Info grade
+only; no DSR deflation has been applied, and the N=164 burden lands on
+the follow-up.
+
+---
+
 ## H67 — variance risk premium KILLED; family F3 closed without a build (2026-08-27)
 
 `OBSERVATION` — pre-registered (commit afa6c3e) before any study code

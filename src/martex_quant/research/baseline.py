@@ -350,6 +350,26 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h68_cross_venue_killtest",
+        hypotheses="H68 cross-venue dislocation, family F2 kill test (trials 153-164)",
+        seeds=(20260827,),
+        data_files=(
+            "data/venues/binance_BTC.parquet",
+            "data/venues/okx_BTC.parquet",
+            "data/venues/coinbaseexchange_BTC.parquet",
+            "data/venues/coinbaseexchange_XRP.parquet",
+            "data/venues/peg_usdt_usd.parquet",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260827 at 30-day blocks, matching h08 "
+            "and h10 so this trial is comparable to them. The venue caches "
+            "are fingerprinted rather than the lake because this study "
+            "reads no lake series at all; Coinbase XRP is named explicitly "
+            "because it carries the 904-day SEC-delisting halt that the "
+            "segmenting logic exists to handle."
+        ),
+    ),
+    ScriptSpec(
         name="h67_vrp_killtest",
         hypotheses="H67 variance risk premium, family F3 kill test (trials 148-152)",
         seeds=(20260827,),

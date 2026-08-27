@@ -119,12 +119,21 @@ funding, short the richest), carry across the full perp universe rather
 than 8 majors, term structure where quarterly futures exist. **Data
 needed:** funding + perp for 40+ symbols (have 8).
 
-**F2. Cross-exchange basis and price dislocation** *(~30 trials)*
-The same asset trades at different prices on Binance, Bybit, OKX, Kraken.
-Persistent basis is a real, measurable premium. **Structurally
-uncorrelated with everything in the ledger.** **Data needed:** synchronized
-order-book or trade data from 2+ venues — the single most valuable dataset
-this project does not have.
+**F2. Cross-exchange basis and price dislocation** — **OPEN, 12 of ~30
+trials spent, and it produced a SIGNAL.**
+`docs/hypotheses/68-cross-venue-dislocation.md` built the dataset (20
+symbols x 3 venues + a USDT/USD peg, 31,752 symbol-days from 2019) and
+found the peg-adjusted USD-vs-USDT premium predicts forward returns:
++3.17% at 7 days, CI [+0.51%, +6.08%], breadth 17/20, surviving the
+momentum and concentration checks. The peg alone is noise, so the
+"Coinbase premium" is **not** tether. Dispersion (S3) and peg deviation
+(S4) are CLOSED as noise.
+**What is still owed:** a pre-registered strategy hypothesis facing the
+incremental bar against the deployed book. **What is still untested:**
+the arbitrage version — the p90 premium is 11bp against a 3.17% forward
+spread, so nothing here is harvested by closing a gap, and genuine
+cross-venue arbitrage still needs order-book data and latency this
+project does not have.
 
 **F3. Options / variance risk premium** — **CLOSED 2026-08-27, 5 of ~25
 trials spent.** `docs/hypotheses/67-variance-risk-premium.md` killed it at
@@ -184,8 +193,10 @@ Liquidation events are mechanically forced selling with a known trigger.
    It was run ahead of F1's data-collection tail because its kill test was
    cheap (a free index, no chain needed) and it gated the largest build in
    Tier 1. That gate is now shut.
-5. **F2 cross-exchange** — highest structural independence, needs the
-   multi-venue dataset. **Now the top unstarted Tier-1 family.**
+5. **F2 cross-exchange** — **started and open (H68, 2026-08-27).** The
+   multi-venue dataset now exists in `data/venues/`. The kill test found
+   a signal; the strategy hypothesis is the next thing this family owes,
+   and it is currently the highest-value open thread in the program.
 
 Tier 3 waits until Tier 1–2 is exhausted; it is gated on infrastructure,
 not on ideas.

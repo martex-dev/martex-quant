@@ -89,6 +89,9 @@ NON_RESEARCH_SCRIPTS = {
     # Same shape as pull_carry_universe: network fetch, cache write, no
     # ledger number. The study that consumes it IS in the baseline.
     "pull_dvol",
+    # Multi-venue OHLCV collector for the H68 cross-venue kill test.
+    # Network fetch, cache write, no ledger number.
+    "pull_venues",
     "dashboard_service",
     "freeze_research_baseline",
     # Meme layer: live data collectors and a report over data that is still

@@ -1,7 +1,12 @@
 # Hypothesis 68 — Cross-Venue Price Dislocation (family F2 kill test)
 
-Status: **PRE-REGISTERED 2026-08-27. NO RESULT EXISTS.** Trials declared:
-**+12 → 164.** Verdict will be written into §8 and nowhere else.
+Status: **SIGNAL (2026-08-27).** Trials: **+12 → 164.** Verdict in §8.
+Four of twelve cells signal, in the pre-registered direction, on a data
+source new to this ledger. The peg-adjusted premium survives every
+declared robustness check. **The widely used "Coinbase premium" is NOT
+the tether peg** — §8.3 — which is the opposite of what §3 warned about.
+Nothing is deployed; a strategy hypothesis is owed and must clear the
+incremental bar against the deployed book.
 
 First hypothesis in family **F2 (cross-exchange basis and price
 dislocation)** of `docs/research/family-expansion-program.md`, the family
@@ -251,6 +256,195 @@ of each signal, and behaviour of S4 around known depeg events.
 
 ---
 
-## 8. VERDICT
+## 8. VERDICT (2026-08-27, scripts/h68_cross_venue_killtest.py, +12 → 164)
 
-*(Not yet run. This section is written only when the study executes.)*
+**SIGNAL.** Panel as declared: 20 symbols, **31,752 symbol-days**,
+2019-01-01 → 2026-08-27. Rejected by the $1M floor exactly as §4.2
+predicted: SKL ($0.20M), TAO ($0.96M), VIRTUAL ($0.28M), XPL ($0.54M).
+
+Identity check `max |S1 − S2 − S4| = 8.9e-16` — the decomposition holds
+to floating point.
+
+### 8.1 The twelve declared cells — all reported
+
+`E[fwd | HIGH] − E[fwd | LOW]`, 95% block bootstrap, 30-day blocks.
+
+| Signal | h | diff | 95% CI | breadth | verdict |
+|---|---|---|---|---|---|
+| **S1 raw premium** | 1d | **+0.81%** | [+0.35%, +1.18%] | **19/20** | **SIGNAL** |
+| **S1 raw premium** | **7d** | **+3.25%** | **[+0.69%, +5.73%]** | **19/20** | **SIGNAL** |
+| S1 raw premium | 30d | +4.21% | [−4.00%, +11.67%] | 18/20 | NOISE |
+| S2 peg-adjusted | 1d | +0.42% | [−0.09%, +0.87%] | 15/20 | NOISE |
+| **S2 peg-adjusted** | **7d** | **+3.17%** | **[+0.51%, +6.08%]** | **17/20** | **SIGNAL** |
+| **S2 peg-adjusted** | 30d | **+13.36%** | [+2.53%, +26.17%] | 18/20 | **SIGNAL** |
+| S3 dispersion | 1d | +0.08% | [−0.33%, +0.56%] | 11/20 | NOISE |
+| S3 dispersion | 7d | −0.24% | [−2.34%, +1.90%] | 11/20 | NOISE |
+| S3 dispersion | 30d | −6.65% | [−16.81%, +2.24%] | 15/20 | NOISE |
+| S4 peg deviation | 1d | +0.15% | [−0.39%, +0.63%] | 13/20 | NOISE |
+| S4 peg deviation | 7d | +0.12% | [−2.60%, +2.75%] | 10/20 | NOISE |
+| S4 peg deviation | 30d | −8.86% | [−21.43%, +2.96%] | 17/20 | NOISE |
+
+Signal levels, in bp: S1 mean +1.04, sd 18.44, p10 −10.59, p90 +11.42.
+S2 mean −6.89, sd 30.06. S4 mean +7.93, sd 22.93.
+
+### 8.2 Direction: meta-finding 1 gets a sixth confirmation, from new data
+
+`OBSERVATION` — §5.2 predicted **positive** for S1, S2 and S4 on the
+continuation reading, and recorded that a contrarian result would be the
+first crowding signal in this ledger to work backwards from continuation.
+Every signalling cell is **positive**. A high premium — the US fiat venue
+bid above the offshore venues — is followed by **higher** returns.
+
+`INTERPRETATION` — meta-finding 1 has now been confirmed on funding,
+perp basis, dominance quadrants, single-day shocks, overextension, and
+now cross-venue flow. This one matters more than another confirmation
+normally would, because it is the first from a data source outside the
+Binance price/derivative complex. **Nothing was faded and nothing
+reverted.**
+
+### 8.3 The finding: the Coinbase premium is NOT the tether peg
+
+`OBSERVATION` — §3 named this as the most likely way the hypothesis dies,
+and §6 pre-declared the branch: *"S1 signals and S2 does not → the folk
+signal is the tether peg."* The data says the reverse:
+
+- **S2 (peg removed) signals at 7d and 30d.** +3.17% and +13.36%.
+- **S4 (the peg alone) is NOISE at all three horizons.** +0.15%, +0.12%,
+  −8.86%, breadth 13/20, 10/20, 17/20.
+
+`INTERPRETATION` — the information is in the **asset dislocation**, not
+the stablecoin. A retail signal this widely quoted is usually a proxy for
+something duller; here it is not. This is a clean, pre-registered answer
+to a question the crypto commentariat argues about constantly, and the
+answer is the less cynical one.
+
+`OBSERVATION` — one asymmetry, stated because it cuts against the tidy
+story: at **h=1** it is S1 that signals (+0.81%) while S2 does not
+(+0.42%, CI grazing zero at −0.09%). So the peg component is *not*
+irrelevant at the one-day horizon.
+
+`INTERPRETATION` — note the bucketed statistics are **not additive** even
+though the raw series are: each signal is percentile-ranked and bucketed
+independently, so `S1 = S2 + S4` on the levels does not imply the same
+for `HIGH − LOW`. The honest reading is that the 7-day and 30-day effects
+are asset dislocation, and the 1-day effect is not cleanly attributed.
+
+### 8.4 It is not momentum — the §5.4 diagnostic
+
+| Signal | corr trailing-1d | corr trailing-7d |
+|---|---|---|
+| S1 | −0.0035 | +0.0532 |
+| S2 | +0.0198 | +0.0896 |
+| S3 | −0.0422 | −0.0407 |
+| S4 | −0.0303 | −0.0774 |
+
+With the top and bottom trailing-7d return deciles **removed**:
+
+| Signal | trimmed diff @7d | 95% CI | full panel |
+|---|---|---|---|
+| S1 | +2.16% | [−0.48%, +4.46%] | +3.25% |
+| **S2** | **+2.47%** | **[+0.13%, +4.74%]** | +3.17% |
+| S3 | +0.02% | [−2.14%, +2.24%] | −0.24% |
+| S4 | −0.69% | [−3.50%, +2.03%] | +0.12% |
+
+`INTERPRETATION` — **S2 survives the trim with its CI still excluding
+zero; S1 does not.** The confound §5.4 was written to catch is real for
+the raw premium and absent for the peg-adjusted one. S2 is therefore the
+cell to carry forward, not S1, even though S1 has the larger headline.
+
+### 8.5 It is an indicator, not a dislocation anyone can harvest
+
+`OBSERVATION` — the premium at its 90th percentile is **+11.42bp**. The
+forward 7-day return difference is **3.25%**.
+
+`INTERPRETATION` — you cannot turn an 11bp gap into a 3.25% return by
+closing it. Whatever this is, **it is not arbitrage and it is not
+convergence**; the premium is acting as a *flow indicator* whose
+information content is roughly 30× its own width. That is consistent with
+§2's rationale (the flows behind the two venue types differ) and it means
+§7's first limitation stands undisturbed: this study says nothing about
+cross-venue arbitrage, which remains untested and out of reach.
+
+### 8.6 Robustness the §5 bars did not require, run because this ledger has been burned
+
+Both are diagnostics on the declared cells — **not new cells, not new
+trials**.
+
+**Concentration.** Dropping each signal's two largest contributors:
+
+| Signal | dropped | diff | 95% CI | full |
+|---|---|---|---|---|
+| S1 | ZEC, XRP | +2.95% | [+0.50%, +5.27%] | +3.25% |
+| S2 | ZEC, XLM | +2.85% | [+0.34%, +5.46%] | +3.17% |
+
+The estimate barely moves and both CIs still exclude zero. Meta-finding
+5's failure mode — one event counted twice — is not what happened here.
+
+**By year, and this is the honest weak point:**
+
+| Year | symbols | S1 diff | S1 CI | S2 diff | S2 CI |
+|---|---|---|---|---|---|
+| 2019 | 2 | +1.38% | [−6.40%, +13.84%] | +1.47% | [−6.87%, +11.67%] |
+| 2020 | 7 | +1.12% | [−3.65%, +7.57%] | **+6.09%** | [+0.74%, +10.11%] |
+| 2021 | 11 | +0.72% | [−6.13%, +6.94%] | +0.15% | [−8.46%, +8.09%] |
+| 2022 | 12 | +1.84% | [−2.21%, +5.44%] | +2.90% | [−1.51%, +7.02%] |
+| 2023 | 15 | **+4.51%** | [+0.71%, +8.13%] | +2.58% | [−0.04%, +4.80%] |
+| 2024 | 15 | **+6.75%** | [+1.98%, +12.95%] | **+6.59%** | [+0.95%, +14.47%] |
+| **2025** | 19 | **−1.32%** | [−4.96%, +3.96%] | +0.53% | [−5.29%, +5.78%] |
+| 2026 | 20 | +4.92% | [−1.43%, +8.65%] | +0.73% | [−3.31%, +6.19%] |
+
+`OBSERVATION` — S2 is positive in **8 of 8** years and S1 in **7 of 8**,
+but only four of the sixteen year-cells have a CI excluding zero, and
+**2025 is the weakest year** (S1 −1.32%).
+
+`INTERPRETATION` — a single year is ~365 blocks-of-30, which is too
+little power to expect year-by-year significance, so the consistent
+**sign** is the meaningful part and the wide intervals are expected. But
+the H67 and carry lesson applies directly: **check whether this lives
+before 2024 before sizing anything on it.** It does not show carry's or
+VRP's monotone decay — 2024 is the strongest year and 2026 is positive —
+yet 2025 is a genuine wobble that a strategy follow-up must confront
+rather than average away.
+
+### 8.7 Disposition, per §6
+
+`OBSERVATION` — S2 at h=7 is a SIGNAL (CI excludes zero, breadth 17/20,
+predicted direction), survives the momentum trim, survives the leave-out,
+and its spread of **3.17% clears §5.3's 0.5% floor by roughly 6×**.
+
+**A strategy hypothesis is therefore owed**, per §6's first branch. It
+must be separately pre-registered and it faces the **incremental** bar
+against the deployed book, not zero. **This test deploys nothing and
+makes nothing paper-eligible.** Specifically not yet known: whether a
+tradable rule built on S2 has any Sharpe after costs, what its
+correlation to rotation-stop is, and whether the h=1 cell — the cheapest
+to trade at ~22bp round trip — survives once it is a return stream rather
+than a bucketed mean.
+
+`OBSERVATION` — S3 (dispersion) and S4 (peg) are NOISE in all six of
+their cells and neither clears §5.3. **Both are closed.** Venue
+disagreement, as a magnitude, predicts nothing at daily resolution.
+
+### 8.8 Caveats that survive the verdict
+
+- **Info grade is not strategy grade.** Nothing here is deflated. The DSR
+  burden at N = 164 applies to the strategy follow-up, and four
+  signalling cells out of twelve is a within-study multiplicity that the
+  follow-up inherits — though the cells are strongly dependent
+  (`S1 = S2 + S4`, overlapping horizons), so twelve is nothing like
+  twelve independent looks.
+- **The 2019 rows are 2 symbols and strange**: mean S2 −94.75bp against
+  mean S4 +90.27bp, which is Bitfinex's own USDT premium during its
+  banking troubles, not a market-wide fact. 730 of 31,752 symbol-days.
+  §7's one-venue-peg limitation is doing real work in that year.
+- **Timestamp micro-alignment cannot manufacture this.** If one venue's
+  last pre-midnight trade lags another's, a rising market makes the
+  lagging venue look *cheap*, which would produce a **negative**
+  premium-to-forward-return relationship. The observed relationship is
+  positive, so this artifact works against the finding rather than
+  creating it.
+- **Execution assumption, stated:** signal and traded price are both the
+  00:00 UTC close, so a live rule observes Coinbase and trades Binance
+  within the same instant. Realistic to seconds, and the follow-up must
+  model it rather than assume it.
+- Survivorship (§7) is unchanged and still points the wrong way.
