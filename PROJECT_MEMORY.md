@@ -3,7 +3,7 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 170 registered (169 run, 1 data-blocked: H54). Every new
+## Trial ledger: 172 registered (171 run, 1 data-blocked: H54). Every new
 ## spec raises the DSR bar. Do not test without a numbered doc FIRST.
 ##
 ## SOURCE OF TRUTH for the ledger is docs/research/ledger/trials.toml, not
@@ -14,7 +14,8 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 ## H62 as the carry spec), H64 cointegration KILLED, H65 wide-universe
 ## carry STANDALONE-VIABLE, H66 cross-sectional carry STANDALONE-VIABLE,
 ## H67 variance risk premium KILLED, H68 cross-venue dislocation SIGNAL,
-## H69 the strategy built on H68 KILLED, H70 K=2 VINDICATED.
+## H69 the strategy built on H68 KILLED, H70 K=2 VINDICATED,
+## **H71 CORRECTED THE DEPLOYED SPEC: ~40% of its Sharpe was a hindsight universe.**
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
 
@@ -182,6 +183,25 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
     a hypothesis whose returns are concentrated before 2024 should say so
     in its verdict.
 
+15. **A universe chosen at the end of the sample is look-ahead, and it
+    is worth ~40% of a selection edge's Sharpe (H71).** The defect is
+    separable from the survivorship caveat already on the record: that
+    one is about coins **delisted** (unfixable free), this one is about
+    coins **included because they later became prominent** (measurable,
+    and now measured). Overlap between a point-in-time top-40 and the
+    hindsight 40 rises monotonically 20% → 55% toward the snapshot date,
+    which is the shape hindsight produces.
+    **The per-year signature is the tell:** the honest book *beats* the
+    hindsight book in four of nine years and loses catastrophically only
+    in the three biggest hindsight years. A genuinely weaker strategy
+    loses everywhere; a hindsight artifact loses exactly where the
+    headline came from.
+    **Standing consequence: no strategy that RANKS may be validated on a
+    universe fixed after the sample.** Any future cross-sectional
+    hypothesis must select point-in-time or state plainly that its
+    figures are upper bounds. Harvest-style edges are less exposed
+    (finding 14) but that is an argument, not a measurement.
+
 14. **Breadth feeds edges that HARVEST and starves edges that SELECT —
     now with evidence from both directions (H70).** H65 proposed this,
     H66 withdrew it, and H70 supplies the missing half. Varying the
@@ -316,6 +336,48 @@ purpose, because the published number is a function of it.
 NOT re-checked: H41 (0.995@104) and H43a (1.000@107), archived own-capital
 books, not deployed. Claiming a re-check that was not run would be worse
 than the gap.
+
+## THE H71 CORRECTION (2026-08-28) — read this before quoting any rotation figure
+
+`config/universe.json` selects its 40 symbols by **"top40 by 24h quote
+volume, 2026-07-12"** — the END of the research sample. Only 8 of the 40
+existed for the whole 2018-2026 backtest. Every rotation-family result
+ranks inside a pool chosen with hindsight.
+
+H71 re-ran the deployed spec **unchanged** over a point-in-time universe
+(top 40 by trailing 30d quote volume, reselected every 90d, from 469
+active Binance USDT pairs), same engine, same costs, same window:
+
+| | hindsight 40 | **point-in-time** | retained |
+|---|---|---|---|
+| CAGR | +42.91% | **+21.06%** | **49%** |
+| Sharpe | 1.47 | **0.86** | **58%** |
+| MDD | −29.01% | −33.23% | worse |
+| DSR | — | **0.2759** | fails 0.95 |
+
+**The incumbent arm reproduces the published figures exactly**, so this
+is not a harness problem. **It is not churn**: the low-churn 365d cell is
+worse still (Sharpe 0.73). In 2021 — the +98% year — only **13 of the 40
+rankable coins** were actually top-40 by volume then.
+
+**AND IT IS STILL AN UPPER BOUND.** Binance lists only pairs active
+today, so coins delisted before now cannot enter the point-in-time
+universe either. Four universe symbols (GRAM, PYR, SPCXB, VANRY) were
+delisted within six weeks of the snapshot; PYR and VANRY are two of
+H59b's five worst live performers. **The honest Sharpe is at most 0.86.**
+
+**Consequences, pre-registered:**
+- **rotation-stop is OFF the evaluation path.** No funded-account attempt.
+- Paper records continue as **measurement**, not candidacy.
+- Historical verdicts are **annotated, never rewritten** (H11, H41, H42,
+  H70 carry a correction banner). Their numbers stand as
+  hindsight-universe figures.
+
+**What does NOT follow:** momentum is not worthless — the point-in-time
+book still has mean +6.165bp/day with a CI excluding zero, a real but
+weak edge. And this does **not** automatically transfer to carry, which
+ranks in the same universe but HARVESTS rather than SELECTS (finding 14)
+and has **not** been re-run point-in-time. That is the next registration.
 
 ## Validated/deployed specs (exact)
 

@@ -350,6 +350,26 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h71_point_in_time_universe",
+        hypotheses="H71 point-in-time universe vs the hindsight 40 (trials 171-172)",
+        seeds=(20260828,),
+        uses_universe=True,
+        data_files=(
+            "data/pool/BTCUSDT.parquet",
+            "data/pool/ETHUSDT.parquet",
+            "config/universe.json",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260828 at 30-day blocks; the walk-forward "
+            "and the volume-rank selector are both deterministic. Reads the "
+            "BROAD pool (data/pool, every active Binance USDT spot pair) rather "
+            "than the lake, because the whole question is what a selector "
+            "could have chosen from at the time; the frozen lake is touched "
+            "only as a fallback for universe symbols delisted since the "
+            "2026-07-12 snapshot."
+        ),
+    ),
+    ScriptSpec(
         name="h70_rotation_concentration",
         hypotheses="H70 rotation concentration, K grid vs the deployed spec (trials 168-170)",
         seeds=(20260828,),

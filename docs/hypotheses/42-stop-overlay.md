@@ -1,5 +1,18 @@
 # Hypothesis 42 — Chandelier Stop Overlay on the Deployed Specs
 
+> **⚠ CORRECTED 2026-08-28 by H71 (`docs/hypotheses/71-point-in-time-universe.md`).**
+> Every figure in this document ranks inside `config/universe.json`, which
+> selects its 40 symbols by volume **as of 2026-07-12 — the end of the
+> sample**. Re-run on a point-in-time universe, the deployed spec keeps
+> **58% of its Sharpe (1.47 → 0.86)** and **49% of its CAGR (+42.91% →
+> +21.06%)**, and clears neither the Sharpe ≥ 1.0 nor the DSR ≥ 0.95 bar.
+> The point-in-time figure is itself an **upper bound** (coins delisted
+> before today cannot enter it either).
+> **The numbers below are NOT altered** — they are what was computed, and
+> rewriting them would rewrite research history. Read them as
+> hindsight-universe figures. **rotation-stop is off the evaluation path.**
+
+
 Status: **BOTH CANDIDATE (2026-07-12)** — first strategy-grade result
 to beat the champion on every metric. Trial ledger: +2 -> 104 (with
 batches 24-41 and FU-B1). Verdicts at the bottom.

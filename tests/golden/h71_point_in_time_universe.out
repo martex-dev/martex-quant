@@ -1,0 +1,58 @@
+========================================================================================================
+H71 - POINT-IN-TIME UNIVERSE: is the rotation edge hindsight? (trials 171-172)
+========================================================================================================
+
+Pool: 393 symbols, window ends 2026-07-09. Hindsight universe: 40 symbols.
+  DELISTED since the 2026-07-12 snapshot (fell back to the frozen lake): GRAMUSDT, PYRUSDT, SPCXBUSDT, VANRYUSDT
+
+--- Section 5.2 diagnostic: how much of the hindsight 40 was actually top-40? ---
+    date          rankable   overlap with the hindsight 40
+    2017-11-15           2                   2 / 40 (   5%)
+    2018-11-10          15                   8 / 40 (  20%)
+    2019-11-05          36                  11 / 40 (  28%)
+    2020-10-30          40                  11 / 40 (  28%)
+    2021-10-25          40                  13 / 40 (  32%)
+    2022-10-20          40                  13 / 40 (  32%)
+    2023-10-15          40                  14 / 40 (  35%)
+    2024-10-09          40                  17 / 40 (  42%)
+    2025-10-04          40                  22 / 40 (  55%)
+
+--- running the books (this is the slow part) ---
+  incumbent done
+  point-in-time 90d done
+  point-in-time 365d done
+
+--- the cells, identical window (2880 days, 2018-08-17 -> 2026-07-05) ---
+  book                                CAGR   Sharpe       MDD  mean bp/day           95% CI (bp)     DSR
+  hindsight 40 (incumbent)          42.91%     1.47   -29.01%       10.737     [+4.882, +16.536]  0.8844
+  point-in-time, 90d                21.06%     0.86   -33.23%        6.165     [+0.765, +12.243]  0.2759  <- PRIMARY
+  point-in-time, 365d               17.15%     0.73   -35.85%        5.268     [+0.018, +10.794]  0.1733
+
+--- the four pre-registered bars (Section 5) ---
+  A1. Sharpe >= 1.0                              0.86                             -> FAIL
+  A2. mean daily net > 0, CI excludes zero       +6.165bp, low +0.765bp           -> PASS
+  A3. DSR_global >= 0.95 @ 172                   0.2759                           -> FAIL
+  B4. Sharpe >= 70% of hindsight's               0.86 vs 1.03 needed              -> FAIL
+
+  Gate A FAIL   Gate B FAIL
+  Sharpe retained: 58% of the hindsight universe's (0.86 vs 1.47)
+
+--- Section 5.1: were the predictions right? ---
+  predicted 2019-2020 overlap < 40%: measured 26%  -> RIGHT
+  predicted Sharpe falls to 0.7-1.2: measured 0.86  -> RIGHT
+
+--- reported, not gated: per-year ---
+  year       n   hindsight  point-in-time       gap
+  2018     137     -29.19%        -18.89%    10.29
+  2019     365      32.39%         21.19%   -11.20
+  2020     366      58.67%         90.10%    31.43
+  2021     365      98.09%         33.05%   -65.04
+  2022     365      -1.66%        -25.89%   -24.23
+  2023     365      27.25%         45.93%    18.68
+  2024     366      60.91%         20.33%   -40.58
+  2025     365      -2.86%          9.23%    12.08
+  2026     186      92.80%        -18.61%  -111.41
+
+  universe turnover per 90d reselection: mean 9.3 new names, max 18
+
+========================================================================================================

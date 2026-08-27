@@ -506,6 +506,87 @@ presented as a discovery.
 
 ---
 
+## H71 — THE DEPLOYED SPEC DOES NOT SURVIVE AN HONEST UNIVERSE (2026-08-28)
+
+**This is the most consequential negative result in the ledger. Read it
+before quoting any rotation figure.** Ledger 170 -> 172.
+
+`OBSERVATION` — `config/universe.json` carries its own provenance:
+**"top40 by 24h quote volume, 2026-07-12"** — the END of the research
+sample. Only **8 of the 40** existed for the whole 2018-2026 backtest;
+13 listed in 2024 or later. Every rotation-family result ranks inside a
+pool chosen with hindsight.
+
+H71 re-ran the deployed spec **unchanged** — same strategy, engine,
+costs, window, walk-forward, zero parameters altered — over a
+point-in-time universe: top 40 by trailing 30-day quote volume,
+reselected every 90 days, chosen from **469 active Binance USDT pairs**
+(393 usable in-window).
+
+| | hindsight 40 | **point-in-time 90d** | retained |
+|---|---|---|---|
+| CAGR | +42.91% | **+21.06%** | **49%** |
+| Sharpe | **1.47** | **0.86** | **58%** |
+| MDD | −29.01% | −33.23% | worse by 4.2pp |
+| DSR @172 | — | **0.2759** | fails the 0.95 bar |
+
+**Gate A FAILS** (Sharpe 0.86 < 1.0; DSR 0.2759 < 0.95). **Gate B FAILS**
+(0.86 against 1.03 needed). A2 passes — the mean is still +6.165bp/day
+with a CI excluding zero.
+
+`OBSERVATION` — **the incumbent arm reproduces the published figures
+exactly** (+42.91% / 1.47 / −29.01%, matching H70's independent
+recomputation). This is not a harness problem.
+
+`OBSERVATION` — **it is not churn.** The low-churn 365-day cell is worse
+still: Sharpe 0.73, CAGR +17.15%. Slowing reselection does not recover
+the gap.
+
+`OBSERVATION` — **all three predictions made before the run were right:**
+2019-2020 overlap under 40% (measured 26%); Sharpe falls to 0.7-1.2
+(measured 0.86); degradation concentrates in 2021 and 2026 (measured
+−65pp and −111pp). In 2021 — the +98% year — only **13 of the 40
+rankable coins** were actually top-40 by volume then.
+
+`INTERPRETATION` — the per-year pattern is the tell. The honest book
+**beats** the incumbent in four of nine years and loses catastrophically
+only in the three biggest incumbent years; **2026 flips +92.80% →
+−18.61%**. A uniformly weaker strategy loses everywhere. A hindsight
+artifact loses exactly where the headline came from.
+
+`OBSERVATION` — **AND IT IS STILL AN UPPER BOUND.** Binance lists only
+pairs active today, so coins delisted before now cannot enter the
+point-in-time universe either. Four universe symbols — **GRAM, PYR,
+SPCXB, VANRY** — were delisted within six weeks of the snapshot, and PYR
+and VANRY are two of H59b's five worst live performers. **The honest
+Sharpe is at most 0.86, plausibly lower.**
+
+### Consequences — pre-registered, therefore not softenable
+
+1. **rotation-stop comes OFF the evaluation path.** No funded-account
+   attempt on this spec. It does not clear the project's own bars once
+   the universe is honest.
+2. **The paper records continue as MEASUREMENT, not candidacy.** They
+   remain the only forward data the project has.
+3. **Published rotation-family figures are re-stated here and in
+   PROJECT_MEMORY; historical verdicts are ANNOTATED in place, never
+   rewritten.** H11, H41, H42 and H70 now carry a correction banner.
+
+### What does NOT follow
+
+- **Momentum is not worthless.** The point-in-time book keeps a real but
+  weak edge: mean +6.165bp/day, CI excluding zero. What died is the
+  *claimed size*, not the existence.
+- **This does not automatically transfer to carry.** H63/H65 rank in the
+  same universe, but H70 established carry *harvests* while rotation
+  *selects*, and hindsight should hurt selection far more. **Should is
+  not does** — carry has **not** been re-run point-in-time. That is the
+  obvious next registration and it is now the highest-value open thread.
+- **It is not a data-quality failure.** The harness was right; the
+  universe was wrong.
+
+---
+
 ## H70 — K=2 VINDICATED, and the deployed book re-validated (2026-08-28)
 
 `OBSERVATION` — two things owed to the **deployed spec** rather than to a

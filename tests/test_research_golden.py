@@ -95,6 +95,9 @@ NON_RESEARCH_SCRIPTS = {
     # Refreshes data/lake-current only. A data pull, not research, and it
     # deliberately cannot bump the frozen research epoch.
     "refresh_current_lake",
+    # Broad Binance USDT pool collector for the H71 point-in-time universe.
+    # Network fetch, cache write, no ledger number.
+    "pull_pool",
     "dashboard_service",
     "freeze_research_baseline",
     # Meme layer: live data collectors and a report over data that is still
