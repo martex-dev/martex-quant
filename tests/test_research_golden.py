@@ -98,6 +98,10 @@ NON_RESEARCH_SCRIPTS = {
     # Broad Binance USDT pool collector for the H71 point-in-time universe.
     # Network fetch, cache write, no ledger number.
     "pull_pool",
+    # Broad Binance USDM perp + funding collector for the H72
+    # point-in-time carry test. Network fetch, cache write, no ledger
+    # number, and it writes only to the new *_pool directories.
+    "pull_perp_pool",
     "dashboard_service",
     "freeze_research_baseline",
     # Meme layer: live data collectors and a report over data that is still

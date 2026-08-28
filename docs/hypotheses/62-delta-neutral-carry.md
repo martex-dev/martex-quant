@@ -1,5 +1,16 @@
 # Hypothesis 62 — Delta-Neutral Funding Carry (strategy-grade)
 
+> **⚠ RE-STATED 2026-08-28 by H72 (`docs/hypotheses/72-point-in-time-carry.md`).**
+> The figures below rank inside `config/universe.json`, selected by volume
+> **as of 2026-07-12 — the end of the sample**. Re-run on a point-in-time
+> universe the carry spec **survives**, retaining **86% of its Sharpe
+> (5.61 → 4.83)** — but only **54% of its CAGR (+4.36% → +2.35%)**.
+> **Use +2.35%, not +4.36%, in any sizing arithmetic.**
+> The numbers below are NOT altered; read them as hindsight-universe
+> figures. Carry remains **unpaid in the current regime** (~0%/yr in
+> 2025-2026) and is **not deployed**.
+
+
 Status: **ALL FIVE BARS PASS (2026-08-27) — strategy-grade, paper-eligible.**
 Trials: +1 → 126. Verdict in §8. **Read §8.1 before sizing anything:** the
 edge is concentrated in 2021 and earns ~0%/yr in the current funding

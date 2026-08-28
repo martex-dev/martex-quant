@@ -1,7 +1,19 @@
 # Hypothesis 72 — Point-in-Time Carry: does the last validated edge survive?
 
-Status: **PRE-REGISTERED 2026-08-28. NO RESULT EXISTS.** Trials declared:
-**+2 → 174.** Verdict will be written into §8 and nowhere else.
+Status: **CONFIRMED — carry survives (2026-08-28).** Trials: **+2 → 174.**
+Verdict in §8.
+
+**Gate A passes and Gate B passes.** On a point-in-time universe the H63
+spec retains **86% of its Sharpe** (5.61 → **4.83**) against momentum's
+58%, and all three §5.1 predictions were right. The universe bias in the
+*list* is just as large as momentum's — 28-32% overlap in the key years —
+and it **matters far less to a harvest edge**, which is now the strongest
+evidence for the select/harvest distinction.
+
+**Two things this does not mean.** CAGR retention is only **54%**
+(+4.36% → **+2.35%**), so the income halves even though the ratio holds.
+And carry still earns **approximately nothing in 2025-2026**, exactly as
+§7 said a pass must not be allowed to obscure.
 
 H71 removed the deployed momentum spec from the evaluation path: on a
 point-in-time universe it keeps 58% of its Sharpe and clears neither the
@@ -228,6 +240,160 @@ every branch.
 
 ---
 
-## 8. VERDICT
+## 8. VERDICT (2026-08-28, scripts/h72_point_in_time_carry.py, +2 → 174)
 
-*(Not yet run. This section is written only when the study executes.)*
+**Carry survives the correction that killed momentum.** Gate A passes,
+Gate B passes. Pool: 698 perps collected, **342 eligible** (spot + perp +
+funding). Common window 2,494 days, 2019-09-11 → 2026-07-09.
+
+### 8.1 Both incumbents reproduce exactly — and so does the filter
+
+`OBSERVATION` — before any pool result existed, the trailing-funding
+filter used here was run against H63's own caches and returned **Sharpe
+6.00, CAGR +4.51%, MDD −0.51%** on 2,124 days — H63's published figures
+to the digit. The reproduce-first guard passed first.
+
+`OBSERVATION` — in this run, on pool data:
+
+| Book | this run | published |
+|---|---|---|
+| hindsight wide (H65) | 5.61 / +4.36% | **5.60 / +4.36%** |
+| hindsight 8 majors (H63 incumbent) | 5.91 / +4.64% | **5.91 / +4.64%** |
+
+`INTERPRETATION` — the broad pool reproduces the original caches, and the
+filter reproduces the published spec. The only thing that differs between
+arms is which symbols may be held.
+
+### 8.2 The cells
+
+| Book | CAGR | Sharpe | MDD | mean bp/day | 95% CI (bp) | DSR@174 |
+|---|---|---|---|---|---|---|
+| hindsight wide (H65) | +4.36% | **5.61** | −0.78% | +1.170 | [+0.689, +1.761] | 1.0000 |
+| hindsight 8 majors (H63) | +4.64% | 5.91 | −0.84% | +1.242 | [+0.792, +1.787] | 1.0000 |
+| **point-in-time 90d — PRIMARY** | **+2.35%** | **4.83** | **−0.35%** | **+0.637** | **[+0.309, +1.048]** | **1.0000** |
+| point-in-time 365d | +1.82% | 4.02 | −0.33% | +0.495 | [+0.202, +0.871] | 1.0000 |
+
+### 8.3 The bars
+
+| Gate | Bar | Measured | Result |
+|---|---|---|---|
+| A1 | Sharpe ≥ 1.0 | **4.83** | **PASS** |
+| A2 | mean > 0, CI excludes zero | +0.637bp, low +0.309bp | **PASS** |
+| A3 | DSR ≥ 0.95 @174 | 1.0000 | **PASS** |
+| B4 | Sharpe ≥ 70% of H65 wide's | 4.83 vs 3.93 needed | **PASS** |
+
+**Sharpe retained: 86%. Momentum retained 58% (H71).**
+
+### 8.4 The prediction was right, and that is the finding
+
+`OBSERVATION` — §5.1 committed, before the run, to carry surviving where
+momentum did not, with retention "materially above momentum's 58%". All
+three predictions hold: Gate A passes, Gate B passes, retention **86%**.
+
+`OBSERVATION` — **the bias in the list is just as large.** Overlap between
+the point-in-time top-40 and the hindsight universe:
+
+| Reselection | overlap |
+|---|---|
+| 2020-12-04 | 11 / 40 (28%) |
+| **2021-11-29** | **13 / 40 (32%)** |
+| 2022-11-24 | 13 / 40 (32%) |
+| 2023-11-19 | 14 / 40 (35%) |
+| 2024-11-13 | 17 / 40 (42%) |
+| 2025-11-08 | 21 / 40 (52%) |
+
+These are the same numbers H71 found for momentum (28% in 2020, 32% in
+2021, rising monotonically to the snapshot date). **The universes are
+equally contaminated. The edges are not equally damaged.**
+
+`INTERPRETATION` — this is the **strongest evidence yet for the
+select/harvest distinction** (meta-finding 14), and it arrives as a
+prediction confirmed rather than a pattern noticed afterwards. Rotation
+*ranks* and takes the top 2, so a pool stuffed with later-famous names
+hands it winners it could not have known to pick — 42% of its Sharpe.
+Carry *holds everything paying*, so a biased list changes which ~40
+streams get averaged and little else — 14% of its Sharpe.
+
+The distinction has now been proposed (H65), refuted (H66), rebuilt from
+the opposite direction (H70), and used to make a correct out-of-sample
+prediction (here). **It is no longer a speculation.**
+
+### 8.5 What the pass costs: the income halves
+
+`OBSERVATION` — retention is **not** uniform across metrics:
+
+| | hindsight wide | point-in-time | retained |
+|---|---|---|---|
+| Sharpe | 5.61 | 4.83 | **86%** |
+| CAGR | +4.36% | **+2.35%** | **54%** |
+| MDD | −0.78% | **−0.35%** | **better** |
+
+`INTERPRETATION` — Gate B was declared on Sharpe and it passes cleanly,
+but **the CAGR nearly halves and that is what an income project actually
+spends.** The ratio survived; the money did not survive as well. Reported
+here rather than buried because the Sharpe headline alone would mislead.
+
+`OBSERVATION` — drawdown **improves**, −0.78% → −0.35%.
+
+`INTERPRETATION` — consistent with H66: carry's Sharpe is a
+diversification property. The point-in-time book rotates through a wider
+set of streams over time, and averaging more near-independent funding
+streams cuts variance. The same mechanism that made carry robust to the
+universe correction also makes it shallower.
+
+### 8.6 Per-year, and the caveat §7 insisted on
+
+| Year | hindsight wide | 8 majors | **point-in-time 90d** |
+|---|---|---|---|
+| 2019 | +1.49% | +1.49% | −0.26% |
+| 2020 | +6.17% | +6.90% | +3.94% |
+| **2021** | **+16.72%** | +15.95% | **+10.64%** |
+| 2022 | −0.14% | −0.01% | −0.20% |
+| 2023 | +1.96% | +2.49% | +0.56% |
+| 2024 | +4.48% | +4.89% | +1.09% |
+| **2025** | −0.07% | +0.63% | **−0.05%** |
+| **2026** | −0.80% | −0.64% | **−0.07%** |
+
+`OBSERVATION` — **2025 and 2026 are approximately zero in every arm.**
+That is the fourth and fifth independent confirmation, after H62, H63 and
+H65, that carry earns nothing in the current regime.
+
+`INTERPRETATION` — §7's last limitation was written precisely to stop a
+Gate A + B pass being read as good news about income. **It is not.** What
+this hypothesis establishes is that carry's *historical* edge is real and
+survives an honest universe. It establishes nothing whatever about
+whether that edge is being paid today, and the evidence on that question
+remains uniformly negative.
+
+### 8.7 Still an upper bound, and here the sign is unknown
+
+`OBSERVATION` — §7's first limitation stands: Binance lists only perps
+active today, so contracts delisted after a collapse are absent.
+
+`INTERPRETATION` — for momentum, H71 could at least say the missing
+streams were probably *unfavourable* to the honest book, so the
+correction was conservative. **Here the sign is genuinely unknown.** A
+delta-neutral book is short the perp: through a collapse it gains,
+through the squeeze that often precedes delisting it loses violently.
+Whether the missing contracts would raise or lower 4.83 cannot be
+determined from this data, and no claim is made either way. That is the
+weakest part of this verdict and it is not fixable without paid
+point-in-time data.
+
+### 8.8 Where this leaves the project
+
+`OBSERVATION` — after H71 and H72, the ledger has **exactly one validated
+edge that survives an honest universe**: carry, at Sharpe 4.83 / CAGR
++2.35% point-in-time, DSR 1.0000 at 174 trials.
+
+`INTERPRETATION` — the §6 branch that would have said *"the project has
+no validated edge left"* is **not** the one that fired, and that matters.
+But the position is narrow and should be stated without decoration:
+
+- **One edge, not eight.** `family-expansion-program.md` §2's arithmetic
+  needs eight uncorrelated edges; there is one.
+- **It is real, robust, and currently unpaid.** ~0%/yr in 2025-2026.
+- **It is not deployed and this hypothesis does not deploy it.** Paper
+  accounts continue unchanged.
+- **The correction cost half the CAGR**, so any future sizing arithmetic
+  must use +2.35%, not +4.36%.

@@ -350,6 +350,28 @@ SPECS: tuple[ScriptSpec, ...] = (
         ),
     ),
     ScriptSpec(
+        name="h72_point_in_time_carry",
+        hypotheses="H72 point-in-time carry vs the hindsight universe (trials 173-174)",
+        seeds=(20260828,),
+        uses_universe=True,
+        data_files=(
+            "data/pool/BTCUSDT.parquet",
+            "data/perp_pool/BTCUSDT.parquet",
+            "data/funding_pool/BTCUSDT.parquet",
+            "config/universe.json",
+        ),
+        seed_note=(
+            "Block bootstrap seeded 20260828 at 30-day blocks; the carry "
+            "engine and the volume-rank selector are both deterministic. "
+            "Reads the BROAD pools (data/pool, data/perp_pool, "
+            "data/funding_pool) and never data/perp or data/funding, which "
+            "the frozen goldens for h62-h66 fingerprint byte-for-byte. The "
+            "filter implementation was verified against H63's published "
+            "Sharpe 6.00 / CAGR +4.51% / MDD -0.51% before any pool result "
+            "existed."
+        ),
+    ),
+    ScriptSpec(
         name="h71_point_in_time_universe",
         hypotheses="H71 point-in-time universe vs the hindsight 40 (trials 171-172)",
         seeds=(20260828,),

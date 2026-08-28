@@ -506,6 +506,79 @@ presented as a discovery.
 
 ---
 
+## H72 — CARRY SURVIVES THE CORRECTION; ONE EDGE STANDS (2026-08-28)
+
+The H71 test applied to the project's only other validated edge. Ledger
+172 -> 174. Pool: 698 active USDM perps, **342 eligible** with spot +
+perp + funding.
+
+| | hindsight wide (H65) | **point-in-time 90d** | retained |
+|---|---|---|---|
+| Sharpe | 5.61 | **4.83** | **86%** |
+| CAGR | +4.36% | **+2.35%** | **54%** |
+| MDD | −0.78% | **−0.35%** | better |
+| DSR @174 | 1.0000 | **1.0000** | clears |
+
+**All four bars PASS.** Momentum retained 58% (H71); carry retained 86%.
+
+`OBSERVATION` — **the reproduce-first guard passed before any pool result
+existed.** The trailing-funding filter, run against H63's own caches,
+returned Sharpe 6.00 / CAGR +4.51% / MDD −0.51% — H63's published figures
+to the digit. Both incumbents also reproduce in-run on pool data (5.61 vs
+published 5.60; 5.91 vs 5.91).
+
+`OBSERVATION` — **the bias in the LIST is identical to momentum's.**
+Overlap with the hindsight universe: 28% (2020), 32% (2021), rising
+monotonically to 52% (2025) — the same numbers H71 measured.
+
+`INTERPRETATION` — **the universes are equally contaminated; the edges
+are not equally damaged.** This is the strongest evidence yet for the
+select/harvest distinction, and it arrived as a **prediction committed
+before the run** rather than a pattern noticed afterwards. Rotation
+*ranks* and takes the top 2; carry *holds everything paying*.
+
+### What the pass costs, and what it does not buy
+
+`OBSERVATION` — retention is **not** uniform: Sharpe 86%, **CAGR 54%**.
+
+`INTERPRETATION` — **CAGR is what an income project spends. Use +2.35%,
+not +4.36%, in any sizing arithmetic from here.** MDD improves, which is
+consistent with H66 — carry's Sharpe is a diversification property, and
+the mechanism that makes it robust to the universe also makes it
+shallower.
+
+`OBSERVATION` — **2025 and 2026 are approximately zero in EVERY arm**
+(−0.05%, −0.07% point-in-time). Fourth and fifth independent
+confirmation, after H62/H63/H65.
+
+`INTERPRETATION` — §7 was written before the run precisely so a pass
+could not be read as good news about income. **It is not.** H72
+establishes that carry's HISTORICAL edge is real and survives an honest
+universe. It establishes nothing about whether that edge is paid today,
+and the evidence there remains uniformly negative.
+
+`OBSERVATION` — **still an upper bound, and here the sign is unknown.**
+Delisted perps are absent. Unlike momentum — where the missing streams
+were probably unfavourable, making the correction conservative — a
+delta-neutral book is SHORT the perp: it gains through a collapse and
+loses violently through the squeeze that often precedes delisting.
+Whether the missing contracts would raise or lower 4.83 cannot be
+determined from this data.
+
+### Where the project actually stands after H71 + H72
+
+- **Exactly ONE validated edge survives an honest universe** — carry, at
+  Sharpe 4.83 / CAGR +2.35% point-in-time, DSR 1.0000 at 174 trials —
+  against the **eight** `family-expansion-program.md` §2's arithmetic
+  requires.
+- **It is real, robust, currently unpaid (~0%/yr), and not deployed.**
+- **rotation-stop is off the evaluation path** (H71) and its paper record
+  continues as measurement.
+- The §6 branch that would have said *"the project has no validated edge
+  left"* did **not** fire. That is worth something, and it is not income.
+
+---
+
 ## H71 — THE DEPLOYED SPEC DOES NOT SURVIVE AN HONEST UNIVERSE (2026-08-28)
 
 **This is the most consequential negative result in the ledger. Read it

@@ -65491,6 +65491,3116 @@
       20260828
     ]
   },
+  "h72_point_in_time_carry": {
+    "code": {
+      "git_rev": "18ed853",
+      "package_sha256": "c54c7c7afe17ade6ea27dd379d29faeab35344120ab486bf1229cadbf4a96503",
+      "script_sha256": "69c2118234734fb52de02e3540d2e40fee41c0a70e42118f426a7d33d11d1b10"
+    },
+    "config": {
+      "config/universe.json": {
+        "n_symbols": 40,
+        "present": true,
+        "read_by_script": true,
+        "rule": "top40 by 24h quote volume, 2026-07-12, union legacy 8, stables/leveraged excluded",
+        "sha256": "87364003919c6a3dc3dff52f3e2be579e88044fa9b9402fd0959e33cc47e3bb0"
+      }
+    },
+    "environment": {
+      "implementation": "CPython",
+      "packages": {
+        "ccxt": "4.5.64",
+        "numpy": "2.5.1",
+        "polars": "1.42.1",
+        "pyarrow": "25.0.0",
+        "pydantic": "2.13.4"
+      },
+      "python": "3.12.10",
+      "python_hash_seed": "0"
+    },
+    "external_dependencies": [],
+    "hypotheses": "H72 point-in-time carry vs the hindsight universe (trials 173-174)",
+    "inputs": {
+      "config/universe.json": {
+        "bytes": 777,
+        "present": true,
+        "sha256": "87364003919c6a3dc3dff52f3e2be579e88044fa9b9402fd0959e33cc47e3bb0"
+      },
+      "data/funding_pool/BTCUSDT.parquet": {
+        "bytes": 75237,
+        "present": true,
+        "rows": 7631,
+        "schema": {
+          "rate": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')"
+        },
+        "sha256": "28e5243646f0d8ed8781038b3de5904fd8c345ba105b9a83e132960ceb59c075"
+      },
+      "data/lake/ohlcv/symbol=AAVEUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 5054,
+        "present": true,
+        "rows": 78,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "06185c4562ab3893541a68866cdbc2fcb4d50df915443dcebf1d2276bbd1a489"
+      },
+      "data/lake/ohlcv/symbol=AAVEUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 11880,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "ff4b2e4bb7da96f7ca7dc0c117527da90790ce12a29d016925cefe3afe8d299e"
+      },
+      "data/lake/ohlcv/symbol=AAVEUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 9628,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "36017056c8be3fd4a2b9b87254a6b74c0e809534067f3efa4c3481522949c889"
+      },
+      "data/lake/ohlcv/symbol=AAVEUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 10258,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "14fc89371995725ec15ef524ad3e4e7270e1b927b72f84cca031c8770ae389de"
+      },
+      "data/lake/ohlcv/symbol=AAVEUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 10805,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1a39676004b6017ad10a8d4f206184c223a510aacbe2360e4df58dc7c147d610"
+      },
+      "data/lake/ohlcv/symbol=AAVEUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10722,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "3f4f24d4a8ed5355feeb82f067507816253788c3afcd0ce07d39db01bba0a10b"
+      },
+      "data/lake/ohlcv/symbol=AAVEUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 6956,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "a21b9839a21c6fb04bb4b454a0ee824d0a63646af0189fb1b0390d8a3aec9e47"
+      },
+      "data/lake/ohlcv/symbol=ADAUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 11895,
+        "present": true,
+        "rows": 259,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "355a4a47f364b5cebb0635a9c10de61b6ba581aa3bfc1574749ae67b248d05a6"
+      },
+      "data/lake/ohlcv/symbol=ADAUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 15271,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f1f96553014b78a1d6ff6bca097955eeb49cdd7f65f556e509f2848acdd7575a"
+      },
+      "data/lake/ohlcv/symbol=ADAUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 15706,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "5c92355463f6f818fe956de272183ad01fcfe986b0b0a1dce5cf0111487ef718"
+      },
+      "data/lake/ohlcv/symbol=ADAUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 14293,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "9b59c6c4ed2d35255869ba968281eda6a439a89dc167e4d721eed3dac00d4f9a"
+      },
+      "data/lake/ohlcv/symbol=ADAUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 13125,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d7a64fa0b63c889d544da96d47dd772cb75fa27b8116242889947190664179b3"
+      },
+      "data/lake/ohlcv/symbol=ADAUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 13282,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "7add86be92995dd7b34194b53c1238d4a23d1fc1d7458e499580b21e3a744da3"
+      },
+      "data/lake/ohlcv/symbol=ADAUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 13436,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "399048a675ba8cf65739b8d99f60e53720437fb14c22fc6b06231a2bfca685cd"
+      },
+      "data/lake/ohlcv/symbol=ADAUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 13452,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "3237962717042f3c6a504749c13726a9f0aa2b870f49e2f00afce9006f043af3"
+      },
+      "data/lake/ohlcv/symbol=ADAUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8517,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c5e0ff69ff4bf5e2c8fc0513fda6bdb00afd64b10433f537148e0e16c8ebc1ac"
+      },
+      "data/lake/ohlcv/symbol=ARBUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 11178,
+        "present": true,
+        "rows": 284,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f03cda13736dbc0da24b3245eca46d575431b89411e7ed32e112e892381459be"
+      },
+      "data/lake/ohlcv/symbol=ARBUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 13560,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1d8b51fc6fea1b1ae501900b0bb3213ae0da7fbac8bbda793b6cae44d32be314"
+      },
+      "data/lake/ohlcv/symbol=ARBUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 13402,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "962c90b16de91d18eda154273c672bf60791d1b227f8602bdcbd18fb016c0a3a"
+      },
+      "data/lake/ohlcv/symbol=ARBUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8666,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "81a8381b7eaba987f3940eb460455a2fd04dc15e6d675d305833abe825e855d3"
+      },
+      "data/lake/ohlcv/symbol=ATMUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 2110,
+        "present": true,
+        "rows": 2,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "6ad39902fba151a324a9a19fa4f6d4c09dbb3fa0da7bfcce012ede8a40283726"
+      },
+      "data/lake/ohlcv/symbol=ATMUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 11828,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d425fe534e09ad7fe445880461bb00553b30c622df3911eaf98b8d5b7e590ca4"
+      },
+      "data/lake/ohlcv/symbol=ATMUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 8781,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "5bd9b44a69662602254f05619429866bc93eca016c14301ddc93d6d1d66b063a"
+      },
+      "data/lake/ohlcv/symbol=ATMUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 10246,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "67941583fa6f26fd57ddc7201760cc2f85e780dd7d64c98458687a634b3cdf81"
+      },
+      "data/lake/ohlcv/symbol=ATMUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 10870,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "08792fe54bce677dcded9e03d78a3d95612a8b476ee55cc87fb27a165747a95c"
+      },
+      "data/lake/ohlcv/symbol=ATMUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10643,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "04f49714c0cbfe391298a6d52e41a2ef63acddb8787d4f436f2809e21917d248"
+      },
+      "data/lake/ohlcv/symbol=ATMUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7175,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "4c9944eba99d8bc6544bb2706bddda46c65d09bca801db3b4ad874e478e17530"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2017/data.parquet": {
+        "bytes": 4288,
+        "present": true,
+        "rows": 56,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e333131b23e65e645b5fe08671bdac896bbd006ac1c326161113d5d8fbf7c45e"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 13930,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "5101a29d578e498c1280320ac4edea3355152ecbf7c23ca94fd942be25e81b11"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 14111,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "88b15b555485f51b7d31bf245bf162439bf1fb5c4a5e4c383cd1164776046184"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 14529,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e2969ee3ae306141989616f104fe5a4b09330d4fb547f8d41afd1a8d09e4cd62"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 12319,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1e90bb16e52edb76af009deeb1d0868626c11ce91c78928f27c71971f33880b0"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 9587,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "dcf3c69436f44d4da699fd88127e13fde9e8a8b891521a5236040d4dc322bae6"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 9397,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "275a1a5c2e03cc7eb41749080969602b98c48620cb6537893e7a5612fb705cc4"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 9920,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "3ca21046c8453e1da3b941898bb6ea7ad06e53833b1638595087493a2be3ea67"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10596,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "669b8b2a9f2520bef5db7ee42a9b6ea0650695aaa2b58f5de4694de59b23dc66"
+      },
+      "data/lake/ohlcv/symbol=BNBUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 6804,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "555d9566df49a2268873955dfa2a8820d6f7fe73ee35feb952a4b6988ecdb1e8"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2017/data.parquet": {
+        "bytes": 6084,
+        "present": true,
+        "rows": 137,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "7141450c5da224a0b10c16abfa927d011c3fe9c98b5b8b78b458f688c2bb98e3"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 11901,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f256b0d9f4d00d44b6ae21cafe68189526fbe128f6161ad5c8262f140851b91a"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 12044,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1188623eebab9c5cad1069ea2df026a9c360ad4184fb889aefe5b663dda608fd"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 12151,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "85445b4e7832a0b1127d2ad6f4e603d6cfdffab655c5e14a3bd058e6d0262930"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 12389,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d51ec547872b934a51a46fa2519c9674db38a543a30f46675fec402410fd4e63"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 12412,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f7573656081b3e632ebde7bfea99c2a78cad988d051e1d644479ab8e47e67b30"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 12327,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d5ce70aabc913a4e6616434f1fea77e8168e0d9f0c6d572107edd866397dd8ec"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 12326,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e5343fbe2775c7c23de69f24152ba99390e416de66f15941b630a98686e442de"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 12321,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "aa1dba2b84df2e5a7484167e48029593a1baf13d5277a38d34f7048edb04c358"
+      },
+      "data/lake/ohlcv/symbol=BTCUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7643,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "dec295c6b998d944be0f81344f0ade7d3ad24cf8c14df3fdf61c0a09312261c1"
+      },
+      "data/lake/ohlcv/symbol=DEXEUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 6185,
+        "present": true,
+        "rows": 162,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "acca260e0a157a9cb2038ef72edf5c57ab00468506bd933ec1a8b6998823c074"
+      },
+      "data/lake/ohlcv/symbol=DEXEUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 10300,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "cc89a1fca090153d61cfb2e40087acef05c76f4f4845dcd4e0383a9b1f2dee81"
+      },
+      "data/lake/ohlcv/symbol=DEXEUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 10538,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c3bd37837ab365d3169eb65a29c63f96d95b7b0bb62bd8659d10cb0b5538f623"
+      },
+      "data/lake/ohlcv/symbol=DEXEUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 11463,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e37bb3e716643bda841b839a25db39c99a1a6a1495a459f12a245dcd9c79ebbd"
+      },
+      "data/lake/ohlcv/symbol=DEXEUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 11792,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e9d3d5ad16e906e50532713f71ac5644cd07ae7491eac82500c299cf8172b0c4"
+      },
+      "data/lake/ohlcv/symbol=DEXEUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7663,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "591731c4aa9278e7bf22320f73d2e223deaa620a79432efb2cbc96940f03ea1c"
+      },
+      "data/lake/ohlcv/symbol=DOGEUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 8813,
+        "present": true,
+        "rows": 180,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "3b9c3b635e605155999f996dd27bf292d35808d9ecf6233b3d9706c37b2f8137"
+      },
+      "data/lake/ohlcv/symbol=DOGEUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 15919,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "44e5edb6c9a80d5cdaa91b2ede8d3b14b7404d4f6cb71ef52d8495b63d9e468d"
+      },
+      "data/lake/ohlcv/symbol=DOGEUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 15728,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "8df2de1c36703fa5dc806add1d66cafae810b182e042fd877d937327cc08c8a6"
+      },
+      "data/lake/ohlcv/symbol=DOGEUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 14935,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "ab8d254e8cd0060c812a9dff27c41b6185ec12a51585997547f87d6d71d67da3"
+      },
+      "data/lake/ohlcv/symbol=DOGEUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 15238,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "7fc1612baeb3867a2fc9f9fe838f3d3b66893b232f4843dde199e32889b1258f"
+      },
+      "data/lake/ohlcv/symbol=DOGEUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 15518,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "9435c9f2965a37fd7ecd7290a0dbc2fe527dc0bdc4890db1a27301cdb6d241b8"
+      },
+      "data/lake/ohlcv/symbol=DOGEUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 15581,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c7c01a57dee42e6af16642de2ab0981da05f838980711aaabacddc4d9c69c7fd"
+      },
+      "data/lake/ohlcv/symbol=DOGEUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 9250,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c6fca0b0b926bd5e1b1d7295372496df3ae1db81bb2e1ba7e1373fd8d848ddb9"
+      },
+      "data/lake/ohlcv/symbol=ENAUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 10351,
+        "present": true,
+        "rows": 274,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c5e95e4df9fe2a7288aee7568523acd6ef14d1ce39494802c19a0db6e8306ce3"
+      },
+      "data/lake/ohlcv/symbol=ENAUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 13919,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "4868385ec1f56763599261ce74116c08ce674ccbcdbf133a97171af39b99257f"
+      },
+      "data/lake/ohlcv/symbol=ENAUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8763,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f718aa7e1218fa2d66739db8ff032331e74672e7491e110f22b3f86e0a061ad0"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2017/data.parquet": {
+        "bytes": 5821,
+        "present": true,
+        "rows": 137,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "fbdb9136ceea1a4787bbda2d42f96c33c57744d73295eeec6d1ee9d215724e49"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 11231,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b385f52d7272d11a4f3f71ce809a846fae64cc9858b9cc8a251a1451e0002e78"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 11183,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "fe3b616d57a58ce3618c5810ea426beb44d810c7056cc8ee612402afe868655c"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 11215,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e79c590e7aa2b761da38332677da8576981e97c9b0e8bde68f95316b930d2795"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 11816,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "7cf8a1df05ee897fd81a8b5df9c5f7478e5ad34ae693fcbf3cf6c1163d4071e8"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 11488,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "9cfb4d52932c0e47ac4677f694451d401661b1969a72a171c9e72a8186964aa6"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 11132,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "a6a69fc9aa1f3a0ca8b764fb8ed606ee3ea66219915eaf71e3cc108dd5023cfb"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 11787,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "ac134b31082a82437408660e46487607af4d33ff63461495d028f020617e5971"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 11911,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "95f523e7d32a8bc99485ae11d3ca8a4c6242b314139c561308df42e76c029d9d"
+      },
+      "data/lake/ohlcv/symbol=ETHUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7379,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "ae008b7876f468e65873397f59da4024cdf59f7cb69e2f214568a07705c6348f"
+      },
+      "data/lake/ohlcv/symbol=GRAMUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 2458,
+        "present": true,
+        "rows": 9,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "5321bf5d425adffe164ca6b37be4110e28e9d1c8055c7d8fcbae1bb2bdb88328"
+      },
+      "data/lake/ohlcv/symbol=HBARUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 5913,
+        "present": true,
+        "rows": 94,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e52320950510f63dc02ca3b59086ad9282b8b0a010cd8f36c863dce9f06fcf05"
+      },
+      "data/lake/ohlcv/symbol=HBARUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 15092,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "2a393c1e447a4011a750af126cc595587a21d785f0e1576132313c7c3d2b7564"
+      },
+      "data/lake/ohlcv/symbol=HBARUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 14922,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "9ae855aa9964a34783c864cc28f1d1cdc30ca29d4618be430699b59991e88913"
+      },
+      "data/lake/ohlcv/symbol=HBARUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 12678,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d3531e613af9b93b846237b48afe99f4104583706aec71bc9f2bc04694fb1a98"
+      },
+      "data/lake/ohlcv/symbol=HBARUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 11788,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "06a13dee519ec66790aded5fd1d976b6682c3f50b9e22bae32a5cd7baf878024"
+      },
+      "data/lake/ohlcv/symbol=HBARUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 13273,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e29972e50fbc0e7cf23a1cd0f9668c17e08d57ac85fac15969079c2f45b7cfe5"
+      },
+      "data/lake/ohlcv/symbol=HBARUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 15375,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e803f82f0fc1bf358e00fae487ea6b74c3891443fc928ee586a8ed35df9d1306"
+      },
+      "data/lake/ohlcv/symbol=HBARUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 9126,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "73c4415763f5058689938bb26075ceb62821072d10858aab75ad6ee6fbe9b29e"
+      },
+      "data/lake/ohlcv/symbol=HMSTRUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 6142,
+        "present": true,
+        "rows": 97,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "4e6434dbc0211d9c9f6a216fd1d4cf9c335c2444c458dbdaf4d842727339b917"
+      },
+      "data/lake/ohlcv/symbol=HMSTRUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 15000,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1163c05338e28adef904b1a64aa3b03e45fec62e6963c4127a5f00a7f24e5d30"
+      },
+      "data/lake/ohlcv/symbol=HMSTRUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 9268,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "9dcf8358b4d6aeaa6b168605c27b51e9c4c9c9f5236a9af629d0f168adc5e82a"
+      },
+      "data/lake/ohlcv/symbol=LINKUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 13531,
+        "present": true,
+        "rows": 350,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "fe198c574d22cd39c61c9af7a5f7c324327647c3e55b4fca8fb961766eddff4a"
+      },
+      "data/lake/ohlcv/symbol=LINKUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 14395,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "598e67316927f12440dfb8c51b1184f9f2722d2425ae4083b18c9d5b57ace96a"
+      },
+      "data/lake/ohlcv/symbol=LINKUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 13048,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "9d7fc329bb71195d6ae0515d3b06c98969c8341ec9323c88ac8221ae5d71873f"
+      },
+      "data/lake/ohlcv/symbol=LINKUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 11223,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "59e14dc25163290c7d4951e1a20ba64fbb99d876fd5063eb6dc58c84f2ea36e9"
+      },
+      "data/lake/ohlcv/symbol=LINKUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 11509,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "aae7d46f8ac0736ff37f3aa8a76790ccee951ed5bf43460c660448c15c86eabb"
+      },
+      "data/lake/ohlcv/symbol=LINKUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 11563,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "a24ded9665afdf4953d42cbeaeed6863ea4533b78f87784a4a3fb422915bb5b2"
+      },
+      "data/lake/ohlcv/symbol=LINKUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 9976,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1d0876f8cb9510cb1da7a3c0647c6aba32ff3048dc0a1ad0377ef71d71516762"
+      },
+      "data/lake/ohlcv/symbol=LINKUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7059,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "7577d29a9650a1ac9bd4356b73ff03456435ef680809e46ceeb56e4f87193381"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2017/data.parquet": {
+        "bytes": 2778,
+        "present": true,
+        "rows": 19,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d9f74f647f7e131ca67efeadf19d09669a7c8cb514012cb292d292b820a169ef"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 11212,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d8ba82199d49579a9ed7998402c5186755719569af1612f3ae1a90e060c9920f"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 11203,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "70dda2fc19974eb71df1530f0e30ec0cf1b2e94623834d9efb8912756094fabc"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 11160,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "0fa70d2ffef960eb41bda93c063d27fb504c1369c277a598e109de9916689f1d"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 10984,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "a87419a9b19f35cb0efcc9be17a74c324785878098b665ff5781984135f1e638"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 10391,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b7781d14e0c805c602a37281e2aa56fbcaae6ed4e2cf1d1f576f19df0411e8f5"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 10614,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "27fc242f8fa16e9f97146c3417c3877593d2d45eba9e832ff03f2a1e49ed8c98"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 10703,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "9ea9697bdc46ff02104782b6b7e5bc4fce1df30661454e7c96ed81564cf17870"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10734,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "88ff8ac9eebb34e02a4d67ec0026f43e3592150cc14451888aa6b396a29d7429"
+      },
+      "data/lake/ohlcv/symbol=LTCUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 6852,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "91cff28ea8cbc4b081e810935279d5323915d4c3d0868d6979da413f066eb0c0"
+      },
+      "data/lake/ohlcv/symbol=MMTUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 4473,
+        "present": true,
+        "rows": 58,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e36c56c55079513f43058f3da1f4b45cd274911f282d8e231da07137519421d3"
+      },
+      "data/lake/ohlcv/symbol=MMTUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8508,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "aff310dbe86539ac5a1afdaa9c9648d87d994d67d0c0b1f46d5d4bf9838317f6"
+      },
+      "data/lake/ohlcv/symbol=NEARUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 5347,
+        "present": true,
+        "rows": 79,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b86a2a7d0e6e83610583caafa282ff654c92ff0035a11c6fee3796c40f25c2fa"
+      },
+      "data/lake/ohlcv/symbol=NEARUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 13853,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "452f1e7c7044a24e118adeb0077cb9483ab1492c694da46611f233caf10d2d2f"
+      },
+      "data/lake/ohlcv/symbol=NEARUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 11787,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "0a8d937034c7d832fa7736d9e376dd6dbd85c47671a6e82aa2236b4ca580fea1"
+      },
+      "data/lake/ohlcv/symbol=NEARUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 10856,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "6e664dca605e87253a46358bcb1906103ad12a0fa36fab020c4b186bf6400dc7"
+      },
+      "data/lake/ohlcv/symbol=NEARUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 11252,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "de540fa7f6ef84c7d33a0791bee046d56fc9f7775856420ead290cc703f05d56"
+      },
+      "data/lake/ohlcv/symbol=NEARUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10900,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "46072deb0ea8242064993e80f99bfd48ded9a27c8b9c2868e487ec4a2491979a"
+      },
+      "data/lake/ohlcv/symbol=NEARUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7295,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "21f4afc2e5b41de0ffe61b91ee61d1dfbd8d8fc77ef9f4e481f3e41ca50b7d4f"
+      },
+      "data/lake/ohlcv/symbol=OPNUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 6918,
+        "present": true,
+        "rows": 128,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e960a28120d847e1865830801c70ea54c6a34c9c07c11afbde4ebdec53de4c41"
+      },
+      "data/lake/ohlcv/symbol=PARTIUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 11180,
+        "present": true,
+        "rows": 282,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "0f103376f4ec8fcc0de4ff51086f1116ec4373cc8641f6258f6c64dbd4398ea9"
+      },
+      "data/lake/ohlcv/symbol=PARTIUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8454,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "891aa31b5d1a5384f8b16b47bdb62f9e46bcac3f935cfeaf00e303ead0a9ff5b"
+      },
+      "data/lake/ohlcv/symbol=PEPEUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 8198,
+        "present": true,
+        "rows": 241,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "56f374de0050dc055d0c21289c71c15be73b1da562f1a15c81e2642cad9acbf6"
+      },
+      "data/lake/ohlcv/symbol=PEPEUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 15200,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1044c10d0cec290f480147a2b105339dc1bf53d6bb26e6f00f25d0d362a8f0e0"
+      },
+      "data/lake/ohlcv/symbol=PEPEUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 15300,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "64e0e213b354fe8b7f1a51462dee5729c04baf07685c93e172a0052120021d93"
+      },
+      "data/lake/ohlcv/symbol=PEPEUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8645,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "92510f3763af382e943487d9160b3f19db453b099c89c6d8ee251aa07faa694d"
+      },
+      "data/lake/ohlcv/symbol=PYRUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 3365,
+        "present": true,
+        "rows": 36,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "8c26334ec2f72f6bae758748896ff970bece05413b1938300e422e8bcb40fe80"
+      },
+      "data/lake/ohlcv/symbol=PYRUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 9825,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "4d8082b9278b6a415b44a1bd615c40397e8a1a9b806dcde53894b0261e6dee89"
+      },
+      "data/lake/ohlcv/symbol=PYRUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 10928,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "2f953b408055bef0e720d863f0161770827a7b14b7f6f4842f669fd10d0c11a1"
+      },
+      "data/lake/ohlcv/symbol=PYRUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 11789,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "7741cf4e5daf49316c6cf5d2cbeb9cb6e49710cb4deaaf6a3f316edadf5e2e75"
+      },
+      "data/lake/ohlcv/symbol=PYRUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 11310,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b23e019f2e0dbdb4cf148c7c2b9168545e63241fcb2ba4c1b83e078818661f85"
+      },
+      "data/lake/ohlcv/symbol=PYRUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7335,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "8fb804b155924de77040b37fe50633d37a681a18820b28fa11bc0fb1caa47e15"
+      },
+      "data/lake/ohlcv/symbol=SKLUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 3391,
+        "present": true,
+        "rows": 31,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "6774c27ba6c7f95aaf992a91f84a50d30c7c31d82b10a0dc48687c708a31e905"
+      },
+      "data/lake/ohlcv/symbol=SKLUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 15020,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "770f921169d497a4145f96d6bb458fd504c36b00e92995ec294075b9977b40a4"
+      },
+      "data/lake/ohlcv/symbol=SKLUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 13861,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1da1b5a4c626d6f43cd8141302c7aa11675021e7051fcecf2fb89c747425a955"
+      },
+      "data/lake/ohlcv/symbol=SKLUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 14953,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b58dcbce3eb47661ca9f486fcb836e1b633c90540fda2a0445fe103cd87cc643"
+      },
+      "data/lake/ohlcv/symbol=SKLUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 15144,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "812e321ed8ae77843a8ecf47ad6a960e48ef58df75389a1395b5adf570c9f8b3"
+      },
+      "data/lake/ohlcv/symbol=SKLUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 14855,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e0d0813a9ad129d1de89d879530f45ab4dced923b90c3eab0f3295585dbac1ab"
+      },
+      "data/lake/ohlcv/symbol=SKLUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8425,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f58f020d7d90bb45004720d6e74914f88e68ad477cead47433e0b911543b22a4"
+      },
+      "data/lake/ohlcv/symbol=SOLUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 7444,
+        "present": true,
+        "rows": 143,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "650cf4e488ab1a251bff0f27531ba4631212a9b78b62d4f30d8885502fad5a69"
+      },
+      "data/lake/ohlcv/symbol=SOLUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 13061,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "993bcf2c8143ee7c3daee0b48a42a7d6eb9d27cfa5b107c2063d82744db971be"
+      },
+      "data/lake/ohlcv/symbol=SOLUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 10430,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e249b5f27fba36af8a2aa27ae09dfbe9cfd5240804fb2a3a3a55348f3c0d3b56"
+      },
+      "data/lake/ohlcv/symbol=SOLUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 10205,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "61a1fca5c03eea34864ac8edccfc8438ac12c31841495025f4e3b156c0f14d56"
+      },
+      "data/lake/ohlcv/symbol=SOLUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 10730,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "bffb14ed62b1377766591083a58e90984037a05b5c75edadeada608d54bbe616"
+      },
+      "data/lake/ohlcv/symbol=SOLUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10785,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "882d7f03b991218a6c107196684d805107c2c111473a3484faa1c8fb3eea74d2"
+      },
+      "data/lake/ohlcv/symbol=SOLUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 6912,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "77c511a4c1243da3031215557967a4606046072e03455da0b7b68fde76c80b29"
+      },
+      "data/lake/ohlcv/symbol=SPCXBUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 3201,
+        "present": true,
+        "rows": 29,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "8b5b70c9b61c1f748c304149409fb54f44e3100286c09e9d9e960ebc5ec1a0c2"
+      },
+      "data/lake/ohlcv/symbol=SUIUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 10165,
+        "present": true,
+        "rows": 243,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e2f356c7d4194164eef11db16aa5316ff63fd9985aa32010fdd79234e00ad0a5"
+      },
+      "data/lake/ohlcv/symbol=SUIUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 13835,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f799b959abb04be5dd8c70760276e0d847307def08a52f10a24b9ccd908d7608"
+      },
+      "data/lake/ohlcv/symbol=SUIUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 14234,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "36ff1c4f1f797ee56ab20c6acac60150ad8867f38deed4c8e3a0bec0b0774bba"
+      },
+      "data/lake/ohlcv/symbol=SUIUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8733,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "bba2aa6bc7be86fb680eceaa70ecab5cf9c072ffb6abf34715bdfac0b7477397"
+      },
+      "data/lake/ohlcv/symbol=SXTUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 9868,
+        "present": true,
+        "rows": 238,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1fe97b19a6f6b1596441eab26d4433febdbaed903b13b41a045fda097c9be66e"
+      },
+      "data/lake/ohlcv/symbol=SXTUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8530,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "915926e2ba699136e20fc1d538510a1c2fc8cfa62db7605eea959421805f1ecf"
+      },
+      "data/lake/ohlcv/symbol=SYNUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 11978,
+        "present": true,
+        "rows": 313,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "950cdeafeb795238dd3e7ff45728e2050f35d47bb988622e3852a6931f34e242"
+      },
+      "data/lake/ohlcv/symbol=SYNUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 13441,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "44c8a35195c77f1f9c27a52650ff5aca119e9f4d6fe1636c5a56c40ec4f7f195"
+      },
+      "data/lake/ohlcv/symbol=SYNUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 13420,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "96f650d6a9b19d2b9c27c8728e283c6bad50bc7a72656bdda9cad6fb4e02671a"
+      },
+      "data/lake/ohlcv/symbol=SYNUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8111,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "be259bcc25e86cf2c63d8961aff33a41d1c78a62c48bc79be6f82c682e35c74c"
+      },
+      "data/lake/ohlcv/symbol=TAOUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 8034,
+        "present": true,
+        "rows": 265,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "ef47dda54dcc6630e83ece5f73d2940bffa23c536fc0669911b4ef066c6f470a"
+      },
+      "data/lake/ohlcv/symbol=TAOUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10125,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "a0c6d02ff87bbeabc1eb5ec3237d82bf1d6b855ae799eb847e28fef5eff83ce9"
+      },
+      "data/lake/ohlcv/symbol=TAOUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 6457,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "72f5f5e8711500ce53b3fddcff699daf88734bca8f0fe2da4a652844016f343a"
+      },
+      "data/lake/ohlcv/symbol=TREEUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 7608,
+        "present": true,
+        "rows": 156,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "463c8c275960fa7afc6819e18affed9e941ff4df2a016c4b3bb0dae0af6d7825"
+      },
+      "data/lake/ohlcv/symbol=TREEUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8272,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "dbd09f58ca9ab2905b539d95ba47ba45b2bd771cb060b6ff18f6a915e5fb941c"
+      },
+      "data/lake/ohlcv/symbol=TRXUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 9916,
+        "present": true,
+        "rows": 204,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "6ec48276ff233d7ed8f8c4d11caad94d647a04e43d928d3690fe346425cd4908"
+      },
+      "data/lake/ohlcv/symbol=TRXUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 15283,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "eef90a2a0def108f141476af30ba53841a6693e3474bfd234c49b3a13dcc126c"
+      },
+      "data/lake/ohlcv/symbol=TRXUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 15309,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "4c2065a248c00fe5ebf7c6dbb8bb6133274ae9b6b8f2373732138ca87de1775d"
+      },
+      "data/lake/ohlcv/symbol=TRXUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 15859,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "96d54d43128ce42129b0da51a248825c0de9c610d1ed858a5e83e94ba3755c35"
+      },
+      "data/lake/ohlcv/symbol=TRXUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 15470,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "1defa9a6ee61bb9a627d5ae944ec6ec00d5ae7c354a9268212f1ac79e63630d7"
+      },
+      "data/lake/ohlcv/symbol=TRXUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 15407,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "5866b2341a97af21f39829015705087eaf467655d675d5411ba80f5e59873789"
+      },
+      "data/lake/ohlcv/symbol=TRXUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 14841,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "48016c784c492a0901a4f331eedbcd21600294897258ddece6524340dfe41c32"
+      },
+      "data/lake/ohlcv/symbol=TRXUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 13148,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "2127c092d8a68379a9740d7b6877db531b78951e68cdf64ee698d46b9fca8440"
+      },
+      "data/lake/ohlcv/symbol=TRXUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8433,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b5b261a60f4414b0a6e4c2459853b2df80d0ef73d1a0308a53666cb3394c1ae1"
+      },
+      "data/lake/ohlcv/symbol=TUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 10965,
+        "present": true,
+        "rows": 310,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c2640bcc012f2c1561a7455a808a8c216c618fbb4624f11585d80730bca225b8"
+      },
+      "data/lake/ohlcv/symbol=TUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 15031,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c5fa46ca61bd56e72941fe03aa8703345fe58acd9ede6f04bee5a27e4da278cd"
+      },
+      "data/lake/ohlcv/symbol=TUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 15222,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "8c0ae5cfda0bf07f7ed58dcb52b0620a38fadb34a49af31d95bb265cd47c9e1b"
+      },
+      "data/lake/ohlcv/symbol=TUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 14643,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "3dbcfcf030b5b3956bb00b1717c4e9bc9eab1685d7f614421fce45963d244007"
+      },
+      "data/lake/ohlcv/symbol=TUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8536,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "133e76f6c4e51550c10ffa32698f096046ec2a8acc21e17a2965c5bd2cd65fbf"
+      },
+      "data/lake/ohlcv/symbol=UNIUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 6319,
+        "present": true,
+        "rows": 106,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "30155b7eba36dd96e96cabca88638cd345577bcfded7f77632dacc724be2bfa3"
+      },
+      "data/lake/ohlcv/symbol=UNIUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 12953,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "70076c134a340e84b9c29a99135b5df45014b6caf81f3656eeff9fcd672db08f"
+      },
+      "data/lake/ohlcv/symbol=UNIUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 9800,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "0dbfd4efbd2914a2050a60ef57a1d4a119de9200d0dbd9e7d640685048117e0e"
+      },
+      "data/lake/ohlcv/symbol=UNIUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 11397,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c217c6b7ae60527f87aab15cdaf758135fc46abbcb673b7c258d5e2a6966ce42"
+      },
+      "data/lake/ohlcv/symbol=UNIUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 11848,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "8ded64bac1da9a10a08de1da6e4a8f547d5011551ccfe947b6a83cd1b77a98a5"
+      },
+      "data/lake/ohlcv/symbol=UNIUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 11770,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "845703d98b2f1e893f6a0ece32f4b327e2b02e6b97d3a66773e3ae1e9eb41066"
+      },
+      "data/lake/ohlcv/symbol=UNIUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7372,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "099eb53eb8a680f0ab9fd4cd30ab4ae6f4e9f8445edec0d2046cbf09c5350f36"
+      },
+      "data/lake/ohlcv/symbol=UUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 4745,
+        "present": true,
+        "rows": 179,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "5448549234311313369a17da523b85bb06d57aac2e936aa8da40e9008f7d6ec7"
+      },
+      "data/lake/ohlcv/symbol=VANRYUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 3370,
+        "present": true,
+        "rows": 31,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c3410e7e209415538a2e83dde2e48111364d54eca80572caf04373bc3781ec47"
+      },
+      "data/lake/ohlcv/symbol=VANRYUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 14120,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "6c9a5ebd0ab85725c5b53f198cc014799d86dd5dab7b107fb64193459132de4a"
+      },
+      "data/lake/ohlcv/symbol=VANRYUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 11573,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "3820bba78442ae4d885a116655484361d330511efb66a2c4ec1ab2806405f463"
+      },
+      "data/lake/ohlcv/symbol=VANRYUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8961,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e9fdcce793ba769650480acad7731a1ebb6e5b5c1d600aabd53a4a398e4aef3e"
+      },
+      "data/lake/ohlcv/symbol=VIRTUALUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10780,
+        "present": true,
+        "rows": 265,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b9071bc1d8a5d4f04dfdfe5b42ea5a441aae1bc2bbf0e2702406ac340c584411"
+      },
+      "data/lake/ohlcv/symbol=VIRTUALUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8640,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b5a7cd973cacd53910865b80fe5546b1f9ee110bf296f61d29db7afa544cf4e5"
+      },
+      "data/lake/ohlcv/symbol=WLDUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 6730,
+        "present": true,
+        "rows": 161,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "41ce8a4cffcfe5ae876b6ff7454534668de1c43acd7a9a18acd40f59dea98ed8"
+      },
+      "data/lake/ohlcv/symbol=WLDUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 11422,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d3d892a2646617ad63ca0d2b782a0306dc95f6f9d3c5c5ebe590695368544380"
+      },
+      "data/lake/ohlcv/symbol=WLDUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10895,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "6e9d3b57562544f62951ae3e49faaed50e682be88d739b958449775d648cee76"
+      },
+      "data/lake/ohlcv/symbol=WLDUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8763,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "57f32dec451818d222a97f43e3ca3a32cd7518e3cecbdb4da6f70a31a622235c"
+      },
+      "data/lake/ohlcv/symbol=XLMUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 10279,
+        "present": true,
+        "rows": 215,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e772ca20a3c89ace6a4fc5d6ba066e34e1dcd1b375974679c8dda9a661858f30"
+      },
+      "data/lake/ohlcv/symbol=XLMUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 15359,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "15a1f2f57094c22c73775b45bf40bb2abaa22ad90d8238720f80c9783361d363"
+      },
+      "data/lake/ohlcv/symbol=XLMUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 15561,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "cfbd006e17cd35f43024ce23a4c25fbf87e4b68615618d61e05d949acd7084b5"
+      },
+      "data/lake/ohlcv/symbol=XLMUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 15067,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "698ae1c9b2a9b7f6670c84c02857f4145832b4fa916c2995bd0feb134bb54974"
+      },
+      "data/lake/ohlcv/symbol=XLMUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 12938,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "d30622262af9faf63f51d1aef302f13f8adfc3ebba6ef8847e4a5c70b56ff3b4"
+      },
+      "data/lake/ohlcv/symbol=XLMUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 12504,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "8fd64fd0a0580f44df12144159471fef2c18538f443ccebbbbdeb40a110a567b"
+      },
+      "data/lake/ohlcv/symbol=XLMUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 12491,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "fcbf7ba5bc6215397305998063e60fc575997b175fc63f584d6d148bef6f3c08"
+      },
+      "data/lake/ohlcv/symbol=XLMUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 13021,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "cfac06f106719c7f1ec089603ff459607262f947a9dae6471ce8b2a006035658"
+      },
+      "data/lake/ohlcv/symbol=XLMUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8329,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "75f378d2374e86bedba82b3c6e09f223a239325c1d80ee66e7d1adb2f35bdd98"
+      },
+      "data/lake/ohlcv/symbol=XPLUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 5923,
+        "present": true,
+        "rows": 98,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "b045ef8129d2aa231501eff4e031b5261882fe92a57a92087d992e0e36420bfa"
+      },
+      "data/lake/ohlcv/symbol=XPLUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8707,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "8013884fff7a56c14fd210b9f5fd44ae9c9919789235519f77e7e53fc53d02f7"
+      },
+      "data/lake/ohlcv/symbol=XRPUSDT/interval=1d/year=2018/data.parquet": {
+        "bytes": 11148,
+        "present": true,
+        "rows": 242,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "77dd047d0b0777b9fe51a885fcb64669971b7e2c1b5b1dfefd0e399fd518b073"
+      },
+      "data/lake/ohlcv/symbol=XRPUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 15349,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "972880d5fb3a2ff7df497e45b4e20c234dbc9c1ad37ca91c27699ef069249c5d"
+      },
+      "data/lake/ohlcv/symbol=XRPUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 15735,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "3e3e34ec87871afa3626f20b32d1c63e5781ec69ba252048cabee7af9132f71b"
+      },
+      "data/lake/ohlcv/symbol=XRPUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 14685,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "fd1270561392f0760a592d83efca683522357ce122f9ab8d9e64dd2ae021b78f"
+      },
+      "data/lake/ohlcv/symbol=XRPUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 12988,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "136aaded5c3496dfc541e10f030f6a64e591261ea6d682a8ca37d3be0ef27e97"
+      },
+      "data/lake/ohlcv/symbol=XRPUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 13013,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "4cc888bfd008978cfcdb3476ea441ab081739331a69280ab3d6cdb03584649b4"
+      },
+      "data/lake/ohlcv/symbol=XRPUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 13248,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "e2ffef3446a314a707482e186ceaa5c69eb824ce9a4e6eeba959a426e5e786b7"
+      },
+      "data/lake/ohlcv/symbol=XRPUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 14005,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "bc881d4b7ed421100204fd3b04d36fbbce3c4fdffa378154018c04de74f5f2ea"
+      },
+      "data/lake/ohlcv/symbol=XRPUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 8741,
+        "present": true,
+        "rows": 190,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "da957275a7b1e0330987aa2551e235b2516b96fd8100c548742cf84fab4e26e5"
+      },
+      "data/lake/ohlcv/symbol=ZECUSDT/interval=1d/year=2019/data.parquet": {
+        "bytes": 9291,
+        "present": true,
+        "rows": 286,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "f5755c15cb60a21a19ceeaeca9edb66019d76a40cee1ad681d02525e4766940c"
+      },
+      "data/lake/ohlcv/symbol=ZECUSDT/interval=1d/year=2020/data.parquet": {
+        "bytes": 11248,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "39289a6e896290cd22353ddce9fed7260b8005df50ad7049b4273b34703dbcc6"
+      },
+      "data/lake/ohlcv/symbol=ZECUSDT/interval=1d/year=2021/data.parquet": {
+        "bytes": 11051,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "6d0dd097986db5cf2ed9fc259f05c8d990b934f80b8261b1ad24f8ad0b611147"
+      },
+      "data/lake/ohlcv/symbol=ZECUSDT/interval=1d/year=2022/data.parquet": {
+        "bytes": 9440,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "0100af5f43292ff26aaffab6f35e23e28f2cc67dce5e62c9020137dbf08c9cc0"
+      },
+      "data/lake/ohlcv/symbol=ZECUSDT/interval=1d/year=2023/data.parquet": {
+        "bytes": 9809,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "8cd4ecc68b6c883bcd0008cd3e50bf75dc6df2da7c4e19d901947670dfc46f6f"
+      },
+      "data/lake/ohlcv/symbol=ZECUSDT/interval=1d/year=2024/data.parquet": {
+        "bytes": 10552,
+        "present": true,
+        "rows": 366,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "cfb51b17d17dc88c6fd21f74486a6dd33440adade719fc5fe01219fbea3f9bbf"
+      },
+      "data/lake/ohlcv/symbol=ZECUSDT/interval=1d/year=2025/data.parquet": {
+        "bytes": 10758,
+        "present": true,
+        "rows": 365,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "c7960c17bfdd87a7ed46dea1dfa1814145a22209655b9fd41eb34d0c00a91dae"
+      },
+      "data/lake/ohlcv/symbol=ZECUSDT/interval=1d/year=2026/data.parquet": {
+        "bytes": 7009,
+        "present": true,
+        "rows": 191,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "timestamp": "Datetime(time_unit='ms', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "11f0d1432f8262e84a29be62fc27845b4072a97fba15f173add854d028559779"
+      },
+      "data/perp_pool/BTCUSDT.parquet": {
+        "bytes": 40172,
+        "present": true,
+        "rows": 2546,
+        "schema": {
+          "day": "Datetime(time_unit='us', time_zone='UTC')",
+          "perp_close": "Float64",
+          "quote_volume": "Float64"
+        },
+        "sha256": "9e23f96e88a57248bdb5b3efc5991f3594e5ac3e426eca605c3a58e1464cb04d"
+      },
+      "data/pool/BTCUSDT.parquet": {
+        "bytes": 117237,
+        "present": true,
+        "rows": 3298,
+        "schema": {
+          "close": "Float64",
+          "high": "Float64",
+          "low": "Float64",
+          "open": "Float64",
+          "quote_volume": "Float64",
+          "timestamp": "Datetime(time_unit='us', time_zone='UTC')",
+          "volume": "Float64"
+        },
+        "sha256": "3bcba1c1f3512d4da8393d229728ce80338eb8d8e1fe11694247d5d32693d904"
+      }
+    },
+    "reproducibility": "deterministic",
+    "reproducibility_defect": "",
+    "rng": {
+      "n_draws": 512,
+      "probe_seed": 20260810,
+      "sha256": "b76b24ee69e7e28c51266e2bab73cf87a793674294488e5ff6411df288f1a62b",
+      "upper_bound": 9999
+    },
+    "script": "h72_point_in_time_carry",
+    "seed_note": "Block bootstrap seeded 20260828 at 30-day blocks; the carry engine and the volume-rank selector are both deterministic. Reads the BROAD pools (data/pool, data/perp_pool, data/funding_pool) and never data/perp or data/funding, which the frozen goldens for h62-h66 fingerprint byte-for-byte. The filter implementation was verified against H63's published Sharpe 6.00 / CAGR +4.51% / MDD -0.51% before any pool result existed.",
+    "seeds": [
+      20260828
+    ]
+  },
   "july_sprint_study": {
     "code": {
       "git_rev": "b587923",
@@ -76919,8 +80029,8 @@
   },
   "research_graph_report": {
     "code": {
-      "git_rev": "db3e27a",
-      "package_sha256": "06388d89357141202dc76fb3132f4d4bf5afd39dd23b148113cf8cfad26da221",
+      "git_rev": "18ed853",
+      "package_sha256": "c54c7c7afe17ade6ea27dd379d29faeab35344120ab486bf1229cadbf4a96503",
       "script_sha256": "67c97dfbe7e74d7961806027c63b1fa365ec0dabb8737509a726fd0b7bc22e23"
     },
     "config": {
@@ -76948,9 +80058,9 @@
     "hypotheses": "Stage 12 research graph over the load-bearing spine",
     "inputs": {
       "PROJECT_MEMORY.md": {
-        "bytes": 30163,
+        "bytes": 33498,
         "present": true,
-        "sha256": "03cdf95d7947df4f10105f146ed8e518b33de7b70ee4c24e57ea52e9d5561840"
+        "sha256": "5abbb45ba9a056e32798599d44067bca6a9ab97bba0d73ff21237f56952d89dc"
       },
       "docs/hypotheses/58-learned-indicator-ensemble.md": {
         "bytes": 10610,

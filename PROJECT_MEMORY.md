@@ -3,7 +3,7 @@
 The knowledge file: ledger, results, meta-findings, lessons, open
 assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 
-## Trial ledger: 172 registered (171 run, 1 data-blocked: H54). Every new
+## Trial ledger: 174 registered (173 run, 1 data-blocked: H54). Every new
 ## spec raises the DSR bar. Do not test without a numbered doc FIRST.
 ##
 ## SOURCE OF TRUTH for the ledger is docs/research/ledger/trials.toml, not
@@ -16,6 +16,8 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
 ## H67 variance risk premium KILLED, H68 cross-venue dislocation SIGNAL,
 ## H69 the strategy built on H68 KILLED, H70 K=2 VINDICATED,
 ## **H71 CORRECTED THE DEPLOYED SPEC: ~40% of its Sharpe was a hindsight universe.**
+## **H72: carry SURVIVES the same correction (86% of Sharpe, 54% of CAGR).**
+## ONE validated edge stands, and it earns ~0%/yr today.
 
 ## Hypothesis ledger (docs/hypotheses/, docs/research/)
 
@@ -182,6 +184,23 @@ assumptions. PROJECT_STATE.md = what runs now; this = why and what we know.
     on 2021-2023 history is sized on a regime that no longer exists**, and
     a hypothesis whose returns are concentrated before 2024 should say so
     in its verdict.
+
+16. **The select/harvest distinction is established, and it predicted a
+    result before the run (H72).** It was proposed by H65, refuted by
+    H66, rebuilt from the opposite direction by H70, and used here to
+    make a correct out-of-sample prediction: carry would survive the
+    universe correction that killed momentum. It did — **86% of Sharpe
+    retained against momentum's 58%** — while the *contamination of the
+    list was identical* (28-32% overlap in the key years, the same
+    numbers H71 measured).
+    **The mechanism:** a SELECT edge ranks and takes the top few, so a
+    pool stuffed with later-famous names hands it winners it could not
+    have picked. A HARVEST edge holds everything paying, so a biased list
+    changes which streams get averaged and little else.
+    **This is no longer speculation** — unlike the version H66 withdrew,
+    it has now paid its way by predicting rather than describing.
+    **Caveat that survives:** carry's Sharpe held but its **CAGR retained
+    only 54%**. Robustness of a ratio is not robustness of income.
 
 15. **A universe chosen at the end of the sample is look-ahead, and it
     is worth ~40% of a selection edge's Sharpe (H71).** The defect is
@@ -378,6 +397,50 @@ book still has mean +6.165bp/day with a CI excluding zero, a real but
 weak edge. And this does **not** automatically transfer to carry, which
 ranks in the same universe but HARVESTS rather than SELECTS (finding 14)
 and has **not** been re-run point-in-time. That is the next registration.
+
+## H72 — CARRY SURVIVES THE CORRECTION (2026-08-28)
+
+The same point-in-time test that removed momentum from the evaluation
+path, applied to carry. Pool: 698 active USDM perps, 342 eligible with
+spot + perp + funding.
+
+| | hindsight wide (H65) | **point-in-time** | retained |
+|---|---|---|---|
+| Sharpe | 5.61 | **4.83** | **86%** |
+| CAGR | +4.36% | **+2.35%** | **54%** |
+| MDD | −0.78% | **−0.35%** | better |
+| DSR @174 | 1.0000 | **1.0000** | clears |
+
+**All four bars pass.** Momentum retained 58%; carry retained 86%.
+
+**The prediction was committed before the run** and all three parts held.
+**The bias in the LIST is identical** — overlap 28% in 2020, 32% in 2021,
+rising to 52% in 2025, the same as H71 found. The universes are equally
+contaminated; the edges are not equally damaged.
+
+**Reproduce-first guard passed first:** the filter, run against H63's own
+caches, returned Sharpe 6.00 / +4.51% / −0.51% — H63's published figures
+to the digit. Both incumbents also reproduce in-run.
+
+**What it costs:** Sharpe retains 86% but **CAGR retains only 54%**, and
+CAGR is what an income project spends. **Use +2.35%, not +4.36%, in any
+sizing arithmetic.** MDD improves, consistent with H66 — carry's Sharpe
+is a diversification property, and the mechanism that makes it robust
+also makes it shallower.
+
+**What it does NOT establish:** 2025 and 2026 are ~0% in **every** arm
+(−0.05%, −0.07%). Fourth and fifth confirmation that carry earns nothing
+today. This proves the HISTORICAL edge is real and survives an honest
+universe; it says nothing about whether the edge is being paid now.
+
+**Upper bound, sign unknown.** Delisted perps are absent, and unlike
+momentum the direction is unclear: a delta-neutral book is short the
+perp, gaining through a collapse and losing violently through the squeeze
+that often precedes delisting.
+
+**Position after H71+H72: exactly ONE validated edge survives an honest
+universe**, against the eight `family-expansion-program.md` §2's
+arithmetic requires. Real, robust, currently unpaid, not deployed.
 
 ## Validated/deployed specs (exact)
 

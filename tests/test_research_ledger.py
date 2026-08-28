@@ -237,8 +237,8 @@ def test_invariant_12_evidence_descriptor_reports_its_weakest_dimension() -> Non
 
 def test_migration_reconciles_to_the_ledgers_own_claimed_totals(ledger) -> None:  # type: ignore[no-untyped-def]
     claims = ledger_claims(ROOT)
-    assert ledger.n_registered == claims["registered"] == 172
-    assert ledger.n_run == claims["run"] == 171
+    assert ledger.n_registered == claims["registered"] == 174
+    assert ledger.n_run == claims["run"] == 173
     assert ledger.n_registered - ledger.n_run == claims["data_blocked"] == 1
 
 

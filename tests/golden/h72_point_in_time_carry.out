@@ -1,0 +1,58 @@
+========================================================================================================
+H72 - POINT-IN-TIME CARRY: does the last validated edge survive? (trials 173-174)
+========================================================================================================
+
+Eligible (spot + perp + funding): 342 symbols. Hindsight universe present: 33. Majors present: 8.
+
+--- Section 5.2 diagnostic: overlap with the hindsight universe ---
+    date          rankable                     overlap
+    2019-12-10           1                 1 / 40 (   2%)
+    2020-12-04          39                11 / 40 (  28%)
+    2021-11-29          40                13 / 40 (  32%)
+    2022-11-24          40                13 / 40 (  32%)
+    2023-11-19          40                14 / 40 (  35%)
+    2024-11-13          40                17 / 40 (  42%)
+    2025-11-08          40                21 / 40 (  52%)
+
+--- running the books ---
+  hindsight wide (H65)         n_symbols= 33  n_days=2494
+  hindsight 8 majors (H63)     n_symbols=  8  n_days=2494
+  point-in-time 90d            n_symbols=342  n_days=2494
+  point-in-time 365d           n_symbols=342  n_days=2494
+
+--- the cells, identical window (2494 days, 2019-09-11 -> 2026-07-09) ---
+  book                               CAGR   Sharpe      MDD  mean bp/day           95% CI (bp)     DSR
+  hindsight wide (H65)              4.36%     5.61   -0.78%        1.170      [+0.689, +1.761]  1.0000
+  hindsight 8 majors (H63)          4.64%     5.91   -0.84%        1.242      [+0.792, +1.787]  1.0000
+  point-in-time 90d                 2.35%     4.83   -0.35%        0.637      [+0.309, +1.048]  1.0000  <- PRIMARY
+  point-in-time 365d                1.82%     4.02   -0.33%        0.495      [+0.202, +0.871]  1.0000
+
+--- the four pre-registered bars (Section 5) ---
+  A1. Sharpe >= 1.0                              4.83                             -> PASS
+  A2. mean daily net > 0, CI excludes zero       +0.637bp, low +0.309bp           -> PASS
+  A3. DSR_global >= 0.95 @ 174                   1.0000                           -> PASS
+  B4. Sharpe >= 70% of H65 wide's                4.83 vs 3.93 needed              -> PASS
+
+  Gate A PASS   Gate B PASS
+  Sharpe retained: 86% of the hindsight wide book's (4.83 vs 5.61)   -- momentum retained 58% (H71)
+
+--- Section 5.1: were the predictions right? ---
+  predicted Gate A passes: RIGHT
+  predicted Gate B passes: RIGHT
+  predicted retention materially above momentum's 58%: 86%  -> RIGHT
+
+--- reported, not gated: per-year ---
+  year       n  hindsight wide  hindsight 8 ma  point-in-time   point-in-time 
+  2019     112           1.49%           1.49%          -0.26%          -0.26%
+  2020     366           6.17%           6.90%           3.94%           0.56%
+  2021     365          16.72%          15.95%          10.64%          10.33%
+  2022     365          -0.14%          -0.01%          -0.20%          -0.17%
+  2023     365           1.96%           2.49%           0.56%           0.67%
+  2024     366           4.48%           4.89%           1.09%           1.08%
+  2025     365          -0.07%           0.63%          -0.05%          -0.01%
+  2026     190          -0.80%          -0.64%          -0.07%          -0.06%
+
+  RECENT REGIME (carried forward, Section 5.2): H62, H63 and H65 each found
+  carry earning ~nothing in 2025-2026. Nothing in this hypothesis addresses that.
+
+========================================================================================================

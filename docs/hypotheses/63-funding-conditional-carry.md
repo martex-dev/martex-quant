@@ -1,5 +1,16 @@
 # Hypothesis 63 — Funding-Conditional Carry
 
+> **⚠ RE-STATED 2026-08-28 by H72 (`docs/hypotheses/72-point-in-time-carry.md`).**
+> The figures below rank inside `config/universe.json`, selected by volume
+> **as of 2026-07-12 — the end of the sample**. Re-run on a point-in-time
+> universe the carry spec **survives**, retaining **86% of its Sharpe
+> (5.61 → 4.83)** — but only **54% of its CAGR (+4.36% → +2.35%)**.
+> **Use +2.35%, not +4.36%, in any sizing arithmetic.**
+> The numbers below are NOT altered; read them as hindsight-universe
+> figures. Carry remains **unpaid in the current regime** (~0%/yr in
+> 2025-2026) and is **not deployed**.
+
+
 Status: **GATE A + GATE B PASS (2026-08-27) — strategy-grade, replaces H62
 as the carry spec, paper-eligible.** Trials: **+3 → 129.** Verdict in §7.
 **Read §7.2 before sizing:** it does NOT fix the dead recent regime
